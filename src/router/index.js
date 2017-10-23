@@ -1,15 +1,36 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Main from '../views/main/main.vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter);
 
-Vue.use(Router)
+const loginRouter = {
+  path: '/login',
+  name: 'login',
+  meta: {
+    title: 'Login - 登录'
+  },
+  component: resolve => { require(['../views/login/login.vue'], resolve); }
+};
+const otherRouter={
+    path:'/',
+    name:'otherRouter',
+    redirect: '/home',
+    component: Main,
+    children:[
+        {path:'home',title:'首页',name:'home_index',component:resolve=>{require(['../views/home/home.vue'], resolve); } }
+    ]
+};
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Hello',
-      component: HelloWorld
-    }
-  ]
-})
+export const routers = [
+    loginRouter,
+    otherRouter,
+];
+const router=new VueRouter({
+    mode: 'history',
+    routes:routers
+});
+
+export default router;
+// export const routers = [
+//   loginRouter,
+// ];

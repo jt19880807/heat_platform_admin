@@ -10,8 +10,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "iview": "^2.5.1",
+    "less": "^3.0.0-alpha.3",
+    "less-loader": "^4.0.5",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^2.8.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
