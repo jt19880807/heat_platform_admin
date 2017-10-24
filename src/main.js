@@ -31,6 +31,9 @@ const store=new Vuex.Store({
         theme: ''
     },
     mutations:{
+        setTagsList (state, list) {
+            state.tagsList.push(...list);
+        },
         increateTag (state, tagObj) {
             state.pageOpenedList.splice(1, 0, tagObj);
         },
@@ -95,6 +98,21 @@ new Vue({
     router: router,
     store: store,
     render: h => h(App),
-    // template: '<App/>',
-    // components: { App }
+    data: {
+        currentPageName: ''
+    },
+    mounted () {
+        this.currentPageName = this.$route.name;
+    },
+    created () {
+        let tagsList = [];
+        appRouter.map((item) => {
+            if (item.children.length <= 1) {
+                tagsList.push(item.children[0]);
+            } else {
+                tagsList.push(...item.children);
+            }
+        });
+        this.$store.commit('setTagsList', tagsList);
+    }
 });

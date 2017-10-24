@@ -10,9 +10,16 @@
                 <img v-show="hideMenuText" src="../../images/logo-min.jpg">
             </div>
             <sidebar-menu v-if="!hideMenuText" :menuList="menuList" :iconSize="14"></sidebar-menu>
+            <sidebar-menu-shrink :icon-color="menuIconColor" v-else :menuList="menuList"></sidebar-menu-shrink>
         </div>
-        <div style="background: green" class="main-header-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
-
+        <div  class="main-header-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
+            <div class="main-header">
+                <div class="navicon-con">
+                    <Button :style="{transform: 'rotateZ(' + (this.hideMenuText ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
+                        <Icon type="navicon" size="32"></Icon>
+                    </Button>
+                </div>
+            </div>
         </div>
 
         <div style="background: red" class="single-page-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
@@ -22,10 +29,11 @@
 </template>
 <script>
     import sidebarMenu from "../../components/sidebarMenu.vue"
+    import sidebarMenuShrink from "../../components/sidebarMenuShrink.vue"
     export default {
         components:{
             sidebarMenu,
-
+            sidebarMenuShrink
         },
         data(){
             return{
@@ -35,6 +43,14 @@
         computed:{
             menuList () {
                 return this.$store.state.menuList;
+            },
+            menuIconColor () {
+                return this.$store.state.menuTheme === 'dark' ? 'white' : '#495060';
+            },
+        },
+        methods:{
+            toggleClick () {
+                this.hideMenuText = !this.hideMenuText;
             },
         },
         created(){
