@@ -19,7 +19,7 @@
               </Input>
             </FormItem>
             <FormItem prop="password">
-              <Input v-model="form.password" size="large" placeholder="密码">
+              <Input v-model="form.password" type="password" size="large" placeholder="密码">
                 <span slot="prepend">
                    <Icon :size="14" type="locked"></Icon>
                 </span>
@@ -59,7 +59,10 @@
           this.$refs['loginForm'].validate((valid)=>{
             alert(valid);
             if(valid){
-              alert(this.form.userName+":"+this.form.password);
+              //alert(this.form.userName+":"+this.form.password);
+                this.$router.push({
+                    name: 'home_index'
+                });
             }
           })
       }
