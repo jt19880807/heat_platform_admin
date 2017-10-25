@@ -58,11 +58,11 @@
                     if (!tagHasOpened) {
                         let tag = this.tagsList.filter((item) => {
                             console.log(item);
-//                            if (item.children) {
-//                                return active === item.children[0].name;
-//                            } else {
-//                                return active === item.name;
-//                            }
+                            if (item.children) {
+                                return active === item.children[0].name;
+                            } else {
+                                return active === item.name;
+                            }
                         });
                         tag = tag[0];
                         tag = tag.children ? tag.children[0] : tag;

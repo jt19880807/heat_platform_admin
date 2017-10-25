@@ -27,7 +27,7 @@ const store=new Vuex.Store({
             }
         ],  // 面包屑数组
         openedSubmenuArr: [],  // 要展开的菜单数组
-        menuTheme: '', // 主题
+        menuTheme: 'dark', // 主题
         theme: ''
     },
     mutations:{
@@ -42,6 +42,12 @@ const store=new Vuex.Store({
             state.pageOpenedList.splice(index, 1);
             state.pageOpenedList.splice(1, 0, openedPage);
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
+        },
+        setOpenedList (state) {
+            state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [otherRouter.children[0]];
+        },
+        setCurrentPath (state, pathArr) {
+            state.currentPath = pathArr;
         },
         setCurrentPageName (state, name) {
             state.currentPageName = name;
@@ -114,5 +120,6 @@ new Vue({
             }
         });
         this.$store.commit('setTagsList', tagsList);
+
     }
 });
