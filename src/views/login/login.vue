@@ -37,6 +37,8 @@
 	</div>
 </template>
 <script>
+    import {login,test} from '../../axios/http.js';
+    import qs from 'qs';
   export default {
     data(){
       return{
@@ -57,12 +59,27 @@
     methods:{
       handleSubmit(){
           this.$refs['loginForm'].validate((valid)=>{
-            alert(valid);
             if(valid){
-              //alert(this.form.userName+":"+this.form.password);
-                this.$router.push({
-                    name: 'home_index'
+
+                let params = new URLSearchParams();
+                params.append('username', 'admin');
+                params.append('password', 'admin');
+                console.log(params);
+//                test(params).then((response)=>{
+//                    alert(response);
+//                    console.log(response);
+//                }).catch(function (error) {
+//                    console.log(error);
+//                });
+                login(params).then((response)=>{
+                    console.log(response);
+                }).catch(function (error) {
+                    console.log(error);
                 });
+              //alert(this.form.userName+":"+this.form.password);
+//                this.$router.push({
+//                    name: 'home_index'
+//                });
             }
           })
       }

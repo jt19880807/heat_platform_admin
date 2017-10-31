@@ -5,10 +5,15 @@ import 'iview/dist/styles/iview.css';
 import {router,otherRouter,appRouter} from './router';
 import Vuex from "vuex";
 import Util from './libs/util';
+//全局加载resource拦截器
+// import './axios/index';
+// import Axios from 'axios';
+
 
 Vue.config.productionTip = false;
 Vue.use(iview);
 Vue.use(Vuex);
+// Vue.prototype.$http = Axios;
 const store=new Vuex.Store({
     state:{
         routers:[
