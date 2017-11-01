@@ -166,5 +166,18 @@ const router=new VueRouter({
     routes:routers
 });
 
+router.beforeEach((to,from,next)=>{
+    alert(to.name);
+    if (from.name==null){
+        next({
+            path: '/login'
+        });
+    }
+    else {
+        next();
+    }
+   // next();
+});
+
 export {router,otherRouter,appRouter};
 // export default router;

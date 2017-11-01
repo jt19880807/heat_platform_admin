@@ -18,16 +18,16 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 // 带cookie请求
 axios.defaults.withCredentials = true;
 // http request 拦截器
-axios.interceptors.request.use(
-    config => {
-        //if (store.state.userInfo.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-            config.headers.Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4sQVVUSF9XUklURSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTA5NTMyNzY4fQ.C77UTIX5m7dPnZKnD9WIrl_ar4cZLaoum7ft5yepGuE6lnhW7ssqgvJbsJKdhypxh72_ZUcktlai6xBrbmx5NA";
-       //}
-        return config;
-    },
-    err => {
-        return Promise.reject(err);
-    });
+// axios.interceptors.request.use(
+//     config => {
+//         //if (store.state.userInfo.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+//             config.headers.Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4sQVVUSF9XUklURSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTA5NTMyNzY4fQ.C77UTIX5m7dPnZKnD9WIrl_ar4cZLaoum7ft5yepGuE6lnhW7ssqgvJbsJKdhypxh72_ZUcktlai6xBrbmx5NA";
+//        //}
+//         return config;
+//     },
+//     err => {
+//         return Promise.reject(err);
+//     });
 // axios.interceptors.request.use(function (config) {    // 这里的config包含每次请求的内容
 //     //if (store.getters.getToken) {
 //         config.headers.Authorization ='Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4sQVVUSF9XUklURSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTA5NTMyNzY4fQ.C77UTIX5m7dPnZKnD9WIrl_ar4cZLaoum7ft5yepGuE6lnhW7ssqgvJbsJKdhypxh72_ZUcktlai6xBrbmx5NA';

@@ -38,41 +38,72 @@
 </template>
 <script>
     import {login,test} from '../../axios/http.js';
-    import qs from 'qs';
   export default {
     data(){
+        const validateUserName = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('账号不能为空空'));
+            } else {
+                if (this.erromsg.username == '用户不存在') {
+                    callback(new Error(this.erromsg.username));
+                }
+                callback();
+            }
+        };
+        const validatePassCheck = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('密码不能为空'));
+            } else if (this.erromsg.password == '密码错误') {
+                callback(new Error(this.erromsg.password));
+            } else {
+                callback();
+            }
+        };
       return{
         form:{
           userName:'',
           password:''
         },
+         erromsg:{
+           username:'',
+           password:''
+         },
         rules:{
           userName: [
-            { required: true, message: '账号不能为空', trigger: 'blur' }
+            { validator: validateUserName, trigger: 'blur' }
           ],
           password: [
-            { required: true, message: '密码不能为空', trigger: 'blur' }
+            { validator: validatePassCheck, trigger: 'blur' }
           ]
         }
       }
     },
     methods:{
       handleSubmit(){
+          this.erromsg.password='';
+          this.erromsg.username='';
           this.$refs['loginForm'].validate((valid)=>{
             if(valid){
-
                 let params = new URLSearchParams();
                 params.append('username', 'admin');
                 params.append('password', 'admin');
-                console.log(params);
-//                test(params).then((response)=>{
-//                    alert(response);
-//                    console.log(response);
-//                }).catch(function (error) {
-//                    console.log(error);
-//                });
-                login(params).then((response)=>{
-                    console.log(response);
+                login({
+                    username:this.form.userName,
+                    password:this.form.password,
+                }).then((response)=>{
+                    if (response.data.msg=="成功"){
+                        this.$router.push({
+                            name: 'home_index'
+                        });
+                    }
+                    else if (response.data.msg=="密码错误"){
+                        this.erromsg.password=response.data.msg;
+                        this.$refs.loginForm.validateField('password');
+                    }
+                    else if (response.data.msg=="用户不存在"){
+                        this.erromsg.username=response.data.msg;
+                        this.$refs['loginForm'].validateField('userName');
+                    }
                 }).catch(function (error) {
                     console.log(error);
                 });
