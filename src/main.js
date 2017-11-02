@@ -5,17 +5,18 @@ import 'iview/dist/styles/iview.css';
 import {router,otherRouter,appRouter} from './router';
 import Vuex from "vuex";
 import Util from './libs/util';
-//全局加载resource拦截器
-// import './axios/index';
-// import Axios from 'axios';
+import cookie from 'static/js/cookie'
 
 
 Vue.config.productionTip = false;
 Vue.use(iview);
 Vue.use(Vuex);
-// Vue.prototype.$http = Axios;
 const store=new Vuex.Store({
     state:{
+        userInfo:{
+            name:cookie.getCookie('name')||'',
+            token:cookie.getCookie('token')||''
+        },
         routers:[
            otherRouter,
             ...appRouter
@@ -76,6 +77,7 @@ const store=new Vuex.Store({
                                 } else {
                                     return child;
                                 }
+
                             });
                             menuList[i - 1].children = childrenArr;
                         }
