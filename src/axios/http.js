@@ -66,6 +66,7 @@ export const login=params=>{
     return axios.post("/login",params)
 };
 //export const test=axios.get(`/user`);
-export const test=params=>{
-    return Axios.get('/user',params)
+//获取所有住户信息
+export const getAllUsers=()=>{
+    return axios.get('/users')
 };

@@ -38,6 +38,7 @@
 </template>
 <script>
     import {login,test} from '../../axios/http.js';
+    import Cookies from 'js-cookie';
   export default {
     data(){
         const validateUserName = (rule, value, callback) => {
@@ -92,6 +93,8 @@
                     password:this.form.password,
                 }).then((response)=>{
                     if (response.data.msg=="成功"){
+                        //将用户名保存到Cookie中
+                        Cookies.set('username',this.form.userName,{expires: 1});
                         this.$router.push({
                             name: 'home_index'
                         });

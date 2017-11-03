@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Main from '../views/main/main.vue'
 import VueRouter from 'vue-router'
-import cookie from '../static/js/cookie'
+import Cookies from 'js-cookie'
 Vue.use(VueRouter);
 
 const loginRouter = {
@@ -168,10 +168,9 @@ const router=new VueRouter({
 });
 
 router.beforeEach((to,from,next)=>{
-    alert(cookie.getCookie('username'));
-    if (!cookie.getCookie('username')&&to.name!=='login'){
+    if (!Cookies.get('username')&&to.name!=='login'){
         next({
-            name: 'login'
+            path: '/login'
         });
     }
     // if (from.name==null){
@@ -182,7 +181,7 @@ router.beforeEach((to,from,next)=>{
     // else {
     //     next();
     // }
-   // next();
+    next();
 });
 
 export {router,otherRouter,appRouter};

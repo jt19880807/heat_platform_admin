@@ -5,7 +5,7 @@ import 'iview/dist/styles/iview.css';
 import {router,otherRouter,appRouter} from './router';
 import Vuex from "vuex";
 import Util from './libs/util';
-import cookie from 'static/js/cookie'
+import Cookies from 'js-cookie'
 
 
 Vue.config.productionTip = false;
@@ -14,8 +14,8 @@ Vue.use(Vuex);
 const store=new Vuex.Store({
     state:{
         userInfo:{
-            name:cookie.getCookie('name')||'',
-            token:cookie.getCookie('token')||''
+            name:Cookies.get('name')||'',
+            token:Cookies.get('token')||''
         },
         routers:[
            otherRouter,
@@ -43,6 +43,13 @@ const store=new Vuex.Store({
         increateTag (state, tagObj) {
             state.pageOpenedList.splice(1, 0, tagObj);
         },
+        removeTag (state, name) {
+            state.pageOpenedList.map((item, index) => {
+                if (item.name === name) {
+                    state.pageOpenedList.splice(index, 1);
+                }
+            });
+        },
         moveToSecond (state, index) {
             let openedPage = state.pageOpenedList[index];
             state.pageOpenedList.splice(index, 1);
@@ -57,6 +64,37 @@ const store=new Vuex.Store({
         },
         setCurrentPageName (state, name) {
             state.currentPageName = name;
+        },
+        addOpenSubmenu (state, name) {
+            let hasThisName = false;
+            let isEmpty = false;
+            if (name.length === 0) {
+                isEmpty = true;
+            }
+            if (state.openedSubmenuArr.indexOf(name) > -1) {
+                hasThisName = true;
+            }
+            if (!hasThisName && !isEmpty) {
+                state.openedSubmenuArr.push(name);
+            }
+        },
+        clearOpenedSubmenu (state) {
+            state.openedSubmenuArr.length = 0;
+        },
+        changeMenuTheme (state, theme) {
+            state.menuTheme = theme;
+        },
+        changeMainTheme (state, mainTheme) {
+            state.theme = mainTheme;
+        },
+        lock (state) {
+            Cookies.set('locking', '1');
+        },
+        unlock (state) {
+            Cookies.set('locking', '0');
+        },
+        setMenuList (state, menulist) {
+            state.menuList = menulist;
         },
         updateMenulist (state) {
             let accessCode =1;// parseInt(Cookies.get('access'));
