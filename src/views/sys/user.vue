@@ -10,16 +10,16 @@
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="error" v-bind:disabled="selectdata.length==0" icon="trash-a">删除选定</Button>
+                <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除选定</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Page :total="100" show-total :pageSize=20 @on-change="pageChange"></Page>
+                <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
             </Col>
         </Row>
     </div>
 </template>
 <script>
-    import {getAllUsers} from '../../axios/http';
+    import {getAllUsers,batchDelUsers} from '../../axios/http';
     export default {
         data () {
             return {
@@ -119,7 +119,7 @@
             },
             pageChange(page){
                // 页码发生改变的时候调用
-                alert(page);
+                //alert(page);
             },
             show (index) {
                 this.$Modal.info({
@@ -131,9 +131,45 @@
                 this.data.splice(index, 1);
             },
             onDataSelect(selection){
-                console.log(selection.length);
+                //console.log(selection.length);
                 this.selectdata=selection;
             },
+            deletedata(){//删除选定数据
+                this.$Modal.confirm({
+                    title: '删除数据',
+                    content: '<p>确定要删除选定的数据？</p>',
+                    onOk: () => {
+//                        for (var index=0;index<this.selectdata.length;index++){
+//
+//                            this.selectdata[index].createtime=this.selectdata[index].createtime.replace(/\s/g,'T');
+//                            this.selectdata[index].last_login=this.selectdata[index].last_login.replace(/\s/g,'T');
+//                            console.log(this.selectdata[index].createtime);
+//                            console.log(this.selectdata[index].last_login);
+//                        }
+                        batchDelUsers(this.selectdata).then((response)=>{
+                            console.log(response.data.result);
+                            //this.data=response.data.result;
+                            if (response.data.result===this.selectdata.length){
+                                for (var i=0;i<this.selectdata.length;i++){
+                                    for (var j=0;j<this.data.length;j++){
+                                        if (this.data[j].id===this.selectdata[i].id){
+                                            this.data.splice(j,1);
+                                            break;
+                                        }
+                                    }
+                                }
+                                this.$Message.info('Clicked ok');
+                            }
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+
+                    },
+                    onCancel: () => {
+                        this.$Message.info('Clicked cancel');
+                    }
+                });
+            }
         },
         created(){
             this.initdata();

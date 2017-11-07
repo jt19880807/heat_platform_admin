@@ -9,7 +9,7 @@ import axios from 'axios'
 //     }
 // });
 // //设置请求baseURL
- axios.defaults.baseURL='http://127.0.0.1:8080';
+ axios.defaults.baseURL='http://127.0.0.1:8082';
 // //设置默认请求头
 // axios.defaults.headers = {
 //     "Content-Type": "application/x-www-form-urlencoded"
@@ -69,4 +69,7 @@ export const login=params=>{
 //获取所有住户信息
 export const getAllUsers=()=>{
     return axios.get('/users')
+};
+export const batchDelUsers=params=>{
+    return axios.post("/users-del",params);
 };
