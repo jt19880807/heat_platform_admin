@@ -111,7 +111,7 @@
             //加载数据
             initdata(){
                 getAllUsers().then((response)=>{
-                    //console.log(response.data.result);
+                    console.log(response);
                     this.data=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
@@ -158,7 +158,7 @@
                                         }
                                     }
                                 }
-                                this.$Message.info('Clicked ok');
+                                this.$Message.info('删除成功');
                             }
                         }).catch(function (error) {
                             console.log(error);

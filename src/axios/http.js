@@ -65,11 +65,24 @@ axios.defaults.withCredentials = true;
 export const login=params=>{
     return axios.post("/login",params)
 };
-//export const test=axios.get(`/user`);
 //获取所有住户信息
 export const getAllUsers=()=>{
     return axios.get('/users')
 };
+//批量删除住户信息
 export const batchDelUsers=params=>{
     return axios.post("/users-del",params);
 };
+
+
+
+//获取项目信息
+export const getProjects=ids=>{
+  return axios.get("/projects/"+ids);
+};
+//批量删除项目信息
+export const batchDelProjects=params=>{
+  return axios.post("/projects-del",params);
+};
+
+
