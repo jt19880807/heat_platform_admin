@@ -84,5 +84,8 @@ export const getProjects=ids=>{
 export const batchDelProjects=params=>{
   return axios.post("/projects-del",params);
 };
+export const inssetProject=params=>{
+  return axios.post("/project",params);
+};
 
 

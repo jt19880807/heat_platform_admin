@@ -1,36 +1,100 @@
 <template>
     <div>
         <Row style="margin: 10px">
-            <Col span="8"><Button type="primary" @click="showEditModal" icon="plus">添加用户</Button></Col>
+            <Col span="8">
+
+            </Col>
             <Col span="8" offset="8" style="text-align: right">
-            <Input placeholder="请输入项目名搜索." style="width: 200px; ;" />
-            <span  style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
+                <Input placeholder="请输入项目名搜索." style="width: 200px;" />
+                <span  style="margin: 0 10px;">
+                    <Button type="primary" icon="search">搜索</Button>
+                </span>
             </Col>
         </Row>
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-            <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除选定</Button>
+                <Button type="primary" @click="showCurrentTableData=true" icon="plus">新增</Button>
+                <Button type="primary" @click="editProject" icon="edit" v-bind:disabled="selectdata.length!==1">编辑</Button>
+                <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-            <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
+                <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
             </Col>
         </Row>
-        <Modal  v-model="showCurrentTableData">
+        <Modal title="新增数据" v-model="showCurrentTableData">
             <div slot="footer">
                 <Button type="text" size="large" @click="cancel">取消</Button>
                 <Button type="primary" size="large" @click="ok">确定</Button>
             </div>
             <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
-                <FormItem label="项目名称" prop="name">
-                    <Input v-model="formValidate.name" placeholder="Enter your name"/>
-                </FormItem>
+                <Row>
+                    <FormItem label="项目名称" prop="name">
+                        <Input v-model="formValidate.name"/>
+                    </FormItem>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="负责人" prop="principal">
+                            <Input v-model="formValidate.principal" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="联系人" prop="contact">
+                            <Input v-model="formValidate.contact" />
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                    <FormItem label="建设单位" prop="party_a">
+                        <Input v-model="formValidate.party_a" />
+                    </FormItem>
+                    </Col>
+                    <Col span="12">
+                    <FormItem label="施工单位" prop="construction_unit">
+                        <Input v-model="formValidate.construction_unit" />
+                    </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="监理单位" prop="supervisor_unit">
+                            <Input v-model="formValidate.supervisor_unit" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="设计单位" prop="design_unit">
+                            <Input v-model="formValidate.design_unit" />
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                        <FormItem label="使用单位" prop="use_unit">
+                            <Input v-model="formValidate.use_unit" />
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+
+                    </Col>
+                </Row>
+                <Row>
+                    <FormItem label="所属地区" prop="district">
+                        <Input v-model="formValidate.district" />
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label="详细地址" prop="address">
+                        <Input v-model="formValidate.address" />
+                    </FormItem>
+                </Row>
             </Form>
         </Modal>
     </div>
 </template>
 <script>
-    import {getProjects,batchDelProjects} from '../../axios/http';
+    import {getProjects,batchDelProjects,inssetProject} from '../../axios/http';
     import Cookies from 'js-cookie'
     export default {
         data () {
@@ -86,6 +150,15 @@
                 //delButtonStatus:true,
                 formValidate: {
                     name: '',
+                    principal:'',
+                    contact:'',
+                    party_a:'',
+                    construction_unit:'',
+                    supervisor_unit:'',
+                    design_unit:'',
+                    use_unit:'',
+                    district:'',
+                    address:''
                 },
                 ruleValidate: {
                     name: [
@@ -115,6 +188,7 @@
                 //console.log(selection.length);
                 this.selectdata=selection;
             },
+            //批量删除
             deletedata(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
@@ -142,10 +216,35 @@
                     }
                 });
             },
+            //插入数据
+            saveProject(){
+                var param={
+                    name: this.formValidate.name,
+                    principal:this.formValidate.principal,
+                    contact:this.formValidate.contact,
+                    party_a:this.formValidate.party_a,
+                    construction_unit:this.formValidate.construction_unit,
+                    supervisor_unit:this.formValidate.supervisor_unit,
+                    design_unit:this.formValidate.design_unit,
+                    use_unit:this.formValidate.use_unit,
+                    district:this.formValidate.district,
+                    address:this.formValidate.address
+                };
+                inssetProject(param).then((response)=>{
+                    if(response.data.result===1){
+                        this.initdata();
+                        this.$refs['formValidate'].resetFields();
+                        this.showCurrentTableData=false;
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
-                        this.showCurrentTableData=false;
+                        this.saveProject();
+//                        this.showCurrentTableData=false;
                        // this.$Message.success('Success!');
                     } else {
                         //this.$Message.error('Fail!');
@@ -156,9 +255,20 @@
             cancel(){
                 this.$refs['formValidate'].resetFields();
             },
-            showEditModal(){
+            editProject(){
+                this.formValidate.name=this.selectdata[0].name;
+                this.formValidate.principal=this.selectdata[0].principal;
+                this.formValidate.contact=this.selectdata[0].contact;
+                this.formValidate.party_a=this.selectdata[0].party_a;
+                this.formValidate.construction_unit=this.selectdata[0].construction_unit;
+                this.formValidate.supervisor_unit=this.selectdata[0].supervisor_unit;
+                this.formValidate.design_unit=this.selectdata[0].design_unit;
+                this.formValidate. use_unit=this.selectdata[0].use_unit;
+                this.formValidate.district=this.selectdata[0].district;
+                this.formValidate. address=this.selectdata[0].address;
                 this.showCurrentTableData=true;
             },
+
         },
         created(){
             this.initdata();

@@ -24,28 +24,6 @@ const otherRouter={
     ]
 };
 const appRouter = [
-    // {
-    //     path: '/home',
-    //     redirect: '/access/index',
-    //     icon: 'key',
-    //     name: 'access',
-    //     title: '权限管理',
-    //     component: Main,
-    //     children: [
-    //         { path: 'index', title: '权限管理', name: 'access_index', component: resolve => { require(['../views/home/home.vue'], resolve); } }
-    //     ]
-    // },
-    // {
-    //     path: '/access-test',
-    //     icon: 'lock-combination',
-    //     title: '权限测试页',
-    //     name: 'accesstest',
-    //     access: 0,
-    //     component: Main,
-    //     children: [
-    //         { path: 'index', title: '权限测试页', name: 'accesstest_index' }
-    //     ]
-    // },,
     {
         path: '/projectmanage',
         icon: 'social-buffer',
