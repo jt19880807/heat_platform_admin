@@ -14,7 +14,7 @@
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="primary" @click="showCurrentTableData=true" icon="plus">新增</Button>
+                <Button type="primary" @click="add" icon="plus">新增</Button>
                 <Button type="primary" @click="editProject" icon="edit" v-bind:disabled="selectdata.length!==1">编辑</Button>
                 <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除</Button>
             </Col>
@@ -22,7 +22,7 @@
                 <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
             </Col>
         </Row>
-        <Modal title="新增数据" v-model="showCurrentTableData">
+        <Modal v-bind:title="modelTitle" v-model="showCurrentTableData">
             <div slot="footer">
                 <Button type="text" size="large" @click="cancel">取消</Button>
                 <Button type="primary" size="large" @click="ok">确定</Button>
@@ -94,8 +94,9 @@
     </div>
 </template>
 <script>
-    import {getProjects,batchDelProjects,inssetProject} from '../../axios/http';
-    import Cookies from 'js-cookie'
+    import {getProjects,batchDelProjects,inssetProject,updateProject} from '../../axios/http';
+    import Cookies from 'js-cookie';
+    import qs from 'qs';
     export default {
         data () {
             return {
@@ -147,7 +148,6 @@
                 ],
                 data: [],
                 selectdata:[],
-                //delButtonStatus:true,
                 formValidate: {
                     name: '',
                     principal:'',
@@ -166,8 +166,8 @@
                     ],
                 },
                 showCurrentTableData: false,
-                loading:true
-
+                modelTitle:"",
+                isAdd:true,
             }
         },
         methods: {
@@ -196,14 +196,17 @@
                     onOk: () => {
                         batchDelProjects(this.selectdata).then((response)=>{
                             if (response.data.result===this.selectdata.length){
+
                                 for (var i=0;i<this.selectdata.length;i++){
                                     for (var j=0;j<this.data.length;j++){
-                                        if (this.data[j].id===this.selectdata[i].id){
+                                        if (this.data[j].id==this.selectdata[i].id){
+                                            console.log(j);
                                             this.data.splice(j,1);
                                             break;
                                         }
                                     }
                                 }
+                                this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
                         }).catch(function (error) {
@@ -216,7 +219,7 @@
                     }
                 });
             },
-            //插入数据
+            //保存数据（新增或者修改）
             saveProject(){
                 var param={
                     name: this.formValidate.name,
@@ -230,15 +233,32 @@
                     district:this.formValidate.district,
                     address:this.formValidate.address
                 };
-                inssetProject(param).then((response)=>{
-                    if(response.data.result===1){
-                        this.initdata();
-                        this.$refs['formValidate'].resetFields();
-                        this.showCurrentTableData=false;
-                    }
-                }).catch(function (error) {
-                    console.log(error);
-                });
+                if(this.isadd){
+                    inssetProject(param).then((response)=>{
+                        if(response.data.result===1){
+                            this.initdata();
+                            this.$refs['formValidate'].resetFields();
+                            this.showCurrentTableData=false;
+                        }
+                        }).catch(function (error) {
+                            console.log(error);
+                    });
+                }else {
+//                    let param = new URLSearchParams();
+//                    param.append("username", this.formValidate.name);
+//                    param.append("password", this.formValidate.principal);
+                    updateProject(this.selectdata[0].id,param).then((response)=>{
+                        if(response.data.result===1){
+                            this.initdata();
+                            this.$refs['formValidate'].resetFields();//清楚Fields
+                            this.$refs.selection.selectAll(false);//取消全选
+                            this.showCurrentTableData=false;//关闭Modal
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+
             },
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
@@ -267,7 +287,14 @@
                 this.formValidate.district=this.selectdata[0].district;
                 this.formValidate. address=this.selectdata[0].address;
                 this.showCurrentTableData=true;
+                this.isadd=false;
+                this.modelTitle="修改项目信息";
             },
+            add(){
+                this.showCurrentTableData=true;
+                this.isadd=true;
+                this.modelTitle="添加项目信息";
+            }
 
         },
         created(){

@@ -11,10 +11,11 @@ import axios from 'axios'
 // //设置请求baseURL
  axios.defaults.baseURL='http://127.0.0.1:8082';
 // //设置默认请求头
-// axios.defaults.headers = {
-//     "Content-Type": "application/x-www-form-urlencoded"
-// };
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+axios.defaults.headers = {
+    "Content-Type": "application/json",
+    "Accept":"application/json"
+};
+//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 // 带cookie请求
 axios.defaults.withCredentials = true;
 // http request 拦截器
@@ -86,6 +87,9 @@ export const batchDelProjects=params=>{
 };
 export const inssetProject=params=>{
   return axios.post("/project",params);
+};
+export const updateProject=(projectId,params)=>{
+    return axios.put("/project/"+projectId,params);
 };
 
 

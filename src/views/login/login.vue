@@ -37,7 +37,7 @@
 	</div>
 </template>
 <script>
-    import {login,test} from '../../axios/http.js';
+    import {login} from '../../axios/http.js';
     import Cookies from 'js-cookie';
   export default {
     data(){
@@ -85,9 +85,6 @@
           this.erromsg.username='';
           this.$refs['loginForm'].validate((valid)=>{
             if(valid){
-                let params = new URLSearchParams();
-                params.append('username', 'admin');
-                params.append('password', 'admin');
                 login({
                     username:this.form.userName,
                     password:this.form.password,
