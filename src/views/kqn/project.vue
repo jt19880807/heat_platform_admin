@@ -177,7 +177,7 @@
         methods: {
             //加载数据
             initdata(){
-                getProjects(Cookies.get('projects'),this.currenPage,this.pageSize).then((response)=>{
+                getProjects(Cookies.get('projects'),this.currenPage,this.pageSize,this.keyWords).then((response)=>{
                     //alert(response.data.total);
                     this.total=response.data.total;
                     //console.log(response.data.result);
