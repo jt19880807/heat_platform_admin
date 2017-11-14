@@ -5,7 +5,7 @@
 
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Input placeholder="请输入项目名搜索." style="width: 200px;" />
+                <Input placeholder="请输入项目名搜索." :Model="keyWords" style="width: 200px;" />
                 <span  style="margin: 0 10px;">
                     <Button type="primary" icon="search">搜索</Button>
                 </span>
@@ -19,13 +19,13 @@
                 <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
+                <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
             </Col>
         </Row>
-        <Modal v-bind:title="modelTitle" v-model="showCurrentTableData">
+        <Modal v-bind:title="modalTitle" v-model="showCurrentTableData">
             <div slot="footer">
-                <Button type="text" size="large" @click="cancel">取消</Button>
-                <Button type="primary" size="large" @click="ok">确定</Button>
+                <Button type="text" size="large" @click="cancel">重置</Button>
+                <Button type="primary" size="large" @click="ok">保存</Button>
             </div>
             <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
                 <Row>
@@ -166,16 +166,22 @@
                     ],
                 },
                 showCurrentTableData: false,
-                modelTitle:"",
-                isAdd:true,
+                modalTitle:"",//弹出层标题
+                isAdd:true,//是否添加
+                currenPage:1,//当前页码
+                pageSize:6,//每页数据量
+                total:0,//数据总量
+                keyWords:""//搜索关键词
             }
         },
         methods: {
             //加载数据
             initdata(){
-                getProjects(Cookies.get('projects')).then((response)=>{
+                getProjects(Cookies.get('projects'),this.currenPage,this.pageSize).then((response)=>{
+                    //alert(response.data.total);
+                    this.total=response.data.total;
                     //console.log(response.data.result);
-                    this.data=response.data.result;
+                    this.data=response.data.list;
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -183,6 +189,8 @@
             pageChange(page){
                 // 页码发生改变的时候调用
                 //alert(page);
+                this.currenPage=page;
+                this.initdata();
             },
             onDataSelect(selection){
                 //console.log(selection.length);
@@ -194,20 +202,25 @@
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
+                        this.total=this.total-this.selectdata.length;
                         batchDelProjects(this.selectdata).then((response)=>{
                             if (response.data.result===this.selectdata.length){
-
-                                for (var i=0;i<this.selectdata.length;i++){
-                                    for (var j=0;j<this.data.length;j++){
-                                        if (this.data[j].id==this.selectdata[i].id){
-                                            console.log(j);
-                                            this.data.splice(j,1);
-                                            break;
-                                        }
-                                    }
-                                }
+//                                for (var i=0;i<this.selectdata.length;i++){
+//                                    for (var j=0;j<this.data.length;j++){
+//                                        if (this.data[j].id==this.selectdata[i].id){
+//                                            console.log(j);
+//                                            this.data.splice(j,1);
+//                                            break;
+//                                        }
+//                                    }
+//                                }
+                                this.initdata();
+                                //this.currenPage=this.selectdata.length==this.pageSize?this.currenPage-1:this.currenPage;
                                 this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
+                            }
+                            else {
+                                this.$Message.error('删除失败');
                             }
                         }).catch(function (error) {
                             console.log(error);

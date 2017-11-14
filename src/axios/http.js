@@ -78,8 +78,8 @@ export const batchDelUsers=params=>{
 
 
 //获取项目信息
-export const getProjects=ids=>{
-  return axios.get("/projects/"+ids);
+export const getProjects=(ids,num,size)=>{
+  return axios.get("/projects/"+ids+"?num="+num+"&size="+size);
 };
 //批量删除项目信息
 export const batchDelProjects=params=>{
