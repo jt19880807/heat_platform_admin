@@ -75,8 +75,6 @@ export const batchDelUsers=params=>{
     return axios.post("/users-del",params);
 };
 
-
-
 //获取项目信息
 export const getProjects=(ids,num,size,keywords)=>{
   return axios.get("/projects/"+ids+"?num="+num+"&size="+size+"&keywords="+keywords);

@@ -33,9 +33,14 @@
                         <Input v-model="formValidate.name"/>
                     </FormItem>
                 </Row>
+                <!--<Row>-->
+                    <!--<FormItem label="所属地区" prop="district">-->
+                        <!--<Input v-model="formValidate.district" />-->
+                    <!--</FormItem>-->
+                <!--</Row>-->
                 <Row>
-                    <FormItem label="所属地区" prop="district">
-                        <Input v-model="formValidate.district" />
+                    <FormItem label="所属地区" prop="value1">
+                        <Cascader :data="citys" v-model="formValidate.value1" @on-change="citychange"></Cascader>{{citytext}}
                     </FormItem>
                 </Row>
                 <Row>
@@ -49,6 +54,7 @@
 </template>
 <script>
     import {getAreas,batchDelAreas,insertArea,updateArea} from '../../axios/http';
+    import {citys} from '../../static/js/citydata';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -77,11 +83,16 @@
                 formValidate: {
                     name: '',
                     district:'',
-                    address:''
+                    address:'',
+                    value1:[],
                 },
                 ruleValidate: {
                     name: [
                         { required: true, message: '请输入小区名称', trigger: 'blur' }
+                    ],
+                    value1: [
+                        { required: true,type: 'array', message: '请选择所属小区', trigger: 'change' },
+//                        { type: 'array', max: 2, message: 'Choose two hobbies at best', trigger: 'change' }
                     ],
                 },
                 showCurrentTableData: false,
@@ -90,7 +101,9 @@
                 currenPage:1,//当前页码
                 pageSize:6,//每页数据量
                 total:0,//数据总量
-                keyWords:""//搜索关键词
+                keyWords:"",//搜索关键词
+                citys:[],
+                citytext:"",
             }
         },
         methods: {
@@ -195,10 +208,17 @@
                 this.showCurrentTableData=true;
                 this.isadd=true;
                 this.modalTitle="添加小区信息";
-            }
+            },
+            citychange(value,selectedData ){
+                console.log(value);
+                console.log(selectedData);
+                this.formValidate.district=selectedData[0].label+"/"+selectedData[1].label;
+            },
 
         },
         created(){
+            this.citys=citys;
+            //console.log(this.citys);
             this.initdata();
         }
 
