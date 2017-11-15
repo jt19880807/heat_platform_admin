@@ -94,6 +94,7 @@
                         //将用户名保存到Cookie中
                         Cookies.set('username',this.form.userName,{expires: 1});
                         Cookies.set('projects',response.data.result[0].projects,{expires: 1});
+                        Cookies.set('userid',response.data.result[0].id,{expires: 1});
                         this.$router.push({
                             name: 'home_index'
                         });

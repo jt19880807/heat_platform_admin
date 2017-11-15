@@ -15,7 +15,7 @@
         <Row style="margin: 10px">
             <Col span="8">
                 <Button type="primary" @click="add" icon="plus">新增</Button>
-                <Button type="primary" @click="editProject" icon="edit" v-bind:disabled="selectdata.length!==1">编辑</Button>
+                <Button type="primary" @click="editArea" icon="edit" v-bind:disabled="selectdata.length!==1">编辑</Button>
                 <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
@@ -29,55 +29,9 @@
             </div>
             <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
                 <Row>
-                    <FormItem label="项目名称" prop="name">
+                    <FormItem label="小区名称" prop="name">
                         <Input v-model="formValidate.name"/>
                     </FormItem>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="负责人" prop="principal">
-                            <Input v-model="formValidate.principal" />
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="联系人" prop="contact">
-                            <Input v-model="formValidate.contact" />
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                    <FormItem label="建设单位" prop="party_a">
-                        <Input v-model="formValidate.party_a" />
-                    </FormItem>
-                    </Col>
-                    <Col span="12">
-                    <FormItem label="施工单位" prop="construction_unit">
-                        <Input v-model="formValidate.construction_unit" />
-                    </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="监理单位" prop="supervisor_unit">
-                            <Input v-model="formValidate.supervisor_unit" />
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="设计单位" prop="design_unit">
-                            <Input v-model="formValidate.design_unit" />
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="使用单位" prop="use_unit">
-                            <Input v-model="formValidate.use_unit" />
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-
-                    </Col>
                 </Row>
                 <Row>
                     <FormItem label="所属地区" prop="district">
@@ -94,9 +48,8 @@
     </div>
 </template>
 <script>
-    import {getProjects,batchDelProjects,insertProject,updateProject} from '../../axios/http';
+    import {getAreas,batchDelAreas,insertArea,updateArea} from '../../axios/http';
     import Cookies from 'js-cookie';
-    import qs from 'qs';
     export default {
         data () {
             return {
@@ -107,37 +60,10 @@
                         align: 'center'
                     },
                     {
-                        title: '项目名',
+                        title: '小区名',
                         key: 'name'
                     },
                     {
-                        title: '负责人',
-                        key: 'principal'
-                    },
-                    {
-                        title: '联系人',
-                        key: 'contact'
-                    },
-                    {
-                        title: '建设单位',
-                        key: 'party_a'
-                    },
-                    {
-                        title: '施工单位',
-                        key: 'construction_unit'
-                    },
-                    {
-                        title: '监理单位',
-                        key: 'supervisor_unit'
-                    },
-                    {
-                        title: '设计单位',
-                        key: 'design_unit'
-                    },
-                    {
-                        title: '使用单位',
-                        key: 'use_unit'
-                    },  {
                         title: '所属地区',
                         key: 'district'
                     },
@@ -150,19 +76,12 @@
                 selectdata:[],
                 formValidate: {
                     name: '',
-                    principal:'',
-                    contact:'',
-                    party_a:'',
-                    construction_unit:'',
-                    supervisor_unit:'',
-                    design_unit:'',
-                    use_unit:'',
                     district:'',
                     address:''
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '请输入项目名称', trigger: 'blur' }
+                        { required: true, message: '请输入小区名称', trigger: 'blur' }
                     ],
                 },
                 showCurrentTableData: false,
@@ -177,7 +96,7 @@
         methods: {
             //加载数据
             initdata(){
-                getProjects(Cookies.get('projects'),this.currenPage,this.pageSize,this.keyWords).then((response)=>{
+                getAreas(this.currenPage,this.pageSize,this.keyWords).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
                 }).catch(function (error) {
@@ -185,13 +104,10 @@
                 });
             },
             pageChange(page){
-                // 页码发生改变的时候调用
-                //alert(page);
                 this.currenPage=page;
                 this.initdata();
             },
             onDataSelect(selection){
-                //console.log(selection.length);
                 this.selectdata=selection;
             },
             //批量删除
@@ -201,19 +117,9 @@
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
                         this.total=this.total-this.selectdata.length;
-                        batchDelProjects(this.selectdata).then((response)=>{
+                        batchDelAreas(this.selectdata).then((response)=>{
                             if (response.data.result===this.selectdata.length){
-//                                for (var i=0;i<this.selectdata.length;i++){
-//                                    for (var j=0;j<this.data.length;j++){
-//                                        if (this.data[j].id==this.selectdata[i].id){
-//                                            console.log(j);
-//                                            this.data.splice(j,1);
-//                                            break;
-//                                        }
-//                                    }
-//                                }
                                 this.initdata();
-                                //this.currenPage=this.selectdata.length==this.pageSize?this.currenPage-1:this.currenPage;
                                 this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
@@ -230,23 +136,16 @@
                 });
             },
             //保存数据（新增或者修改）
-            saveProject(){
+            saveArea(){
                 var param={
                     name: this.formValidate.name,
-                    principal:this.formValidate.principal,
-                    contact:this.formValidate.contact,
-                    party_a:this.formValidate.party_a,
-                    construction_unit:this.formValidate.construction_unit,
-                    supervisor_unit:this.formValidate.supervisor_unit,
-                    design_unit:this.formValidate.design_unit,
-                    use_unit:this.formValidate.use_unit,
-                    district:this.formValidate.district,
-                    address:this.formValidate.address,
                     create_by: Cookies.get('userid'),
                     update_by: Cookies.get('userid'),
+                    district:this.formValidate.district,
+                    address:this.formValidate.address
                 };
                 if(this.isadd){
-                    insertProject(param).then((response)=>{
+                    insertArea(param).then((response)=>{
                         if(response.data.result===1){
                             this.initdata();
                             this.$refs['formValidate'].resetFields();
@@ -256,10 +155,7 @@
                             console.log(error);
                     });
                 }else {
-//                    let param = new URLSearchParams();
-//                    param.append("username", this.formValidate.name);
-//                    param.append("password", this.formValidate.principal);
-                    updateProject(this.selectdata[0].id,param).then((response)=>{
+                    updateArea(this.selectdata[0].id,param).then((response)=>{
                         if(response.data.result===1){
                             this.initdata();
                             this.$refs['formValidate'].resetFields();//清楚Fields
@@ -275,7 +171,7 @@
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
-                        this.saveProject();
+                        this.saveArea();
 //                        this.showCurrentTableData=false;
                        // this.$Message.success('Success!');
                     } else {
@@ -287,25 +183,18 @@
             cancel(){
                 this.$refs['formValidate'].resetFields();
             },
-            editProject(){
+            editArea(){
                 this.formValidate.name=this.selectdata[0].name;
-                this.formValidate.principal=this.selectdata[0].principal;
-                this.formValidate.contact=this.selectdata[0].contact;
-                this.formValidate.party_a=this.selectdata[0].party_a;
-                this.formValidate.construction_unit=this.selectdata[0].construction_unit;
-                this.formValidate.supervisor_unit=this.selectdata[0].supervisor_unit;
-                this.formValidate.design_unit=this.selectdata[0].design_unit;
-                this.formValidate. use_unit=this.selectdata[0].use_unit;
                 this.formValidate.district=this.selectdata[0].district;
-                this.formValidate. address=this.selectdata[0].address;
+                this.formValidate.address=this.selectdata[0].address;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.modalTitle="修改项目信息";
+                this.modaTitle="修改小区信息";
             },
             add(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加项目信息";
+                this.modalTitle="添加小区信息";
             }
 
         },

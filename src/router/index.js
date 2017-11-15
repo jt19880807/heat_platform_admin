@@ -39,17 +39,17 @@ const appRouter = [
                 component: resolve => { require(['../views/kqn/project.vue'], resolve); }
             },
             {
-                path: 'role',
+                path: 'area',
                 icon: 'pound',
-                name: 'role',
-                title: '角色管理',
-                component: resolve => { require(['../views/sys/role.vue'], resolve); }
+                name: 'area',
+                title: '小区管理',
+                component: resolve => { require(['../views/kqn/area.vue'], resolve); }
             },
             {
                 path: 'permission',
                 icon: 'arrow-move',
                 name: 'permission',
-                title: '权限管理',
+                title: '楼栋管理',
                 component: resolve => { require(['../views/sys/permission.vue'], resolve); }
             }
         ]

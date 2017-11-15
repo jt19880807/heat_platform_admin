@@ -85,11 +85,30 @@ export const getProjects=(ids,num,size,keywords)=>{
 export const batchDelProjects=params=>{
   return axios.post("/projects-del",params);
 };
-export const inssetProject=params=>{
+// 插入项目信息
+export const insertProject=params=>{
   return axios.post("/project",params);
 };
+// 修改项目信息
 export const updateProject=(projectId,params)=>{
     return axios.put("/project/"+projectId,params);
+};
+
+//获取小区信息
+export const getAreas=(num,size,keywords)=>{
+    return axios.get("/areas?num="+num+"&size="+size+"&keywords="+keywords);
+};
+//批量删除小区信息
+export const batchDelAreas=params=>{
+    return axios.post("/areas-del",params);
+};
+// 插入小区信息
+export const insertArea=params=>{
+    return axios.post("/area",params);
+};
+// 修改项目信息
+export const updateArea=(areaId,params)=>{
+    return axios.put("/area/"+areaId,params);
 };
 
 
