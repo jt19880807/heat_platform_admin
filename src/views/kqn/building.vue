@@ -14,9 +14,9 @@
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="primary" @click="addArea" icon="plus">新增</Button>
-                <Button type="primary" @click="editArea" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                <Button type="error" @click="deleteArea" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                <Button type="primary" @click="addBuilding" icon="plus">新增</Button>
+                <Button type="primary" @click="editBuilding" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                <Button type="error" @click="deleteBuilding" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
                 <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
@@ -48,7 +48,7 @@
     </div>
 </template>
 <script>
-    import {getAreas,batchDelAreas,insertArea,updateArea} from '../../axios/http';
+    import {getBuildings,batchDelBuildings,insertBuilding,updateBuilding} from '../../axios/http';
     import {citys} from '../../static/js/citydata';
     import {selectCityValue} from '../../utils/index'
     import Cookies from 'js-cookie';
@@ -105,7 +105,7 @@
         methods: {
             //加载数据
             initData(){
-                getAreas(this.currentPage,this.pageSize,this.keyWords).then((response)=>{
+                getBuildings(this.currentPage,this.pageSize,this.keyWords).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
                 }).catch(function (error) {
@@ -120,13 +120,13 @@
                 this.selectData=selection;
             },
             //批量删除
-            deleteArea(){//删除选定数据
+            deleteBuilding(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
                         this.total=this.total-this.selectData.length;
-                        batchDelAreas(this.selectData).then((response)=>{
+                        batchDelBuildings(this.selectData).then((response)=>{
                             if (response.data.result===this.selectData.length){
                                 this.initData();
                                 this.$refs.selection.selectAll(false);//取消全选
@@ -144,7 +144,7 @@
                 });
             },
             //保存数据（新增或者修改）
-            saveArea(){
+            saveBuilding(){
                 var param={
                     name: this.formValidate.name,
                     create_by: Cookies.get('userid'),
@@ -153,7 +153,7 @@
                     address:this.formValidate.address
                 };
                 if(this.isadd){
-                    insertArea(param).then((response)=>{
+                    insertBuilding(param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();
                             this.$refs['formValidate'].resetFields();
@@ -163,7 +163,7 @@
                             console.log(error);
                     });
                 }else {
-                    updateArea(this.selectData[0].id,param).then((response)=>{
+                    updateBuilding(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();
 
@@ -181,7 +181,7 @@
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
-                        this.saveArea();
+                        this.saveBuilding();
                     } else {
                         //this.$Message.error('Fail!');
                     }
@@ -192,19 +192,19 @@
                 this.$refs['formValidate'].resetFields();
                 this.formValidate.cityValue=[];
             },
-            editArea(){
+            editBuilding(){
                 this.formValidate.name=this.selectData[0].name;
                 this.formValidate.district=this.selectData[0].district;
                 this.formValidate.address=this.selectData[0].address;
                 this.showCurrentTableData=true;
                 this.isadd=false;
                 this.formValidate.cityValue=selectCityValue(this.selectData[0].district,this.cityData);
-                this.modaTitle="修改小区信息";
+                this.modaTitle="修改楼栋信息";
             },
-            addArea(){
+            addBuilding(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加小区信息";
+                this.modalTitle="添加楼栋信息";
             },
             cityChange(value,selectedData ){
                 this.formValidate.district=selectedData[0].label+"/"+selectedData[1].label;

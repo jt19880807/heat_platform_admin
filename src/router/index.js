@@ -46,11 +46,41 @@ const appRouter = [
                 component: resolve => { require(['../views/kqn/area.vue'], resolve); }
             },
             {
-                path: 'permission',
-                icon: 'arrow-move',
-                name: 'permission',
+                path: 'building',
+                icon: 'ios-home',
+                name: 'building',
                 title: '楼栋管理',
-                component: resolve => { require(['../views/sys/permission.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/building.vue'], resolve); }
+            },
+            {
+                path: '/device',
+                icon: 'social-buffer',
+                name: 'device',
+                title: '设备管理',
+                component: Main,
+                children: [
+                    {
+                        path: 'project',
+                        icon: 'compose',
+                        name: 'project',
+                        title: '采集器',
+                        component: resolve => { require(['../views/kqn/project.vue'], resolve); }
+                    },
+                    {
+                        path: 'area',
+                        icon: 'pound',
+                        name: 'area',
+                        title: '热量表',
+                        component: resolve => { require(['../views/kqn/area.vue'], resolve); }
+                    },
+                    {
+                        path: 'building',
+                        icon: 'ios-home',
+                        name: 'building',
+                        title: '测温设备',
+                        component: resolve => { require(['../views/kqn/building.vue'], resolve); }
+                    }
+                ]
             }
         ]
     },
