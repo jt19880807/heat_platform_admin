@@ -38,7 +38,7 @@
                                         <DropdownItem name="loginout" divided>退出登录</DropdownItem>
                                     </DropdownMenu>
                                 </Dropdown>
-                                <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                                <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" style="background: #619fe7;margin-left: 10px;"></Avatar>
                             </Row>
                         </div>
                         <div class="message-con">
@@ -108,7 +108,7 @@
                 return this.$store.state.pageOpenedList;  // 打开的页面的页面对象
             },
             avatorPath () {
-                return "../../images/avatar.jpg";
+                return "https://i.loli.net/2017/08/21/599a521472424.jpg";
             }
         },
         methods:{

@@ -90,7 +90,7 @@
                     password:this.form.password,
                 }).then((response)=>{
                     if (response.data.msg=="成功"){
-                        console.log(response.data.result[0].projects);
+                       // console.log(response.data.result[0].projects);
                         //将用户名保存到Cookie中
                         Cookies.set('username',this.form.userName,{expires: 1});
                         Cookies.set('projects',response.data.result[0].projects,{expires: 1});

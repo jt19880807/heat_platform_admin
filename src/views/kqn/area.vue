@@ -7,16 +7,16 @@
             <Col span="8" offset="8" style="text-align: right">
                 <Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />
                 <span  style="margin: 0 10px;">
-                    <Button type="primary" @click="initdata"  icon="search">搜索</Button>
+                    <Button type="primary" @click="initData"  icon="search">搜索</Button>
                 </span>
             </Col>
         </Row>
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="primary" @click="add" icon="plus">新增</Button>
+                <Button type="primary" @click="addArea" icon="plus">新增</Button>
                 <Button type="primary" @click="editArea" icon="edit" v-bind:disabled="selectdata.length!==1">编辑</Button>
-                <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除</Button>
+                <Button type="error" @click="deleteArea" v-bind:disabled="selectdata.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
                 <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
@@ -33,14 +33,9 @@
                         <Input v-model="formValidate.name"/>
                     </FormItem>
                 </Row>
-                <!--<Row>-->
-                    <!--<FormItem label="所属地区" prop="district">-->
-                        <!--<Input v-model="formValidate.district" />-->
-                    <!--</FormItem>-->
-                <!--</Row>-->
                 <Row>
-                    <FormItem label="所属地区" prop="value1">
-                        <Cascader :data="citys" v-model="formValidate.value1" @on-change="citychange"></Cascader>{{citytext}}
+                    <FormItem label="所属地区" prop="cityValue">
+                        <Cascader :data="cityData" v-model="formValidate.cityValue" @on-change="cityChange"></Cascader>
                     </FormItem>
                 </Row>
                 <Row>
@@ -55,6 +50,7 @@
 <script>
     import {getAreas,batchDelAreas,insertArea,updateArea} from '../../axios/http';
     import {citys} from '../../static/js/citydata';
+    import {selectCityValue} from '../../utils/index'
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -84,32 +80,32 @@
                     name: '',
                     district:'',
                     address:'',
-                    value1:[],
+                    cityValue:[],//选中的城市Value
                 },
                 ruleValidate: {
                     name: [
                         { required: true, message: '请输入小区名称', trigger: 'blur' }
                     ],
-                    value1: [
-                        { required: true,type: 'array', message: '请选择所属小区', trigger: 'change' },
+                    cityValue: [
+                        { required: true,type: 'array', message: '请选择所属地区', trigger: 'change' },
 //                        { type: 'array', max: 2, message: 'Choose two hobbies at best', trigger: 'change' }
                     ],
                 },
                 showCurrentTableData: false,
                 modalTitle:"",//弹出层标题
                 isAdd:true,//是否添加
-                currenPage:1,//当前页码
+                currentPage:1,//当前页码
                 pageSize:6,//每页数据量
                 total:0,//数据总量
                 keyWords:"",//搜索关键词
-                citys:[],
-                citytext:"",
+                cityData:[],
+                cityText:"",
             }
         },
         methods: {
             //加载数据
-            initdata(){
-                getAreas(this.currenPage,this.pageSize,this.keyWords).then((response)=>{
+            initData(){
+                getAreas(this.currentPage,this.pageSize,this.keyWords).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
                 }).catch(function (error) {
@@ -117,14 +113,14 @@
                 });
             },
             pageChange(page){
-                this.currenPage=page;
-                this.initdata();
+                this.currentPage=page;
+                this.initData();
             },
             onDataSelect(selection){
                 this.selectdata=selection;
             },
             //批量删除
-            deletedata(){//删除选定数据
+            deleteArea(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
@@ -132,7 +128,7 @@
                         this.total=this.total-this.selectdata.length;
                         batchDelAreas(this.selectdata).then((response)=>{
                             if (response.data.result===this.selectdata.length){
-                                this.initdata();
+                                this.initData();
                                 this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
@@ -142,7 +138,6 @@
                         }).catch(function (error) {
                             console.log(error);
                         });
-
                     },
                     onCancel: () => {
                     }
@@ -160,7 +155,7 @@
                 if(this.isadd){
                     insertArea(param).then((response)=>{
                         if(response.data.result===1){
-                            this.initdata();
+                            this.initData();
                             this.$refs['formValidate'].resetFields();
                             this.showCurrentTableData=false;
                         }
@@ -170,8 +165,10 @@
                 }else {
                     updateArea(this.selectdata[0].id,param).then((response)=>{
                         if(response.data.result===1){
-                            this.initdata();
+                            this.initData();
+
                             this.$refs['formValidate'].resetFields();//清楚Fields
+                            this.formValidate.cityValue=[];
                             this.$refs.selection.selectAll(false);//取消全选
                             this.showCurrentTableData=false;//关闭Modal
                         }
@@ -185,8 +182,6 @@
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
                         this.saveArea();
-//                        this.showCurrentTableData=false;
-                       // this.$Message.success('Success!');
                     } else {
                         //this.$Message.error('Fail!');
                     }
@@ -195,6 +190,7 @@
             },
             cancel(){
                 this.$refs['formValidate'].resetFields();
+                this.formValidate.cityValue=[];
             },
             editArea(){
                 this.formValidate.name=this.selectdata[0].name;
@@ -202,24 +198,22 @@
                 this.formValidate.address=this.selectdata[0].address;
                 this.showCurrentTableData=true;
                 this.isadd=false;
+                this.formValidate.cityValue=selectCityValue(this.selectdata[0].district,this.cityData);
                 this.modaTitle="修改小区信息";
             },
-            add(){
+            addArea(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
                 this.modalTitle="添加小区信息";
             },
-            citychange(value,selectedData ){
-                console.log(value);
-                console.log(selectedData);
+            cityChange(value,selectedData ){
                 this.formValidate.district=selectedData[0].label+"/"+selectedData[1].label;
             },
 
         },
         created(){
-            this.citys=citys;
-            //console.log(this.citys);
-            this.initdata();
+            this.cityData=citys;
+            this.initData();
         }
 
     }
