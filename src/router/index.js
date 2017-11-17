@@ -52,35 +52,36 @@ const appRouter = [
                 title: '楼栋管理',
                 component: resolve => { require(['../views/kqn/building.vue'], resolve); }
             },
+
+        ]
+    },
+    {
+        path: '/devicemanage',
+        icon: 'social-buffer',
+        name: 'devicemanage',
+        title: '设备管理',
+        component: Main,
+        children: [
             {
-                path: '/device',
-                icon: 'social-buffer',
-                name: 'device',
-                title: '设备管理',
-                component: Main,
-                children: [
-                    {
-                        path: 'project',
-                        icon: 'compose',
-                        name: 'project',
-                        title: '采集器',
-                        component: resolve => { require(['../views/kqn/project.vue'], resolve); }
-                    },
-                    {
-                        path: 'area',
-                        icon: 'pound',
-                        name: 'area',
-                        title: '热量表',
-                        component: resolve => { require(['../views/kqn/area.vue'], resolve); }
-                    },
-                    {
-                        path: 'building',
-                        icon: 'ios-home',
-                        name: 'building',
-                        title: '测温设备',
-                        component: resolve => { require(['../views/kqn/building.vue'], resolve); }
-                    }
-                ]
+                path: 'collector',
+                icon: 'compose',
+                name: 'collector',
+                title: '采集器',
+                component: resolve => { require(['../views/kqn/project.vue'], resolve); }
+            },
+            {
+                path: 'buildingmeter',
+                icon: 'pound',
+                name: 'buildingmeter',
+                title: '热量表',
+                component: resolve => { require(['../views/kqn/area.vue'], resolve); }
+            },
+            {
+                path: 'tempmeter',
+                icon: 'ios-home',
+                name: 'tempmeter',
+                title: '测温设备',
+                component: resolve => { require(['../views/kqn/building.vue'], resolve); }
             }
         ]
     },

@@ -1,14 +1,21 @@
 <template>
     <div>
         <Row style="margin: 10px">
-            <Col span="8">
-
+            <Col span="12">
+                <span>项目&nbsp;&nbsp;</span>
+                <Select v-model="formValidate.area_id" filterable style="width:200px">
+                    <Option v-for="item in protectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                </Select>
+                <span>小区&nbsp;&nbsp;</span>
+                <Select v-model="formValidate.area_id" filterable style="width:200px">
+                    <Option v-for="item in protectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                </Select>
             </Col>
-            <Col span="8" offset="8" style="text-align: right">
-                <Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />
-                <span  style="margin: 0 10px;">
-                    <Button type="primary" @click="initData"  icon="search">搜索</Button>
-                </span>
+            <Col span="12" offset="8" style="text-align: right">
+                <!--<Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />-->
+                <!--<span  style="margin: 0 10px;">-->
+                    <!--<Button type="primary" @click="initData"  icon="search">搜索</Button>-->
+                <!--</span>-->
             </Col>
         </Row>
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
@@ -29,19 +36,57 @@
             </div>
             <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
                 <Row>
-                    <FormItem label="小区名称" prop="name">
+                    <FormItem label="项目" prop="area_id">
+                        <Select v-model="formValidate.area_id" filterable>
+                            <Option v-for="item in protectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                        </Select>
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label="小区" prop="area_id">
+                        <Select v-model="formValidate.area_id" filterable>
+                            <Option v-for="item in areaList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                        </Select>
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label="编号" prop="name">
                         <Input v-model="formValidate.name"/>
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label="所属地区" prop="cityValue">
-                        <Cascader :data="cityData" v-model="formValidate.cityValue" @on-change="cityChange"></Cascader>
-                    </FormItem>
+                    <Col span="12">
+                        <FormItem label="建筑高度" prop="building_height">
+                            <Input v-model="formValidate.building_height"/>
+
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="建筑类型" prop="building_type">
+                            <Input v-model="formValidate.building_type"/>
+                        </FormItem>
+                    </Col>
                 </Row>
                 <Row>
-                    <FormItem label="详细地址" prop="address">
-                        <Input v-model="formValidate.address" />
+                    <Col span="12">
+                    <FormItem label="建筑年限" prop="building_years">
+                        <Input v-model="formValidate.building_years"/>
                     </FormItem>
+                    </Col>
+                    <Col span="12">
+                    <FormItem label="制热面积" prop="heating_area">
+                        <Input v-model="formValidate.heating_area"/>
+                    </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                    <FormItem label="户数" prop="house_count">
+                        <Input v-model="formValidate.house_count"/>
+                    </FormItem>
+                    </Col>
+                    <Col span="12">
+                    </Col>
                 </Row>
             </Form>
         </Modal>
@@ -49,8 +94,7 @@
 </template>
 <script>
     import {getBuildings,batchDelBuildings,insertBuilding,updateBuilding} from '../../axios/http';
-    import {citys} from '../../static/js/citydata';
-    import {selectCityValue} from '../../utils/index'
+    import {getProjectsList} from '../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -62,33 +106,53 @@
                         align: 'center'
                     },
                     {
-                        title: '小区名',
+                        title: '项目',
+                        key: 'project.name'
+                    },{
+                        title: '小区',
+                        key: 'area.name'
+                    },
+                    {
+                        title: '编号',
                         key: 'name'
-                    },
-                    {
-                        title: '所属地区',
-                        key: 'district'
-                    },
-                    {
-                        title: '详细地址',
-                        key: 'address'
+                    },{
+                        title: '建筑高度',
+                        key: 'building_height'
+                    },{
+                        title: '建筑类型',
+                        key: 'building_type'
+                    },{
+                        title: '建筑年限',
+                        key: 'building_years'
+                    },{
+                        title: '制热面积',
+                        key: 'heating_area'
+                    },{
+                        title: '户数',
+                        key: 'house_count'
                     }
                 ],
                 data: [],
                 selectData:[],
                 formValidate: {
                     name: '',
-                    district:'',
-                    address:'',
-                    cityValue:[],//选中的城市Value
+                    building_years: '',
+                    building_height: '',
+                    house_count: '',
+                    heating_area: '',
+                    building_type: '',
+                    protect_id:'',//选定的项目
+                    area_id:'',//选定的小区
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '请输入小区名称', trigger: 'blur' }
+                        { required: true, message: '请输入楼栋编号', trigger: 'blur' }
                     ],
-                    cityValue: [
-                        { required: true,type: 'array', message: '请选择所属地区', trigger: 'change' },
-//                        { type: 'array', max: 2, message: 'Choose two hobbies at best', trigger: 'change' }
+                    protect_id: [
+                        { required: true, message: '请选择项目', trigger: 'change' },
+                    ],
+                    area_id: [
+                        { required: true, message: '请选择小区', trigger: 'change' },
                     ],
                 },
                 showCurrentTableData: false,
@@ -97,17 +161,27 @@
                 currentPage:1,//当前页码
                 pageSize:6,//每页数据量
                 total:0,//数据总量
-                keyWords:"",//搜索关键词
-                cityData:[],
-                cityText:"",
+                protectList:[],//项目列表
+                areaList:[],//小区列表
+
             }
         },
         methods: {
             //加载数据
-            initData(){
-                getBuildings(this.currentPage,this.pageSize,this.keyWords).then((response)=>{
+            initBuilding(){
+                getBuildings(Cookies.get('buildings'),this.currentPage,this.pageSize).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            //加载数据
+            initProject(){
+                getProjectsList(Cookies.get('projects')).then((response)=>{
+
+                    this.protectList=response.data.result;
+                    console.log(this.protectList);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -194,11 +268,15 @@
             },
             editBuilding(){
                 this.formValidate.name=this.selectData[0].name;
-                this.formValidate.district=this.selectData[0].district;
-                this.formValidate.address=this.selectData[0].address;
+                this.formValidate.building_years=this.selectData[0].building_years;
+                this.formValidate.building_height=this.selectData[0].building_height;
+                this.formValidate.house_count=this.selectData[0].house_count;
+                this.formValidate.heating_area=this.selectData[0].heating_area;
+                this.formValidate.building_type=this.selectData[0].building_type;
+                this.formValidate.protect_id=this.selectData[0].protect_id;
+                this.formValidate.area_id=this.selectData[0].area_id;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.formValidate.cityValue=selectCityValue(this.selectData[0].district,this.cityData);
                 this.modaTitle="修改楼栋信息";
             },
             addBuilding(){
@@ -206,14 +284,11 @@
                 this.isadd=true;
                 this.modalTitle="添加楼栋信息";
             },
-            cityChange(value,selectedData ){
-                this.formValidate.district=selectedData[0].label+"/"+selectedData[1].label;
-            },
 
         },
         created(){
-            this.cityData=citys;
-            this.initData();
+            this.initProject();
+            this.initBuilding();
         }
 
     }
