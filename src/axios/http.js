@@ -100,6 +100,10 @@ export const updateProject=(projectId,params)=>{
 export const getAreas=(num,size,keywords)=>{
     return axios.get("/areas?num="+num+"&size="+size+"&keywords="+keywords);
 };
+//获取指定ID或者全部小区信息，用于下拉框，只返回ID和name
+export const getAreaWithIDAndName=(projectids)=>{
+    return axios.get("/selectAreaWithIDAndName/"+projectids);
+};
 //批量删除小区信息
 export const batchDelAreas=params=>{
     return axios.post("/areas-del",params);
@@ -114,8 +118,8 @@ export const updateArea=(areaId,params)=>{
 };
 
 //获取楼栋信息
-export const getBuildings=(ids,num,size)=>{
-    return axios.get("/buildings/"+ids+"?num="+num+"&size="+size);
+export const getBuildings=(projectIds,areaId,num,size)=>{
+    return axios.get("/buildings/"+projectIds+"?areaId="+areaId+"&num="+num+"&size="+size);
 };
 //批量删除楼栋信息
 export const batchDelBuildings=params=>{

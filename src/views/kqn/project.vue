@@ -22,9 +22,9 @@
                 <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
             </Col>
         </Row>
-        <Modal v-bind:title="modalTitle" v-model="showCurrentTableData">
+        <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData">
             <div slot="footer">
-                <Button type="text" size="large" @click="cancel">重置</Button>
+                <Button type="error" size="large" @click="closeModal">关闭</Button>
                 <Button type="primary" size="large" @click="ok">保存</Button>
             </div>
             <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
@@ -248,8 +248,7 @@
                     insertProject(param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();
-                            this.$refs['formValidate'].resetFields();
-                            this.showCurrentTableData=false;
+                            this.closeModal();
                         }
                         }).catch(function (error) {
                             console.log(error);
@@ -258,10 +257,8 @@
                     updateProject(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();
-                            this.$refs['formValidate'].resetFields();//清楚Fields
-                            this.formValidate.cityValue=[];
                             this.$refs.selection.selectAll(false);//取消全选
-                            this.showCurrentTableData=false;//关闭Modal
+                            this.closeModal();
                         }
                     }).catch(function (error) {
                         console.log(error);
@@ -279,9 +276,10 @@
                 });
 
             },
-            cancel(){
+            closeModal(){
                 this.$refs['formValidate'].resetFields();
                 this.formValidate.cityValue=[];
+                this.showCurrentTableData=false;
             },
             editProject(){
                 this.formValidate.name=this.selectData[0].name;
