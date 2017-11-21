@@ -67,7 +67,7 @@ const appRouter = [
                 icon: 'compose',
                 name: 'collector',
                 title: '采集器',
-                component: resolve => { require(['../views/kqn/project.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/collector.vue'], resolve); }
             },
             {
                 path: 'buildingmeter',

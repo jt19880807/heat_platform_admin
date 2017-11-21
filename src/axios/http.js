@@ -79,6 +79,10 @@ export const batchDelUsers=params=>{
 export const getProjects=(ids,num,size,keywords)=>{
   return axios.get("/projects/"+ids+"?num="+num+"&size="+size+"&keywords="+keywords);
 };
+//分页获取指定ID或者全部的带搜索关键字的项目信息
+export const getProjectTree=(ids)=>{
+    return axios.get("/projectree/"+ids);
+};
 //获取指定ID或者全部项目信息，用于下拉框，只返回ID和name
 export const getProjectsList=(ids)=>{
   return axios.get("/projects-list/"+ids);
@@ -121,6 +125,10 @@ export const updateArea=(areaId,params)=>{
 export const getBuildings=(projectIds,areaId,num,size)=>{
     return axios.get("/buildings/"+projectIds+"?areaId="+areaId+"&num="+num+"&size="+size);
 };
+//根据项目ID获取项目下的楼栋信息，格式为xxx小区xx栋楼
+export const getBuildingWithIDAndAreaName=projectId=>{
+    return axios.get("/buildingWithIDAndAreaName/"+projectId);
+};
 //批量删除楼栋信息
 export const batchDelBuildings=params=>{
     return axios.post("/buildings-del",params);
@@ -132,6 +140,23 @@ export const insertBuilding=params=>{
 // 修改楼栋信息
 export const updateBuilding=(buildingId,params)=>{
     return axios.put("/building/"+buildingId,params);
+};
+
+//获取采集器信息
+export const getCollectors=(projectIds,areaId,num,size)=>{
+    return axios.get("/collectors/"+projectIds+"?areaId="+areaId+"&num="+num+"&size="+size);
+};
+//批量删除采集器信息
+export const batchDelCollectors=params=>{
+    return axios.post("/collectors-del",params);
+};
+// 插入采集器信息
+export const insertCollector=params=>{
+    return axios.post("/collector",params);
+};
+// 修改采集器信息
+export const updateCollector=(buildingId,params)=>{
+    return axios.put("/collector/"+buildingId,params);
 };
 
 
