@@ -14,14 +14,28 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        采集器列表
+                        热量表列表
                     </p>
+                    <Row style="margin: 10px">
+                        <Col span="12">
+                        <span>采集器&nbsp;&nbsp;</span>
+                        <Select v-model="filter_collector_id" filterable @on-change="projectChange" style="width:200px">
+                            <Option :value="0" >全部</Option>
+                            <Option v-for="item in projectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                        </Select>
+                        <Col span="12" offset="8" style="text-align: right">
+                        <!--<Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />-->
+                        <!--<span  style="margin: 0 10px;">-->
+                        <!--<Button type="primary" @click="initData"  icon="search">搜索</Button>-->
+                        <!--</span>-->
+                        </Col>
+                    </Row>
                     <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
                     <Row style="margin: 10px">
                         <Col span="8">
-                            <Button type="primary" @click="addCollector" icon="plus">新增</Button>
-                            <Button type="primary" @click="editCollector" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                            <Button type="error" @click="deleteCollector" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                            <Button type="primary" @click="addMeter" icon="plus">新增</Button>
+                            <Button type="primary" @click="editMeter" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                            <Button type="error" @click="deleteMeter" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="8" offset="8" style="text-align: right">
                             <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
@@ -56,13 +70,12 @@
                         <Input v-model="formValidate.number"/>
                     </FormItem>
                 </Row>
-
             </Form>
         </Modal>
     </div>
 </template>
 <script>
-    import {getCollectors,batchDelCollectors,insertCollector,updateCollector,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList} from '../../axios/http';
+    import {getMeters,batchDelMeters,insertMeter,updateMeter,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList} from '../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -109,7 +122,7 @@
                 },
                 ruleValidate: {
                     number: [
-                        { required: true, message: '请输入采集器编号', trigger: 'blur' }
+                        { required: true, message: '请输入热量表编号', trigger: 'blur' }
                     ],
                     building_id: [
                         { type: 'number',required: true, message: '请选择楼栋', trigger: 'change' },
@@ -126,14 +139,15 @@
                 tree_area_id:0,//筛选过滤的
                 tree_project_id:0,//筛选过滤的
                 tree_building_id:0,
-                defaultProjectId:0//默认加载第一个项目
+                defaultProjectId:0,//默认加载第一个项目
+                filter_collector_id:0
 
             }
         },
         methods: {
             //加载数据
-            initCollector(projectId,areaId,buildingId){
-                getCollectors(projectId,areaId,buildingId,this.currentPage,this.pageSize).then((response)=>{
+            initMeter(projectId,areaId,buildingId){
+                getMeters(projectId,areaId,buildingId,this.currentPage,this.pageSize).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
                 }).catch(function (error) {
@@ -160,7 +174,7 @@
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
-                    this.initCollector(this.defaultProjectId, 0, 0);
+                    this.initMeter(this.defaultProjectId, 0, 0);
                     //console.log(JSON.stringify(this.treeData));
                 }).catch(function (error) {
                     console.log(error);
@@ -168,21 +182,21 @@
             },
             pageChange(page){
                 this.currentPage=page;
-                this.initCollector(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+                this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
             },
             onDataSelect(selection){
                 this.selectData=selection;
             },
             //批量删除
-            deleteCollector(){//删除选定数据
+            deleteMeter(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
                         this.total=this.total-this.selectData.length;
-                        batchDelCollectors(this.selectData).then((response)=>{
+                        batchDelMeters(this.selectData).then((response)=>{
                             if (response.data.result===this.selectData.length){
-                                this.initCollector(this.defaultProjectId, 0, 0);
+                                this.initMeter(this.defaultProjectId, 0, 0);
                                 this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
@@ -198,7 +212,7 @@
                 });
             },
             //保存数据（新增或者修改）
-            saveCollector(){
+            saveMeter(){
                 var param={
                     building_id:this.formValidate.building_id,
                     number: this.formValidate.number,
@@ -206,18 +220,18 @@
                     update_by: Cookies.get('userid'),
                 };
                 if(this.isadd){
-                    insertCollector(param).then((response)=>{
+                    insertMeter(param).then((response)=>{
                         if(response.data.result===1){
-                            this.initCollector(this.defaultProjectId, 0, 0);
+                            this.initMeter(this.defaultProjectId, 0, 0);
                             this.closeModal();
                         }
                         }).catch(function (error) {
                             console.log(error);
                     });
                 }else {
-                    updateCollector(this.selectData[0].id,param).then((response)=>{
+                    updateMeter(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
-                            this.initCollector(this.defaultProjectId, 0, 0);
+                            this.initMeter(this.defaultProjectId, 0, 0);
                             this.$refs.selection.selectAll(false);//取消全选
                             this.closeModal();
                         }
@@ -230,7 +244,7 @@
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
-                        this.saveCollector();
+                        this.saveMeter();
                     } else {
                         //this.$Message.error('Fail!');
                     }
@@ -241,7 +255,7 @@
                 this.$refs['formValidate'].resetFields();
                 this.showCurrentTableData=false;//关闭Modal
             },
-            editCollector(){
+            editMeter(){
 //                console.log(this.selectData[0]);
 //                console.log(JSON.stringify(this.selectData));
                 this.formValidate.number=this.selectData[0].number;
@@ -249,12 +263,12 @@
                 this.formValidate.building_id=this.selectData[0].building_id;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.modalTitle="修改采集器信息";
+                this.modalTitle="修改热量表信息";
             },
-            addCollector(){
+            addMeter(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加采集器信息";
+                this.modalTitle="添加热量表信息";
             },
             projectChange(option){//项目下拉框发生改变时
                 //alert(Option);
@@ -283,7 +297,7 @@
                             this.tree_building_id = option[0].id;
                             break;
                     }
-                    this.initCollector(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+                    this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
                 }
             },
         },

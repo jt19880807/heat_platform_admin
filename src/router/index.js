@@ -74,7 +74,7 @@ const appRouter = [
                 icon: 'pound',
                 name: 'buildingmeter',
                 title: '热量表',
-                component: resolve => { require(['../views/kqn/area.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/buildingMeter.vue'], resolve); }
             },
             {
                 path: 'tempmeter',
