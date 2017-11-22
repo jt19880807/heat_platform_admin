@@ -19,10 +19,11 @@
                     <Row style="margin: 10px">
                         <Col span="12">
                         <span>采集器&nbsp;&nbsp;</span>
-                        <Select v-model="filter_collector_id" filterable @on-change="projectChange" style="width:200px">
-                            <Option :value="0" >全部</Option>
-                            <Option v-for="item in projectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
-                        </Select>
+                            <Select v-model="filter_collector_id" filterable @on-change="projectChange" style="width:200px">
+                                <Option :value="0" >全部</Option>
+                                <Option v-for="item in projectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                            </Select>
+                        </Col>
                         <Col span="12" offset="8" style="text-align: right">
                         <!--<Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />-->
                         <!--<span  style="margin: 0 10px;">-->
