@@ -14,7 +14,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        热量表列表
+                        电表列表
                     </p>
                     <Row style="margin: 10px">
                         <Col span="12">
@@ -159,7 +159,7 @@
                 },
                 ruleValidate: {
                     number: [
-                        { required: true, message: '请输入热量表编号', trigger: 'blur' }
+                        { required: true, message: '请输入电表编号', trigger: 'blur' }
                     ],
                     collector_id: [
                         { type: 'number',required: true, message: '请选择采集器', trigger: 'change' },
@@ -180,7 +180,7 @@
                 tree_building_id:0,
                 defaultProjectId:0,//默认加载第一个项目
                 filter_collector_id:0,
-                meterType:0,//表计类型
+                meterType:3,//表计类型
 
             }
         },
@@ -326,12 +326,12 @@
                 this.formValidate.model=this.selectData[0].model;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.modalTitle="修改热量表信息";
+                this.modalTitle="修改电表信息";
             },
             addMeter(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加热量表信息";
+                this.modalTitle="添加电表信息";
             },
             projectChange(option){
                 //项目下拉框发生改变时

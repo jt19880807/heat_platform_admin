@@ -14,7 +14,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        热量表列表
+                        测温设备列表
                     </p>
                     <Row style="margin: 10px">
                         <Col span="12">
@@ -127,17 +127,16 @@
                                 h('strong', params.row.collector.number)
                             ]);
                         }
-                    },
-                    {
-                        title: '设备编号',
+                    },{
+                        title: '编号',
                         key: 'number'
                     },
                     {
-                        title: '厂家',
+                        title: '安装位置',
                         key: 'factory'
                     },
                     {
-                        title: '型号',
+                        title: '门牌号',
                         key: 'model'
                     },
 
@@ -159,7 +158,7 @@
                 },
                 ruleValidate: {
                     number: [
-                        { required: true, message: '请输入热量表编号', trigger: 'blur' }
+                        { required: true, message: '请输入测温设备编号', trigger: 'blur' }
                     ],
                     collector_id: [
                         { type: 'number',required: true, message: '请选择采集器', trigger: 'change' },
@@ -180,7 +179,7 @@
                 tree_building_id:0,
                 defaultProjectId:0,//默认加载第一个项目
                 filter_collector_id:0,
-                meterType:0,//表计类型
+                meterType:2,//表计类型
 
             }
         },
@@ -326,12 +325,12 @@
                 this.formValidate.model=this.selectData[0].model;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.modalTitle="修改热量表信息";
+                this.modalTitle="修改测温设备信息";
             },
             addMeter(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加热量表信息";
+                this.modalTitle="添加测温设备信息";
             },
             projectChange(option){
                 //项目下拉框发生改变时

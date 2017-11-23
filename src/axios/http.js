@@ -148,7 +148,7 @@ export const getCollectors=(projectId,areaId,buildingId,num,size)=>{
 };
 //根据项目ID或者小区ID或者楼栋ID查找下面的采集器,仅返回ID和Number
 export const getCollectorWithIDAndNumber=(projectId,areaId,buildingId)=>{
-    return axios.get("/collectorsWithIDAndNumber?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&num="+num+"&size="+size);
+    return axios.get("/collectorsWithIDAndNumber?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId);
 };
 //批量删除采集器信息
 export const batchDelCollectors=params=>{
@@ -164,24 +164,24 @@ export const updateCollector=(buildingId,params)=>{
 };
 
 //获取表计信息
-export const getMeters=(projectId,areaId,buildingId,num,size)=>{
-    return axios.get("/collectors?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&num="+num+"&size="+size);
+export const getMeters=(projectId,areaId,buildingId,collectorId,meterType,num,size)=>{
+    return axios.get("/meters?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&collectorId="+collectorId+"&meterType="+meterType+"&num="+num+"&size="+size);
 };
 //根据项目ID或者小区ID或者楼栋ID查找下面的表计,仅返回ID和Number
-export const getMeterWithIDAndNumber=(projectId,areaId,buildingId)=>{
-    return axios.get("/collectorsWithIDAndNumber?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&num="+num+"&size="+size);
-};
+// export const getMeterWithIDAndNumber=(projectId,areaId,buildingId)=>{
+//     return axios.get("/metersWithIDAndNumber?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&num="+num+"&size="+size);
+// };
 //批量删除表计信息
 export const batchDelMeters=params=>{
-    return axios.post("/collectors-del",params);
+    return axios.post("/meters-del",params);
 };
 // 插入表计信息
 export const insertMeter=params=>{
-    return axios.post("/collector",params);
+    return axios.post("/meter",params);
 };
 // 修改表计信息
-export const updateMeter=(buildingId,params)=>{
-    return axios.put("/collector/"+buildingId,params);
+export const updateMeter=(meterId,params)=>{
+    return axios.put("/meter/"+meterId,params);
 };
 
 
