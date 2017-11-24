@@ -189,9 +189,6 @@ const appRouter = [
             }
         ]
     },
-
-
-
 ];
 
 const routers = [
