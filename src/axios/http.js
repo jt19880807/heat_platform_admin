@@ -167,10 +167,6 @@ export const updateCollector=(buildingId,params)=>{
 export const getMeters=(projectId,areaId,buildingId,collectorId,meterType,num,size)=>{
     return axios.get("/meters?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&collectorId="+collectorId+"&meterType="+meterType+"&num="+num+"&size="+size);
 };
-//根据项目ID或者小区ID或者楼栋ID查找下面的表计,仅返回ID和Number
-// export const getMeterWithIDAndNumber=(projectId,areaId,buildingId)=>{
-//     return axios.get("/metersWithIDAndNumber?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&num="+num+"&size="+size);
-// };
 //批量删除表计信息
 export const batchDelMeters=params=>{
     return axios.post("/meters-del",params);
@@ -182,6 +178,23 @@ export const insertMeter=params=>{
 // 修改表计信息
 export const updateMeter=(meterId,params)=>{
     return axios.put("/meter/"+meterId,params);
+};
+
+//获取热量信息
+export const getHeatMeterReadings=(projectId,areaId,buildingId,meterId,startDate,endDate,num,size)=>{
+    return axios.get("/heatMeterReadings?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+};
+//批量删除热量信息
+export const batchDelHeatMeterReadings=params=>{
+    return axios.post("/heatMeterReadings-del",params);
+};
+// 插入热量信息
+export const insertHeatMeterReading=params=>{
+    return axios.post("/heatMeterReading",params);
+};
+// 修改热量信息
+export const updateHeatMeterReading=(meterId,params)=>{
+    return axios.put("/heatMeterReading/"+meterId,params);
 };
 
 

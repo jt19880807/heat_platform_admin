@@ -67,28 +67,28 @@ const appRouter = [
                 icon: 'compose',
                 name: 'collector',
                 title: '采集器',
-                component: resolve => { require(['../views/kqn/collector.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/collector.vue'], resolve); }
             },
             {
                 path: 'ammeter',
                 icon: 'pound',
                 name: 'ammeter',
                 title: '电表',
-                component: resolve => { require(['../views/kqn/amMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
             },
             {
                 path: 'buildingmeter',
                 icon: 'pound',
                 name: 'buildingmeter',
                 title: '热量表',
-                component: resolve => { require(['../views/kqn/buildingMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/buildingMeter.vue'], resolve); }
             },
             {
                 path: 'tempmeter',
                 icon: 'ios-home',
                 name: 'tempmeter',
                 title: '测温设备',
-                component: resolve => { require(['../views/kqn/tempMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/tempMeter.vue'], resolve); }
             }
         ]
     },
@@ -100,25 +100,25 @@ const appRouter = [
         component: Main,
         children: [
             {
-                path: 'collector',
+                path: 'heatreading',
                 icon: 'compose',
-                name: 'collector',
+                name: 'heatreading',
                 title: '热量',
-                component: resolve => { require(['../views/kqn/collector.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
             },
             {
                 path: 'ammeter',
                 icon: 'pound',
                 name: 'ammeter',
                 title: '电量',
-                component: resolve => { require(['../views/kqn/amMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
             },
             {
                 path: 'buildingmeter',
                 icon: 'pound',
                 name: 'buildingmeter',
                 title: '温度',
-                component: resolve => { require(['../views/kqn/buildingMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/buildingMeter.vue'], resolve); }
             }
         ]
     },
@@ -134,28 +134,28 @@ const appRouter = [
                 icon: 'compose',
                 name: 'collector',
                 title: '能耗分析',
-                component: resolve => { require(['../views/kqn/collector.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/collector.vue'], resolve); }
             },
             {
                 path: 'ammeter',
                 icon: 'pound',
                 name: 'ammeter',
                 title: '温度分析',
-                component: resolve => { require(['../views/kqn/amMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
             },
             {
                 path: 'buildingmeter',
                 icon: 'pound',
                 name: 'buildingmeter',
                 title: '历史数据',
-                component: resolve => { require(['../views/kqn/buildingMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/buildingMeter.vue'], resolve); }
             },
             {
                 path: 'tempmeter',
                 icon: 'ios-home',
                 name: 'tempmeter',
                 title: '能耗报告',
-                component: resolve => { require(['../views/kqn/tempMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/equipment/tempMeter.vue'], resolve); }
             }
         ]
     },

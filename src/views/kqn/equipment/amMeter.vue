@@ -14,7 +14,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        测温设备列表
+                        电表列表
                     </p>
                     <Row style="margin: 10px">
                         <Col span="12">
@@ -76,17 +76,14 @@
                 </Row>
                 <Row>
                     <Col span="12">
-                    <FormItem label="安装位置" prop="position">
-                        <RadioGroup v-model="formValidate.position" @on-change="doorNumChange">
-                            <Radio label="0">室内</Radio>
-                            <Radio label="1">室外</Radio>
-                        </RadioGroup>
+                    <FormItem label="设备厂家" prop="factory">
+                        <Input v-model="formValidate.factory" />
                     </FormItem>
                     </Col>
                     <Col span="12">
-                        <FormItem label="门牌号" prop="doorNum" v-if="formValidate.position=='0'">
-                            <Input v-model="formValidate.doorNum" />
-                        </FormItem>
+                    <FormItem label="设备型号" prop="model">
+                        <Input v-model="formValidate.model" />
+                    </FormItem>
                     </Col>
                 </Row>
             </Form>
@@ -94,7 +91,7 @@
     </div>
 </template>
 <script>
-    import {getMeters,batchDelMeters,insertMeter,updateMeter,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getCollectorWithIDAndNumber} from '../../axios/http';
+    import {getMeters,batchDelMeters,insertMeter,updateMeter,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getCollectorWithIDAndNumber} from '../../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -130,30 +127,18 @@
                                 h('strong', params.row.collector.number)
                             ]);
                         }
-                    },{
-                        title: '编号',
+                    },
+                    {
+                        title: '设备编号',
                         key: 'number'
                     },
                     {
-                        title: '安装位置',
-                        key: 'position',
-                        render: (h, params) => {
-                            if (params.row.position=="0") {
-                                return h('div', [
-                                    h('p', "室内")
-                                ]);
-                            }
-                            else {
-                                return h('div', [
-                                    h('p', "室外")
-                                ]);
-                            }
-
-                        }
+                        title: '厂家',
+                        key: 'factory'
                     },
                     {
-                        title: '门牌号',
-                        key: 'doorNum'
+                        title: '型号',
+                        key: 'model'
                     },
 
                     {
@@ -169,18 +154,15 @@
                     project_id:'',//选定的项目
                     building_id:'',//选定的楼栋
                     collector_id:'',//选定的采集器
-                    position:'0',//安装位置 0:室内 1:室外
-                    doorNum:''//门牌号
+                    factory:'',//厂家
+                    model:''//型号
                 },
                 ruleValidate: {
                     number: [
-                        { required: true, message: '请输入测温设备编号', trigger: 'blur' }
+                        { required: true, message: '请输入电表编号', trigger: 'blur' }
                     ],
                     collector_id: [
                         { type: 'number',required: true, message: '请选择采集器', trigger: 'change' },
-                    ],
-                    doorNum: [
-                        { required: true, message: '请输入门牌号', trigger: 'blur' }
                     ],
                 },
                 showCurrentTableData: false,
@@ -198,7 +180,7 @@
                 tree_building_id:0,
                 defaultProjectId:0,//默认加载第一个项目
                 filter_collector_id:0,
-                meterType:2,//表计类型
+                meterType:3,//表计类型
 
             }
         },
@@ -290,8 +272,9 @@
                     collector_id:this.formValidate.collector_id,
                     meter_type:this.meterType,
                     number: this.formValidate.number,
-                    position:this.formValidate.position,
-                    doorNum:this.formValidate.doorNum,
+                    factory:this.formValidate.factory,
+                    model:this.formValidate.model,
+                    position:"0",
                     create_by: Cookies.get('userid'),
                     update_by: Cookies.get('userid'),
                 };
@@ -339,16 +322,16 @@
                 this.formValidate.project_id=this.selectData[0].collector.building.project_id;
                 this.formValidate.building_id=this.selectData[0].collector.building_id;
                 this.formValidate.collector_id=this.selectData[0].collector.id;
-                this.formValidate.position=this.selectData[0].position;
-                this.formValidate.doorNum=this.selectData[0].doorNum;
+                this.formValidate.factory=this.selectData[0].factory;
+                this.formValidate.model=this.selectData[0].model;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.modalTitle="修改测温设备信息";
+                this.modalTitle="修改电表信息";
             },
             addMeter(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加测温设备信息";
+                this.modalTitle="添加电表信息";
             },
             projectChange(option){
                 //项目下拉框发生改变时
@@ -395,11 +378,6 @@
             collectorChange(option){
               this.filter_collector_id=option;
               this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
-            },
-            doorNumChange(option){
-              if (option==='1'){//安装位置为室外时，门牌号为空
-                  this.formValidate.doorNum="";
-              }
             },
         },
         created(){

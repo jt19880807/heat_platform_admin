@@ -91,7 +91,7 @@
     </div>
 </template>
 <script>
-    import {getMeters,batchDelMeters,insertMeter,updateMeter,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getCollectorWithIDAndNumber} from '../../axios/http';
+    import {getMeters,batchDelMeters,insertMeter,updateMeter,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getCollectorWithIDAndNumber} from '../../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {

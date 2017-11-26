@@ -14,25 +14,14 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        电表列表
+                        采集器列表
                     </p>
-                    <Row style="margin: 10px">
-                        <Col span="12">
-                        <span>采集器&nbsp;&nbsp;</span>
-                            <Select v-model="filter_collector_id" filterable @on-change="collectorChange" style="width:200px">
-                                <Option :value="0" >全部</Option>
-                                <Option v-for="item in filter_collectorList" :value="item.id" :key="item.number">{{ item.number }}</Option>
-                            </Select>
-                        </Col>
-                        <Col span="12" offset="8" style="text-align: right">
-                        </Col>
-                    </Row>
                     <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
                     <Row style="margin: 10px">
                         <Col span="8">
-                            <Button type="primary" @click="addMeter" icon="plus">新增</Button>
-                            <Button type="primary" @click="editMeter" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                            <Button type="error" @click="deleteMeter" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                            <Button type="primary" @click="addCollector" icon="plus">新增</Button>
+                            <Button type="primary" @click="editCollector" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                            <Button type="error" @click="deleteCollector" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="8" offset="8" style="text-align: right">
                             <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
@@ -57,41 +46,23 @@
                 </Row>
                 <Row>
                     <FormItem label="楼栋" prop="building_id">
-                        <Select v-model="formValidate.building_id" filterable @on-change="buildingChange">
+                        <Select v-model="formValidate.building_id" filterable>
                             <Option v-for="item in buildingList" :value="item.id" :key="item.title">{{ item.title }}</Option>
                         </Select>
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label="采集器" prop="collector_id">
-                        <Select v-model="formValidate.collector_id">
-                            <Option v-for="item in select_collectorList" :value="item.id" :key="item.number">{{ item.number }}</Option>
-                        </Select>
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label="仪表编号" prop="number">
+                    <FormItem label="编号" prop="number">
                         <Input v-model="formValidate.number"/>
                     </FormItem>
                 </Row>
-                <Row>
-                    <Col span="12">
-                    <FormItem label="设备厂家" prop="factory">
-                        <Input v-model="formValidate.factory" />
-                    </FormItem>
-                    </Col>
-                    <Col span="12">
-                    <FormItem label="设备型号" prop="model">
-                        <Input v-model="formValidate.model" />
-                    </FormItem>
-                    </Col>
-                </Row>
+
             </Form>
         </Modal>
     </div>
 </template>
 <script>
-    import {getMeters,batchDelMeters,insertMeter,updateMeter,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getCollectorWithIDAndNumber} from '../../axios/http';
+    import {getCollectors,batchDelCollectors,insertCollector,updateCollector,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList} from '../../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -107,7 +78,7 @@
                         key: 'project_name',
                         render: (h, params) => {
                             return h('div', [
-                                h('strong', params.row.collector.building.project.name)
+                                h('strong', params.row.building.project.name)
                             ]);
                         }
                     },{
@@ -115,32 +86,14 @@
                         key: 'area_name',
                         render: (h, params) => {
                             return h('div', [
-                                h('strong', params.row.collector.building.area.name+params.row.collector.building.name)
+                                h('strong', params.row.building.area.name+params.row.building.name)
                             ]);
                         }
                     },
                     {
-                        title: '采集器',
-                        key: 'collector_number',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('strong', params.row.collector.number)
-                            ]);
-                        }
-                    },
-                    {
-                        title: '设备编号',
+                        title: '编号',
                         key: 'number'
                     },
-                    {
-                        title: '厂家',
-                        key: 'factory'
-                    },
-                    {
-                        title: '型号',
-                        key: 'model'
-                    },
-
                     {
                         title: '安装时间',
                         key: 'create_time'
@@ -152,17 +105,14 @@
                 formValidate: {
                     number: '',
                     project_id:'',//选定的项目
-                    building_id:'',//选定的楼栋
-                    collector_id:'',//选定的采集器
-                    factory:'',//厂家
-                    model:''//型号
+                    building_id:'',//选定的小区
                 },
                 ruleValidate: {
                     number: [
-                        { required: true, message: '请输入电表编号', trigger: 'blur' }
+                        { required: true, message: '请输入采集器编号', trigger: 'blur' }
                     ],
-                    collector_id: [
-                        { type: 'number',required: true, message: '请选择采集器', trigger: 'change' },
+                    building_id: [
+                        { type: 'number',required: true, message: '请选择楼栋', trigger: 'change' },
                     ],
                 },
                 showCurrentTableData: false,
@@ -173,21 +123,17 @@
                 total:0,//数据总量
                 projectList:[],//项目列表
                 buildingList:[],//楼栋列表
-                filter_collectorList:[],//采集器列表
-                select_collectorList:[],//采集器列表
                 tree_area_id:0,//筛选过滤的
                 tree_project_id:0,//筛选过滤的
                 tree_building_id:0,
-                defaultProjectId:0,//默认加载第一个项目
-                filter_collector_id:0,
-                meterType:3,//表计类型
+                defaultProjectId:0//默认加载第一个项目
 
             }
         },
         methods: {
             //加载数据
-            initMeter(projectId,areaId,buildingId){
-                getMeters(projectId,areaId,buildingId,this.filter_collector_id,this.meterType,this.currentPage,this.pageSize).then((response)=>{
+            initCollector(projectId,areaId,buildingId){
+                getCollectors(projectId,areaId,buildingId,this.currentPage,this.pageSize).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
                 }).catch(function (error) {
@@ -214,44 +160,29 @@
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
-                    this.initFilterCollector(this.defaultProjectId, this.tree_area_id, this.tree_building_id);
-                    this.initMeter(this.defaultProjectId, 0, 0);
+                    this.initCollector(this.defaultProjectId, 0, 0);
                     //console.log(JSON.stringify(this.treeData));
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-            initFilterCollector(projectId,areaId,buildingId){
-                getCollectorWithIDAndNumber(projectId,areaId,buildingId).then((response)=>{
-                    this.filter_collectorList=response.data.result;
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-            initSelectCollector(projectId,areaId,buildingId){
-                getCollectorWithIDAndNumber(projectId,areaId,buildingId).then((response)=>{
-                    this.select_collectorList=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
             pageChange(page){
                 this.currentPage=page;
-                this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+                this.initCollector(this.tree_project_id, this.tree_area_id, this.tree_building_id);
             },
             onDataSelect(selection){
                 this.selectData=selection;
             },
             //批量删除
-            deleteMeter(){//删除选定数据
+            deleteCollector(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
                         this.total=this.total-this.selectData.length;
-                        batchDelMeters(this.selectData).then((response)=>{
+                        batchDelCollectors(this.selectData).then((response)=>{
                             if (response.data.result===this.selectData.length){
-                                this.initMeter(this.defaultProjectId, 0, 0);
+                                this.initCollector(this.defaultProjectId, 0, 0);
                                 this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
@@ -267,33 +198,26 @@
                 });
             },
             //保存数据（新增或者修改）
-            saveMeter(){
+            saveCollector(){
                 var param={
-                    collector_id:this.formValidate.collector_id,
-                    meter_type:this.meterType,
+                    building_id:this.formValidate.building_id,
                     number: this.formValidate.number,
-                    factory:this.formValidate.factory,
-                    model:this.formValidate.model,
-                    position:"0",
                     create_by: Cookies.get('userid'),
                     update_by: Cookies.get('userid'),
                 };
                 if(this.isadd){
-                    insertMeter(param).then((response)=>{
+                    insertCollector(param).then((response)=>{
                         if(response.data.result===1){
-                            this.tree_project_id=this.formValidate.project_id;
-                            this.tree_area_id=0;
-                            this.tree_building_id=0;
-                            this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+                            this.initCollector(this.defaultProjectId, 0, 0);
                             this.closeModal();
                         }
                         }).catch(function (error) {
                             console.log(error);
                     });
                 }else {
-                    updateMeter(this.selectData[0].id,param).then((response)=>{
+                    updateCollector(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
-                            this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+                            this.initCollector(this.defaultProjectId, 0, 0);
                             this.$refs.selection.selectAll(false);//取消全选
                             this.closeModal();
                         }
@@ -306,7 +230,7 @@
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
-                        this.saveMeter();
+                        this.saveCollector();
                     } else {
                         //this.$Message.error('Fail!');
                     }
@@ -317,38 +241,27 @@
                 this.$refs['formValidate'].resetFields();
                 this.showCurrentTableData=false;//关闭Modal
             },
-            editMeter(){
+            editCollector(){
+//                console.log(this.selectData[0]);
+//                console.log(JSON.stringify(this.selectData));
                 this.formValidate.number=this.selectData[0].number;
-                this.formValidate.project_id=this.selectData[0].collector.building.project_id;
-                this.formValidate.building_id=this.selectData[0].collector.building_id;
-                this.formValidate.collector_id=this.selectData[0].collector.id;
-                this.formValidate.factory=this.selectData[0].factory;
-                this.formValidate.model=this.selectData[0].model;
+                this.formValidate.project_id=this.selectData[0].building.project_id;
+                this.formValidate.building_id=this.selectData[0].building_id;
                 this.showCurrentTableData=true;
                 this.isadd=false;
-                this.modalTitle="修改电表信息";
+                this.modalTitle="修改采集器信息";
             },
-            addMeter(){
+            addCollector(){
                 this.showCurrentTableData=true;
                 this.isadd=true;
-                this.modalTitle="添加电表信息";
+                this.modalTitle="添加采集器信息";
             },
-            projectChange(option){
-                //项目下拉框发生改变时
+            projectChange(option){//项目下拉框发生改变时
                 //alert(Option);
                 if(option==''){
                     this.buildingList=[];
                 }else {
-                    this.formValidate.project_id=option;
                     this.initBuildingList(option);
-                }
-            },
-            buildingChange(option){
-                if(option==''){
-                    this.select_collectorList=[];
-                }else {
-                    this.formValidate.building_id=option;
-                    this.initSelectCollector(this.formValidate.project_id,0,this.formValidate.building_id);
                 }
             },
             treeSelectChange(option) {
@@ -370,14 +283,8 @@
                             this.tree_building_id = option[0].id;
                             break;
                     }
-                    this.filter_collector_id=0;
-                    this.initFilterCollector(this.tree_project_id, this.tree_area_id, this.tree_building_id);
-                    this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+                    this.initCollector(this.tree_project_id, this.tree_area_id, this.tree_building_id);
                 }
-            },
-            collectorChange(option){
-              this.filter_collector_id=option;
-              this.initMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
             },
         },
         created(){
