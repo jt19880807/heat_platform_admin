@@ -107,18 +107,18 @@ const appRouter = [
                 component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
             },
             {
-                path: 'ammeter',
+                path: 'electricity',
                 icon: 'pound',
-                name: 'ammeter',
+                name: 'electricity',
                 title: '电量',
-                component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/readings/electricity.vue'], resolve); }
             },
             {
-                path: 'buildingmeter',
+                path: 'tempreading',
                 icon: 'pound',
-                name: 'buildingmeter',
+                name: 'tempreading',
                 title: '温度',
-                component: resolve => { require(['../views/kqn/equipment/buildingMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/readings/temp.vue'], resolve); }
             }
         ]
     },

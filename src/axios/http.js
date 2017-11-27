@@ -79,9 +79,13 @@ export const batchDelUsers=params=>{
 export const getProjects=(ids,num,size,keywords)=>{
   return axios.get("/projects/"+ids+"?num="+num+"&size="+size+"&keywords="+keywords);
 };
-//分页获取指定ID或者全部的带搜索关键字的项目信息
+//分页获取指定ID或者全部的项目信息,包含下面的小区楼栋信息
 export const getProjectTree=(ids)=>{
     return axios.get("/projectree/"+ids);
+};
+//分页获取指定ID或者全部的项目信息,不包含下面的小区楼栋信息
+export const getProjectTreeNoChildren=(ids)=>{
+    return axios.get("/projecTreeNoChildren/"+ids);
 };
 //获取指定ID或者全部项目信息，用于下拉框，只返回ID和name
 export const getProjectsList=(ids)=>{
@@ -167,6 +171,10 @@ export const updateCollector=(buildingId,params)=>{
 export const getMeters=(projectId,areaId,buildingId,collectorId,meterType,num,size)=>{
     return axios.get("/meters?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&collectorId="+collectorId+"&meterType="+meterType+"&num="+num+"&size="+size);
 };
+//根据项目ID或者小区ID或者楼栋ID查找下面的采集器,仅返回ID和Number
+export const getMetersWithIDAndNumber=(projectId,areaId,buildingId,meterType)=>{
+    return axios.get("/metersWithIDAndNumber?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&meterType="+meterType);
+};
 //批量删除表计信息
 export const batchDelMeters=params=>{
     return axios.post("/meters-del",params);
@@ -195,6 +203,15 @@ export const insertHeatMeterReading=params=>{
 // 修改热量信息
 export const updateHeatMeterReading=(meterId,params)=>{
     return axios.put("/heatMeterReading/"+meterId,params);
+};
+
+//获取耗电量信息
+export const getPowerConsumptions=(projectId,areaId,buildingId,meterId,startDate,endDate,num,size)=>{
+    return axios.get("/powerConsumptions?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+};
+//获取平均温度信息
+export const getAverageTemps=(projectId,startDate,endDate,num,size)=>{
+    return axios.get("/averageTemps?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
 
 

@@ -19,7 +19,7 @@
                     <Row style="margin: 10px">
                         <Col span="8">
                             <span>表号&nbsp;&nbsp;</span>
-                            <Select v-model="filter_collector_id" filterable @on-change="collectorChange" style="width:200px">
+                            <Select v-model="filter_meter_id" filterable @on-change="meterChange" style="width:200px">
                                 <Option :value="0" >全部</Option>
                                 <Option v-for="item in filter_meterList" :value="item.id" :key="item.number">{{ item.number }}</Option>
                             </Select>
@@ -41,7 +41,7 @@
                             <Button type="error" @click="deleteHeatMeterReading" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="16" style="text-align: right">
-                            <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
+                            <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
                         </Col>
                     </Row>
                 </Card>
@@ -55,40 +55,50 @@
             </div>
             <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
                 <Row>
-                    <FormItem label="项目" prop="project_id">
-                        <Select v-model="formValidate.project_id" filterable @on-change="projectChange">
-                            <Option v-for="item in projectList" :value="item.id" :key="item.name">{{ item.name }}</Option>
+                    <FormItem label="表号" prop="meter_id">
+                        <Select v-model="formValidate.meter_id">
+                            <Option v-for="item in filter_meterList" :value="item.id" :key="item.number">{{ item.number }}</Option>
                         </Select>
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label="楼栋" prop="building_id">
-                        <Select v-model="formValidate.building_id" filterable @on-change="buildingChange">
-                            <Option v-for="item in buildingList" :value="item.id" :key="item.title">{{ item.title }}</Option>
-                        </Select>
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label="采集器" prop="collector_id">
-                        <Select v-model="formValidate.collector_id">
-                            <Option v-for="item in select_collectorList" :value="item.id" :key="item.number">{{ item.number }}</Option>
-                        </Select>
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label="仪表编号" prop="number">
-                        <Input v-model="formValidate.number"/>
+                    <FormItem label="读数日期" prop="date">
+                        <DatePicker size="small" type="datetime" format="yyyy/MM/dd HH:mm" @on-change="selectDateChange" placeholder="Select date" :value="formValidate.date"  style="width: 150px"></DatePicker>
                     </FormItem>
                 </Row>
                 <Row>
                     <Col span="12">
-                    <FormItem label="设备厂家" prop="factory">
-                        <Input v-model="formValidate.factory" />
+                        <FormItem label="累计热量" prop="accumulationheat">
+                            <InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.accumulationheat"/>&nbsp;MWH
+                        </FormItem>
+                    </Col>
+                    <Col span="12">
+                        <FormItem label="功率" prop="power">
+                            <InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.power"/>&nbsp;KW
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                    <FormItem label="瞬时流量" prop="instantaneousflow">
+                        <InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.instantaneousflow"/>&nbsp;m³/h
                     </FormItem>
                     </Col>
                     <Col span="12">
-                    <FormItem label="设备型号" prop="model">
-                        <Input v-model="formValidate.model" />
+                    <FormItem label="累计冷量" prop="accumulationcooling">
+                        <InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.accumulationcooling"/>&nbsp;KWH
+                    </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="12">
+                    <FormItem label="供水温度" prop="supplywatertemp">
+                        <InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.supplywatertemp"/>&nbsp;℃
+                    </FormItem>
+                    </Col>
+                    <Col span="12">
+                    <FormItem label="回水温度" prop="accumulationcooling">
+                        <InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.returnwatertemp"/>&nbsp;℃
                     </FormItem>
                     </Col>
                 </Row>
@@ -97,7 +107,7 @@
     </div>
 </template>
 <script>
-    import {getHeatMeterReadings,batchDelHeatMeterReadings,insertHeatMeterReading,updateHeatMeterReading,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getCollectorWithIDAndNumber} from '../../../axios/http';
+    import {getHeatMeterReadings,batchDelHeatMeterReadings,insertHeatMeterReading,updateHeatMeterReading,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList,getMetersWithIDAndNumber} from '../../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -106,38 +116,43 @@
                     {
                         type: 'selection',
                         width: 40,
-                        align: 'center'
+                        align: 'center',
                     },
                     {
                         title: '表号',
                         key: 'number',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('strong', params.row.meter.number)
+                            ]);
+                        }
                     },{
                         title: '读数日期',
                         width:140,
                         key: 'date'
                     },{
-                        title: '累计热量',
+                        title: '累计热量(MWH)',
                         key: 'accumulationheat'
                     },
                     {
-                        title: '累计冷量',
+                        title: '累计冷量(KWH)',
                         key: 'accumulationcooling',
                     },
                     {
-                        title: '瞬时流量',
+                        title: '瞬时流量(m³/h)',
                         key: 'instantaneousflow'
                     },
                     {
-                        title: '功率',
+                        title: '功率(KW)',
                         key: 'power'
                     },
                     {
-                        title: '供水温度',
+                        title: '供水温度(℃)',
                         key: 'supplywatertemp'
                     },
 
                     {
-                        title: '回水温度',
+                        title: '回水温度(℃)',
                         key: 'returnwatertemp'
                     }
                 ],
@@ -145,21 +160,21 @@
                 treeData:[],
                 selectData:[],
                 formValidate: {
-                    number: '',//表号
                     date:'',//读数日期
-                    instantaneousflow:'',//瞬时流量
-                    power:'',//功率
-                    accumulationheat:'',//累积热量
-                    accumulationcooling:'',//累积冷量
-                    supplywatertemp:'',//供水温度
-                    returnwatertemp:''//回水温度
+                    meter_id:0,
+                    instantaneousflow:0,//瞬时流量
+                    power:0,//功率
+                    accumulationheat:0,//累积热量
+                    accumulationcooling:0,//累积冷量
+                    supplywatertemp:0,//供水温度
+                    returnwatertemp:0//回水温度
                 },
                 ruleValidate: {
-                    number: [
-                        { required: true, message: '请输入热量表编号', trigger: 'blur' }
+                    meter_id: [
+                        { type:'number', required: true, message: '请选择表号', trigger: 'change' },
                     ],
-                    collector_id: [
-                        { type: 'number',required: true, message: '请选择表号', trigger: 'change' },
+                    date:[
+                        { required: true, message: '请选择读数日期', trigger: 'change' },
                     ],
                 },
                 showCurrentTableData: false,
@@ -176,17 +191,18 @@
                 tree_project_id:0,//筛选过滤的
                 tree_building_id:0,
                 defaultProjectId:0,//默认加载第一个项目
-                filter_collector_id:0,
-                startDate:'2017/11/01',
-                endDate:'2017/11/26',
+                filter_meter_id:0,
+                startDate:'',
+                endDate:'',
                 meterId:0,
+                meterType:1,
 
             }
         },
         methods: {
             //加载数据
             initHeatMeterReadings(projectId,areaId,buildingId,meterId){
-                getHeatMeterReadings(projectId,areaId,buildingId,meterId,this.startDate,this.endDate,this.currentPage,this.pageSize)
+                getHeatMeterReadings(projectId,areaId,buildingId,meterId,this.startDate,this.endDate+" 23:59:59",this.currentPage,this.pageSize)
                     .then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
@@ -221,11 +237,16 @@
                 });
             },
             initFilterMeter(projectId,areaId,buildingId){
-                getCollectorWithIDAndNumber(projectId,areaId,buildingId).then((response)=>{
+                getMetersWithIDAndNumber(projectId,areaId,buildingId,this.meterType).then((response)=>{
                     this.filter_meterList=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
                 });
+            },
+            initDate(){
+                var date=new Date();
+                this.startDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/01";
+                this.endDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate();
             },
             pageChange(page){
                 this.currentPage=page;
@@ -259,24 +280,24 @@
                 });
             },
             //保存数据（新增或者修改）
-            saveMeter(){
+            saveHeatMeterReading(){
                 var param={
-                    collector_id:this.formValidate.collector_id,
-                    meter_type:this.meterType,
-                    number: this.formValidate.number,
-                    factory:this.formValidate.factory,
-                    model:this.formValidate.model,
-                    position:"0",
-                    create_by: Cookies.get('userid'),
-                    update_by: Cookies.get('userid'),
+                    meter_id:this.formValidate.meter_id,
+                    date:this.formValidate.date,
+                    instantaneousflow: this.formValidate.instantaneousflow,
+                    power:this.formValidate.power,
+                    accumulationheat:this.formValidate.accumulationheat,
+                    accumulationcooling:this.formValidate.accumulationcooling,
+                    supplywatertemp:this.formValidate.supplywatertemp,
+                    returnwatertemp:this.formValidate.returnwatertemp,
                 };
                 if(this.isadd){
                     insertHeatMeterReading(param).then((response)=>{
                         if(response.data.result===1){
-                            this.tree_project_id=this.formValidate.project_id;
                             this.tree_area_id=0;
                             this.tree_building_id=0;
-                            this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id,this.tree_building_id,this.meterId);
+                            this.filter_meter_id=0;
+                            this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id,this.tree_building_id,this.filter_meter_id);
                             this.closeModal();
                         }
                         }).catch(function (error) {
@@ -285,7 +306,7 @@
                 }else {
                     updateHeatMeterReading(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
-                            this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.meterId);
+                            this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id);
                             this.$refs.selection.selectAll(false);//取消全选
                             this.closeModal();
                         }
@@ -298,7 +319,7 @@
             ok(){
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
-                        this.saveMeter();
+                        this.saveHeatMeterReading();
                     } else {
                         //this.$Message.error('Fail!');
                     }
@@ -310,12 +331,14 @@
                 this.showCurrentTableData=false;//关闭Modal
             },
             editHeatMeterReading(){
-                this.formValidate.number=this.selectData[0].number;
-                this.formValidate.project_id=this.selectData[0].collector.building.project_id;
-                this.formValidate.building_id=this.selectData[0].collector.building_id;
-                this.formValidate.collector_id=this.selectData[0].collector.id;
-                this.formValidate.factory=this.selectData[0].factory;
-                this.formValidate.model=this.selectData[0].model;
+                this.formValidate.meter_id=this.selectData[0].meter_id;
+                this.formValidate.date=this.selectData[0].date;
+                this.formValidate.instantaneousflow=this.selectData[0].instantaneousflow;
+                this.formValidate.power=this.selectData[0].power;
+                this.formValidate.accumulationheat=this.selectData[0].accumulationheat;
+                this.formValidate.accumulationcooling=this.selectData[0].accumulationcooling;
+                this.formValidate.supplywatertemp=this.selectData[0].supplywatertemp;
+                this.formValidate.returnwatertemp=this.selectData[0].returnwatertemp;
                 this.showCurrentTableData=true;
                 this.isadd=false;
                 this.modalTitle="修改热量";
@@ -324,24 +347,6 @@
                 this.showCurrentTableData=true;
                 this.isadd=true;
                 this.modalTitle="添加热量";
-            },
-            projectChange(option){
-                //项目下拉框发生改变时
-                //alert(Option);
-                if(option==''){
-                    this.buildingList=[];
-                }else {
-                    this.formValidate.project_id=option;
-                    this.initBuildingList(option);
-                }
-            },
-            buildingChange(option){
-                if(option==''){
-                    this.select_collectorList=[];
-                }else {
-                    this.formValidate.building_id=option;
-                   // this.initSelectCollector(this.formValidate.project_id,0,this.formValidate.building_id);
-                }
             },
             treeSelectChange(option) {
                 if (option.length > 0) {
@@ -362,26 +367,30 @@
                             this.tree_building_id = option[0].id;
                             break;
                     }
-                    this.filter_collector_id=0;
+                    this.filter_meter_id=0;
                     this.initFilterMeter(this.tree_project_id, this.tree_area_id, this.tree_building_id);
-                    this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.meterId);
+                    this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id);
                 }
             },
-            collectorChange(option){
-              this.filter_collector_id=option;
-              this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id);
+            meterChange(option){
+              this.filter_meter_id=option;
+              this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id);
             },
             searchData(){
-                this.initHeatMeterReadings(this.defaultProjectId, 0, 0,0);
+                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id);
             },
             startDateChange(date){
               this.startDate=date;
             },
             endDateChange(date){
                 this.endDate=date;
-            }
+            },
+            selectDateChange(date){
+              this.formValidate.date=date;
+            },
         },
         created(){
+            this.initDate();
             this.projecIds=Cookies.get("projects");
             this.initProject();
             this.initProjectTree();

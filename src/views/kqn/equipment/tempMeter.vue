@@ -198,7 +198,7 @@
                 tree_building_id:0,
                 defaultProjectId:0,//默认加载第一个项目
                 filter_collector_id:0,
-                meterType:2,//表计类型
+                meterType:3,//表计类型
 
             }
         },
