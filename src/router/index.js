@@ -130,11 +130,11 @@ const appRouter = [
         component: Main,
         children: [
             {
-                path: 'collector',
+                path: 'energy',
                 icon: 'compose',
-                name: 'collector',
+                name: 'energy',
                 title: '能耗分析',
-                component: resolve => { require(['../views/kqn/equipment/collector.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/analysis/energy.vue'], resolve); }
             },
             {
                 path: 'ammeter',

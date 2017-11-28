@@ -14,7 +14,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        温度
+                        能耗分析
                     </p>
                     <Row style="margin: 10px">
                         <Col span="24" style="text-align: right">
@@ -26,11 +26,19 @@
                              <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
                         </Col>
                     </Row>
-                    <Row><Table border stripe ref="selection" :columns="columns" :data="data" ></Table></Row>
-                    <Row style="margin: 10px">
-                        <Col span="24" style="text-align: right">
-                            <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
+                    <Row>
+                        <!--<Table border stripe ref="selection" :columns="columns" :data="data" ></Table>-->
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
                         </Col>
+                        <Col span="22" >
+                            耗热量&nbsp;&nbsp;
+                        <input type="text" disabled="false" v-model="heat" style="width:200px;border:0px;border-bottom:#000000 1px solid;" />
+                        </Col>
+
+                    </Row>
+                    <Row style="margin: 10px">
+
                     </Row>
                 </Card>
             </Col>
@@ -38,75 +46,36 @@
     </div>
 </template>
 <script>
-    import {getAverageTemps,getProjectTreeNoChildren} from '../../../axios/http';
+    import {getEnergys,getProjectTreeNoChildren} from '../../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
             return {
-                columns: [
-
-                    {
-                        title: '项目',
-                        key: 'number',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('strong', params.row.project.name)
-                            ]);
-                        }
-                    },{
-                        title: '读数日期',
-                        key: 'date'
-                    },
-                    {
-                        title: '室内平均温度',
-                        key: 'indoor_averagetemp'
-                    },
-                    {
-                        title: '室外平均温度',
-                        key: 'outdoor_averagetemp'
-                    },
-                    {
-                        title: '室内最高温度',
-                        key: 'indoor_maxtemp'
-                    },
-                    {
-                        title: '室内最低温度',
-                        key: 'indoor_mintemp'
-                    },
-                    {
-                        title: '室内平均湿度',
-                        key: 'indoor_averagehumidity'
-                    }
-                ],
-                data: [],
                 treeData:[],
-                currentPage:1,//当前页码
-                pageSize:20,//每页数据量
-                total:0,//数据总量
                 tree_project_id:0,//筛选过滤的
                 defaultProjectId:0,//默认加载第一个项目
                 startDate:'',
                 endDate:'',
-
+                heat:0,//耗热量
             }
         },
         methods: {
             //加载数据
-            initAverageTemps(projectId){
-                getAverageTemps(projectId,this.startDate,this.endDate+" 23:59:59",this.currentPage,this.pageSize)
-                    .then((response)=>{
-                    this.total=response.data.total;
-                    this.data=response.data.list;
-                }).catch(function (error) {
-                    console.log(error);
-                });
+            initEnergys(projectId){
+//                getEnergys(projectId,this.startDate,this.endDate+" 23:59:59",this.currentPage,this.pageSize)
+//                    .then((response)=>{
+//                    this.total=response.data.total;
+//                    this.data=response.data.list;
+//                }).catch(function (error) {
+//                    console.log(error);
+//                });
             },
             initProjectTree(){
                 getProjectTreeNoChildren(Cookies.get("projects")).then((response)=>{
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
-                    this.initAverageTemps(this.defaultProjectId);
+                    this.initEnergys(this.defaultProjectId);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -118,16 +87,16 @@
             },
             pageChange(page){
                 this.currentPage=page;
-                this.initAverageTemps(this.tree_project_id);
+                this.initEnergys(this.tree_project_id);
             },
             treeSelectChange(option) {
                 if (option.length > 0) {
                     this.tree_project_id = option[0].id;
-                    this.initAverageTemps(this.tree_project_id);
+                    this.initEnergys(this.tree_project_id);
                 }
             },
             searchData(){
-                this.initAverageTemps(this.tree_project_id);
+                this.initEnergys(this.tree_project_id);
             },
             startDateChange(date){
               this.startDate=date;
