@@ -26,19 +26,151 @@
                              <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
                         </Col>
                     </Row>
+                    <hr/>
                     <Row>
-                        <!--<Table border stripe ref="selection" :columns="columns" :data="data" ></Table>-->
                         <Col span="2" style="">
                         &nbsp;&nbsp;
                         </Col>
-                        <Col span="22" >
-                            耗热量&nbsp;&nbsp;
-                        <input type="text" disabled="false" v-model="heat" style="width:200px;border:0px;border-bottom:#000000 1px solid;" />
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;耗热量&nbsp;&nbsp;
                         </Col>
-
+                        <Col span="18" >
+                            <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
                     </Row>
-                    <Row style="margin: 10px">
-
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;耗电量&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;平均温度&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;最高温度&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;最低温度&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <br>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;总能耗&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                            <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;SCOP&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;常规能源供热能耗&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;常规能源替代量&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <br>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;CO2减排量&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;O2减排量&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;氮氧化物减排量&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;颗粒物减排量&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        </Col>
                     </Row>
                 </Card>
             </Col>
@@ -56,7 +188,7 @@
                 defaultProjectId:0,//默认加载第一个项目
                 startDate:'',
                 endDate:'',
-                heat:0,//耗热量
+                heat:100,//耗热量
             }
         },
         methods: {
