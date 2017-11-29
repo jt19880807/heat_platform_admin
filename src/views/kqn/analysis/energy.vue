@@ -32,7 +32,7 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;耗热量&nbsp;&nbsp;
+                        &nbsp;&nbsp;耗热量(MJ)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
                             <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
@@ -43,10 +43,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;耗电量&nbsp;&nbsp;
+                        &nbsp;&nbsp;耗电量(KWH)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{powerConsumption}}</label>
                         </Col>
                     </Row>
                     <Row>
@@ -54,10 +54,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;平均温度&nbsp;&nbsp;
+                        &nbsp;&nbsp;平均温度(≥16)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{averageTemp}}</label>
                         </Col>
                     </Row>
                     <Row>
@@ -65,10 +65,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;最高温度&nbsp;&nbsp;
+                        &nbsp;&nbsp;最高温度(≤24)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{maxTemp}}</label>
                         </Col>
                     </Row>
                     <Row>
@@ -76,55 +76,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;最低温度&nbsp;&nbsp;
+                        &nbsp;&nbsp;最低温度(≥18)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
-                        </Col>
-                    </Row>
-                    <br>
-                    <Row>
-                        <Col span="2" style="">
-                        &nbsp;&nbsp;
-                        </Col>
-                        <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;总能耗&nbsp;&nbsp;
-                        </Col>
-                        <Col span="18" >
-                            <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="2" style="">
-                        &nbsp;&nbsp;
-                        </Col>
-                        <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;SCOP&nbsp;&nbsp;
-                        </Col>
-                        <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="2" style="">
-                        &nbsp;&nbsp;
-                        </Col>
-                        <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;常规能源供热能耗&nbsp;&nbsp;
-                        </Col>
-                        <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="2" style="">
-                        &nbsp;&nbsp;
-                        </Col>
-                        <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;常规能源替代量&nbsp;&nbsp;
-                        </Col>
-                        <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{minTemp}}</label>
                         </Col>
                     </Row>
                     <br>
@@ -133,10 +88,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;CO2减排量&nbsp;&nbsp;
+                        &nbsp;&nbsp;总能耗(kgcc)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                            <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{totalEnergyConsumption}}</label>
                         </Col>
                     </Row>
                     <Row>
@@ -144,10 +99,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;O2减排量&nbsp;&nbsp;
+                        &nbsp;&nbsp;SCOP(≥1.8)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{SCOP}}</label>
                         </Col>
                     </Row>
                     <Row>
@@ -155,10 +110,10 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;氮氧化物减排量&nbsp;&nbsp;
+                        &nbsp;&nbsp;常规能源供热能耗(kgcc)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{conventionalEnergy}}</label>
                         </Col>
                     </Row>
                     <Row>
@@ -166,10 +121,55 @@
                         &nbsp;&nbsp;
                         </Col>
                         <Col span="4" style="text-align: right">
-                        &nbsp;&nbsp;颗粒物减排量&nbsp;&nbsp;
+                        &nbsp;&nbsp;常规能源替代量(kgcc)&nbsp;&nbsp;
                         </Col>
                         <Col span="18" >
-                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{heat}}</label>
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{replaceEnergy}}</label>
+                        </Col>
+                    </Row>
+                    <br>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;CO2减排量(kg)&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{CO2}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;SO2减排量(kg)&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{SO2}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;氮氧化物减排量(kg)&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{nitrogenOxides}}</label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="2" style="">
+                        &nbsp;&nbsp;
+                        </Col>
+                        <Col span="4" style="text-align: right">
+                        &nbsp;&nbsp;颗粒物减排量(kg)&nbsp;&nbsp;
+                        </Col>
+                        <Col span="18" >
+                        <label style="border-bottom:#000000 solid 1px; width:60%; display:block;text-align: center"> {{particulates}}</label>
                         </Col>
                     </Row>
                 </Card>
@@ -188,19 +188,35 @@
                 defaultProjectId:0,//默认加载第一个项目
                 startDate:'',
                 endDate:'',
-                heat:100,//耗热量
+                heat:0,//耗热量
+                powerConsumption:0,//耗电量
+                averageTemp:0,//平均温度
+                maxTemp:0,//最高温度
+                minTemp:0,//最低温度
+                totalEnergyConsumption:0,//总能耗
+                SCOP:0,//SCOP
+                conventionalEnergy:0,//常规能源供热能耗
+                replaceEnergy:0,//常规能源替代量
+                CO2:0,//CO2减排量
+                SO2:0,//SO2减排量
+                nitrogenOxides:0,//氮氧化物减排量
+                particulates:0,//颗粒物减排量
             }
         },
         methods: {
             //加载数据
             initEnergys(projectId){
-//                getEnergys(projectId,this.startDate,this.endDate+" 23:59:59",this.currentPage,this.pageSize)
-//                    .then((response)=>{
-//                    this.total=response.data.total;
-//                    this.data=response.data.list;
-//                }).catch(function (error) {
-//                    console.log(error);
-//                });
+                getEnergys(projectId,this.startDate,this.endDate+" 23:59:59")
+                    .then((response)=>{
+                    this.heat=response.data.result[0].heat;
+                    this.powerConsumption=response.data.result[0].powerConsumption;
+                    this.averageTemp=response.data.result[0].averageTemp;
+                    this.maxTemp=response.data.result[0].maxTemp;
+                    this.minTemp=response.data.result[0].minTemp;
+
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             initProjectTree(){
                 getProjectTreeNoChildren(Cookies.get("projects")).then((response)=>{

@@ -214,4 +214,9 @@ export const getAverageTemps=(projectId,startDate,endDate,num,size)=>{
     return axios.get("/averageTemps?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
 
+//获取能耗分析
+export const getEnergys=(projectId,startDate,endDate)=>{
+    return axios.get("/energys?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
+};
+
 
