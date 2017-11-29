@@ -14,7 +14,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-film-outline"></Icon>
-                        能耗分析
+                        能耗报告
                     </p>
                     <Row style="margin: 10px">
                         <Col span="24" style="text-align: right">
@@ -27,6 +27,10 @@
                         </Col>
                     </Row>
                     <hr/>
+                    <Row>
+                        <h2 style="text-align: center">能耗报告</h2>
+                    </Row>
+                    <br/>
                     <Row>
                         <Col span="2" style="">
                         &nbsp;&nbsp;

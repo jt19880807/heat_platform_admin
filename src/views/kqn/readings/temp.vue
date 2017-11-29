@@ -44,7 +44,6 @@
         data () {
             return {
                 columns: [
-
                     {
                         title: '项目',
                         key: 'number',
@@ -106,6 +105,7 @@
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
+                    this.tree_project_id = this.treeData[0].id;
                     this.initAverageTemps(this.defaultProjectId);
                 }).catch(function (error) {
                     console.log(error);

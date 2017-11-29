@@ -140,7 +140,7 @@
             // 权限菜单过滤相关
             this.$store.commit('updateMenulist');
             // 显示打开的页面的列表
-            this.$store.commit('setOpenedList');
+            //this.$store.commit('setOpenedList');
         },
     }
 </script>
