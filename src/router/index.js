@@ -131,31 +131,31 @@ const appRouter = [
         children: [
             {
                 path: 'energy',
-                icon: 'compose',
+                icon: 'pound',
                 name: 'energy',
                 title: '能耗分析',
                 component: resolve => { require(['../views/kqn/analysis/energy.vue'], resolve); }
             },
+            // {
+            //     path: 'ammeter',
+            //     icon: 'pound',
+            //     name: 'ammeter',
+            //     title: '温度分析',
+            //     component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
+            // },
             {
-                path: 'ammeter',
+                path: 'historydata',
                 icon: 'pound',
-                name: 'ammeter',
-                title: '温度分析',
-                component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
-            },
-            {
-                path: 'buildingmeter',
-                icon: 'pound',
-                name: 'buildingmeter',
+                name: 'historydata',
                 title: '历史数据',
-                component: resolve => { require(['../views/kqn/equipment/buildingMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/analysis/historydata.vue'], resolve); }
             },
             {
-                path: 'tempmeter',
-                icon: 'ios-home',
-                name: 'tempmeter',
+                path: 'energyreport',
+                icon: 'pound',
+                name: 'energyreport',
                 title: '能耗报告',
-                component: resolve => { require(['../views/kqn/equipment/tempMeter.vue'], resolve); }
+                component: resolve => { require(['../views/kqn/analysis/energyreport.vue'], resolve); }
             }
         ]
     },

@@ -58,6 +58,7 @@ const store=new Vuex.Store({
         },
         setOpenedList (state) {
             state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [otherRouter.children[0]];
+            //state.pageOpenedList = [otherRouter.children[0]];
         },
         setCurrentPath (state, pathArr) {
             state.currentPath = pathArr;

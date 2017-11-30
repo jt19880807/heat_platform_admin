@@ -219,4 +219,10 @@ export const getEnergys=(projectId,startDate,endDate)=>{
     return axios.get("/energys?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
 };
 
+//获取历史数据
+export const getHisttoryData=(projectId,startDate,endDate)=>{
+    return axios.get("/historydata?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&count=2");
+};
+
+
 

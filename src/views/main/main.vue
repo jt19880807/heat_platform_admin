@@ -102,6 +102,7 @@
                 return this.$store.state.menuTheme === 'dark' ? 'white' : '#495060';
             },
             currentPath () {
+                //console.log(JSON.stringify(this.$store.state.currentPath));
                 return this.$store.state.currentPath;  // 当前面包屑数组
             },
             pageTagsList () {
@@ -132,6 +133,29 @@
 
                 }
             },
+            checkTag (name) {
+                let openpageHasTag = this.pageTagsList.some(item => {
+                    if (item.name === name) {
+                        return true;
+                    }
+                });
+                if (!openpageHasTag) {  //  解决关闭当前标签后再点击回退按钮会退到当前页时没有标签的问题
+                    util.openNewPage(this, name, this.$route.params || {}, this.$route.query || {});
+                }
+            }
+        },
+        watch: {
+            '$route' (to) {
+                this.$store.commit('setCurrentPageName', to.name);
+                let pathArr = util.setCurrentPath(this, to.name);
+                if (pathArr.length > 2) {
+                    this.$store.commit('addOpenSubmenu', pathArr[1].name);
+                }
+                this.checkTag(to.name);
+            },
+            lang () {
+                util.setCurrentPath(this, this.$route.name);  // 在切换语言时用于刷新面包屑
+            }
         },
         mounted () {
             this.init();
@@ -140,7 +164,7 @@
             // 权限菜单过滤相关
             this.$store.commit('updateMenulist');
             // 显示打开的页面的列表
-            //this.$store.commit('setOpenedList');
+            this.$store.commit('setOpenedList');
         },
     }
 </script>

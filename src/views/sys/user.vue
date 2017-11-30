@@ -111,7 +111,7 @@
             //加载数据
             initdata(){
                 getAllUsers().then((response)=>{
-                    console.log(response);
+                    //console.log(response);
                     this.data=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
@@ -147,7 +147,7 @@
 //                            console.log(this.selectdata[index].last_login);
 //                        }
                         batchDelUsers(this.selectdata).then((response)=>{
-                            console.log(response.data.result);
+                            //console.log(response.data.result);
                             //this.data=response.data.result;
                             if (response.data.result===this.selectdata.length){
                                 for (var i=0;i<this.selectdata.length;i++){

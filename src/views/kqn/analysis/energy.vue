@@ -208,19 +208,37 @@
             initEnergys(projectId){
                 getEnergys(projectId,this.startDate,this.endDate+" 23:59:59")
                     .then((response)=>{
-                    this.heat=response.data.result[0].heat;
-                    this.powerConsumption=response.data.result[0].powerConsumption;
-                    this.averageTemp=response.data.result[0].averageTemp;
-                    this.maxTemp=response.data.result[0].maxTemp;
-                    this.minTemp=response.data.result[0].minTemp;
-                    this.totalEnergyConsumption=response.data.result[0].totalEnergyConsumption;
-                    this.SCOP=response.data.result[0].SCOP;
-                    this.conventionalEnergy=response.data.result[0].conventionalEnergy;
-                    this.replaceEnergy=response.data.result[0].replaceEnergy;
-                    this.CO2=response.data.result[0].CO2;
-                    this.SO2=response.data.result[0].SO2;
-                    this.nitrogenOxides=response.data.result[0].nitrogenOxides;
-                    this.particulates=response.data.result[0].particulates;
+                    if (response.data.result[0]!=null) {
+                        this.heat = response.data.result[0].heat;
+                        this.powerConsumption = response.data.result[0].powerConsumption;
+                        this.averageTemp = response.data.result[0].averageTemp;
+                        this.maxTemp = response.data.result[0].maxTemp;
+                        this.minTemp = response.data.result[0].minTemp;
+                        this.totalEnergyConsumption = response.data.result[0].totalEnergyConsumption;
+                        this.SCOP = response.data.result[0].SCOP;
+                        this.conventionalEnergy = response.data.result[0].conventionalEnergy;
+                        this.replaceEnergy = response.data.result[0].replaceEnergy;
+                        this.CO2 = response.data.result[0].CO2;
+                        this.SO2 = response.data.result[0].SO2;
+                        this.nitrogenOxides = response.data.result[0].nitrogenOxides;
+                        this.particulates = response.data.result[0].particulates;
+                    }
+                    else {
+
+                        this.heat = '无数据';
+                        this.powerConsumption = '无数据';
+                        this.averageTemp = '无数据';
+                        this.maxTemp = '无数据';
+                        this.minTemp = '无数据';
+                        this.totalEnergyConsumption = '无数据';
+                        this.SCOP = '无数据';
+                        this.conventionalEnergy ='无数据';
+                        this.replaceEnergy = '无数据';
+                        this.CO2 = '无数据';
+                        this.SO2 = '无数据';
+                        this.nitrogenOxides = '无数据';
+                        this.particulates = '无数据';
+                    }
                 }).catch(function (error) {
                     console.log(error);
                 });
