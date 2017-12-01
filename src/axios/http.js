@@ -223,6 +223,10 @@ export const getEnergys=(projectId,startDate,endDate)=>{
 export const getHisttoryData=(projectId,startDate,endDate)=>{
     return axios.get("/historydata?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&count=2");
 };
+//获取能耗报告
+export const getEnergyReport=(projectId,startDate,endDate)=>{
+    return axios.get("/energyReport?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
+};
 
 
 
