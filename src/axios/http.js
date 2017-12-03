@@ -228,5 +228,14 @@ export const getEnergyReport=(projectId,startDate,endDate)=>{
     return axios.get("/energyReport?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
 };
 
+//导出能耗报告
+export const exportEnergyReport=()=>{
+    return axios.get("/exportEnergyReport");
+};
+
+export const uploadPic=params=>{
+    return axios.post("/uploadpic",params)
+};
+
 
 

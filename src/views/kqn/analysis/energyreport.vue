@@ -18,8 +18,8 @@
                     </p>
                     <Row style="margin: 10px">
                         <Col span="8" >
-                        <Checkbox size="large" v-model="nhxy">能耗效益</Checkbox>
-                        <Checkbox v-model="hjxy">环境效益</Checkbox>
+                        <Checkbox size="large" v-model="nhxy" @on-change="nhxyChange">能耗效益</Checkbox>
+                        <Checkbox v-model="hjxy" @on-change="hjxyChange">环境效益</Checkbox>
                         </Col>
                         <Col span="16" style="text-align: right">
                             <span>开始日期&nbsp;&nbsp;</span>
@@ -33,6 +33,7 @@
                     <hr/>
                     <Row>
                         <h2 style="text-align: center">能耗报告</h2>
+                        <Button type="primary" icon="ios-search" @click="down">导出报告</Button>
                     </Row>
                     <br/>
                     <Row style="margin-bottom: 10px;">
@@ -233,43 +234,45 @@
                         &nbsp;&nbsp;
                         </Col>
                     </Row>
-
-                        <Row >
-                            <Col span="2" style="">
+                    <Row >
+                        <Col span="2" style="">
                             &nbsp;&nbsp;
-                            </Col>
-                            <Col span="16" style="text-align: right">
+                        </Col>
+                         <Col span="16" style="text-align: right">
                             <Card v-if="this.nhxy">
                                 <p slot="title" style="text-align: left">
                                     能耗效益
                                 </p>
-                            <Row style="margin-bottom: 10px;">
-                                <Col span="6" style="text-align: right">
-                                &nbsp;&nbsp;常规能源供热能耗Qt：&nbsp;&nbsp;
-                                </Col>
-                                <Col span="6" style="text-align: right">
-                                    <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{energyEfficiency.conventionalEnergy}}kgcc</label>
-                                </Col>
-                                <Col span="6" style="" >
-                                &nbsp;&nbsp;实际能耗Qr：&nbsp;&nbsp;
-                                </Col>
-                                <Col span="6" style="text-align: right">
-                                <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{energyEfficiency.totalEnergyConsumption}}kgcc</label>
-                                </Col>
-                            </Row>
+                                <Row style="margin-bottom: 10px;">
+                                    <Col span="6" style="text-align: right">
+                                    &nbsp;&nbsp;常规能源供热能耗Qt：&nbsp;&nbsp;
+                                    </Col>
+                                    <Col span="6" style="text-align: right">
+                                        <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{energyEfficiency.conventionalEnergy}}kgcc</label>
+                                    </Col>
+                                    <Col span="6" style="" >
+                                    &nbsp;&nbsp;实际能耗Qr：&nbsp;&nbsp;
+                                    </Col>
+                                    <Col span="6" style="text-align: right">
+                                    <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{energyEfficiency.totalEnergyConsumption}}kgcc</label>
+                                    </Col>
+                                </Row>
                                 <Row>
-                                    <Col span="6" style="text-align: right">
-                                    &nbsp;&nbsp;能源替代量Qs：&nbsp;&nbsp;
-                                    </Col>
-                                    <Col span="6" style="text-align: right">
-                                    <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{energyEfficiency.replaceEnergy}}kgcc</label>
-                                    </Col>
-                                    <Col span="6" style="text-align: left" >
-                                    (不小于1.8)
-                                    </Col>
-                                    <Col span="6" style="text-align: right">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    </Col>
+                                        <Col span="6" style="text-align: right">
+                                        &nbsp;&nbsp;能源替代量Qs：&nbsp;&nbsp;
+                                        </Col>
+                                        <Col span="6" style="text-align: right">
+                                        <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{energyEfficiency.replaceEnergy}}kgcc</label>
+                                        </Col>
+                                        <Col span="6" style="text-align: left" >
+                                        (不小于1.8)
+                                        </Col>
+                                        <Col span="6" style="text-align: right">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        </Col>
+                                 </Row>
+                                <Row>
+                                    <div id="energyEfficiency_bar" :style="{ height: '300px'}"></div>
                                 </Row>
                             </Card>
                             </Col>
@@ -277,8 +280,7 @@
                             &nbsp;&nbsp;
                             </Col>
                         </Row>
-
-                        <Row >
+                    <Row >
                             <Col span="2" style="">
                             &nbsp;&nbsp;
                             </Col>
@@ -287,7 +289,7 @@
                                 <p slot="title" style="text-align: left">
                                     环境效益
                                 </p>
-                            <Row style="margin-bottom: 10px;">
+                                <Row style="margin-bottom: 10px;">
                                 <Col span="6" style="text-align: right">
                                 &nbsp;&nbsp;二氧化碳减排量：&nbsp;&nbsp;
                                 </Col>
@@ -315,21 +317,30 @@
                                     <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{environmentalBenefits.nitrogenOxides}}kg</label>
                                     </Col>
                                 </Row>
+                                <Row>
+                                    <div id="environmentalBenefits_bar" :style="{ height: '300px'}"></div>
+                                </Row>
                             </Card>
                             </Col>
                             <Col span="6" style="">
                             &nbsp;&nbsp;
                             </Col>
                         </Row>
-
-
                 </Card>
             </Col>
         </Row>
     </div>
 </template>
 <script>
-    import {getEnergyReport,getProjectTreeNoChildren} from '../../../axios/http';
+    // 引入基本模板
+    let echarts = require('echarts/lib/echarts');
+    // 引入柱状图组件
+    require('echarts/lib/chart/bar');
+    // 引入提示框和title组件;
+    require('echarts/lib/component/tooltip');
+    require('echarts/lib/component/title');
+
+    import {getEnergyReport,getProjectTreeNoChildren,exportEnergyReport,uploadPic} from '../../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -366,6 +377,8 @@
                 },
                 nhxy:true,//能耗效益
                 hjxy:true,//环境效益
+                energyEfficiency_picinfo:'',
+                environmentalBenefits_picinfo:'',
             }
         },
         methods: {
@@ -394,6 +407,8 @@
                         this.environmentalBenefits.SO2=response.data.result[0].environmentalBenefits.SO2;
                         this.environmentalBenefits.nitrogenOxides=response.data.result[0].environmentalBenefits.nitrogenOxides;
                         this.environmentalBenefits.particulates=response.data.result[0].environmentalBenefits.particulates;
+                        this.initnergyEfficiencyBar();
+                        this.initeEnvironmentalBenefitsBar();
                     }
                     else {
                         this.projectName='--';
@@ -452,7 +467,76 @@
             endDateChange(date){
                 this.endDate=date;
             },
+            //加载能耗参数图表
+            initnergyEfficiencyBar() {
+                let energyEfficiency_bar = echarts.init(document.getElementById('energyEfficiency_bar'));
+                // 绘制图表
+                energyEfficiency_bar.setOption({
+                    tooltip: {},
+                    xAxis: {
+                        data: ["总能耗", "常规能源供热能耗", "常规能源替代量"]
+                    },
+                    yAxis: {},
+                    series: [{
+                        type: 'bar',
+                        data: [this.energyEfficiency.totalEnergyConsumption,
+                            this.energyEfficiency.conventionalEnergy,
+                            this.energyEfficiency.replaceEnergy,]
+                    }]
+                });
+                this.energyEfficiency_picinfo=energyEfficiency_bar.getDataURL();
+                console.log(this.energyEfficiency_picinfo);
+
+            },
+            initeEnvironmentalBenefitsBar(){
+                let environmentalBenefits_bar = echarts.init(document.getElementById('environmentalBenefits_bar'));
+                // 绘制图表
+                environmentalBenefits_bar.setOption({
+                    //  title: { text: '环境效益' },
+                    tooltip: {},
+                    xAxis: {
+                        data: ["CO2减排量", "SO2减排量", "氮氧化物减排量", "颗粒物减排量"]
+                    },
+                    yAxis: {},
+                    series: [{
+                        //name: '销量',
+                        type: 'bar',
+                        data: [this.environmentalBenefits.CO2,
+                            this.environmentalBenefits.SO2,
+                            this.environmentalBenefits.nitrogenOxides,
+                            this.environmentalBenefits.particulates, ]
+                    }]
+                });
+                this.environmentalBenefits_picinfo=environmentalBenefits_bar.getDataURL();
+            },
+            down() {
+                uploadPic({
+                    energyEfficiency_picinfo:this.energyEfficiency_picinfo,
+                    environmentalBenefits_picinfo:this.environmentalBenefits_picinfo;
+                })
+                    .then((response)=>{
+
+                    }).catch(function (error) {
+                    console.log(error);
+                });
+                //window.location.href="http://127.0.0.1:8082/exportEnergyReport";
+            },
+            nhxyChange(option){
+                this.nhxy=option;
+                //alert(option);
+                if (option===true){
+                    //this.initnergyEfficiencyBar();
+                    this.initEnergyReport(this.tree_project_id);
+                }
+            },
+            hjxyChange(option){
+                this.hjxy=option;
+                if (option===true){
+                    this.initEnergyReport(this.tree_project_id);
+                }
+            },
         },
+
         created(){
             this.initDate();
             this.initProjectTree();
