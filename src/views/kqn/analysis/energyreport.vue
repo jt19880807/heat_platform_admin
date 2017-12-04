@@ -512,10 +512,10 @@
             down() {
                 uploadPic({
                     energyEfficiency_picinfo:this.energyEfficiency_picinfo,
-                    environmentalBenefits_picinfo:this.environmentalBenefits_picinfo;
+                    environmentalBenefits_picinfo:this.environmentalBenefits_picinfo,
                 })
                     .then((response)=>{
-
+                        window.location.href="http://127.0.0.1:8082/exportEnergyReport?projectId="+this.tree_project_id+"&startDate="+this.startDate+"&endDate="+this.endDate+"&shownhxy="+this.nhxy+"&showhjxy="+this.hjxy;
                     }).catch(function (error) {
                     console.log(error);
                 });

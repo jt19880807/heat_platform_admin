@@ -237,5 +237,14 @@ export const uploadPic=params=>{
     return axios.post("/uploadpic",params)
 };
 
+//获取最近一个月的耗电量
+export const getLastMonthPowerConsumptions=(projectId,startDate,endDate)=>{
+    return axios.get("/lastMonthPowerConsumptions?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
+};
+//获取最近一个月的耗热量
+export const getLastMonthHeatConsumptions=(projectId,startDate,endDate)=>{
+    return axios.get("/lastMonthHeatConsumptions?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
+};
+
 
 
