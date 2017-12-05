@@ -245,6 +245,11 @@ export const getLastMonthPowerConsumptions=(projectId,startDate,endDate)=>{
 export const getLastMonthHeatConsumptions=(projectId,startDate,endDate)=>{
     return axios.get("/lastMonthHeatConsumptions?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate);
 };
+//获取指定项目的最新的平均温度等信息
+export const getLastAverageTemps=(projectId)=>{
+    return axios.get("/lastAverageTempsByProjectId?projectId="+projectId);
+};
+
 
 
 

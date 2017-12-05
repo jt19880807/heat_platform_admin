@@ -114,7 +114,7 @@
     require('echarts/lib/component/title');
     require('echarts/lib/component/toolbox');
     require('echarts/lib/component/legend');
-    import {getProjectsList,getLastMonthPowerConsumptions,getLastMonthHeatConsumptions} from '../../axios/http';
+    import {getProjectsList,getLastMonthPowerConsumptions,getLastMonthHeatConsumptions,getLastAverageTemps} from '../../axios/http';
     import Cookies from 'js-cookie';
     export default {
         data () {
@@ -137,6 +137,7 @@
                 getProjectsList(Cookies.get('projects')).then((response)=>{
                     this.filter_project_id = response.data.result[0].id;
                     this.projectList=response.data.result;
+                    this.initAverageTemp(this.filter_project_id);
                     this.initHeatChart();
                     this.initElectricityChart();
                 }).catch(function (error) {
@@ -243,9 +244,31 @@
                     console.log(error);
                 });
             },
+            //加载数据
+            initAverageTemp(projectId){
+                getLastAverageTemps(projectId)
+                    .then((response)=>{
+                        if (response.data.result[0]!=null) {
+                            this.accountHeat = response.data.result[0].heat;
+                            this.accountElectricity = response.data.result[0].powerConsumption;
+                            this.averageTemp = response.data.result[0].averageTemp;
+                            this.maxTemp = response.data.result[0].maxTemp;
+                            this.minTemp = response.data.result[0].minTemp;
+                            this.outdoor_temp=response.data.result[0].outdoor_averageTemp;
+                        }
+                        else {
+                            this.heat = '--';
+                            this.powerConsumption = '--';
+                            this.averageTemp = '--';
+                            this.maxTemp = '--';
+                            this.outdoor_temp='--';
+                        }
+                    }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             projectChange(Option){//项目下拉框发生改变时
                 this.filter_project_id = Option;
-
             }
         },
         created(){

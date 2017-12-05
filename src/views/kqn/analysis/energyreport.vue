@@ -33,7 +33,7 @@
                     <hr/>
                     <Row>
                         <h2 style="text-align: center">能耗报告</h2>
-                        <Button type="primary" icon="ios-search" @click="down">导出报告</Button>
+                        <Button type="primary" icon="ios-download-outline" @click="down">导出报告</Button>
                     </Row>
                     <br/>
                     <Row style="margin-bottom: 10px;">

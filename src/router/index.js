@@ -159,36 +159,36 @@ const appRouter = [
             }
         ]
     },
-    {
-        path: '/sysmanage',
-        icon: 'monitor',
-        name: 'sysmanage',
-        title: '系统管理',
-        component: Main,
-        children: [
-            {
-                path: 'user',
-                icon: 'ios-people',
-                name: 'user',
-                title: '用户管理',
-                component: resolve => { require(['../views/sys/user.vue'], resolve); }
-            },
-            {
-                path: 'role',
-                icon: 'flame',
-                name: 'role',
-                title: '角色管理',
-                component: resolve => { require(['../views/sys/role.vue'], resolve); }
-            },
-            {
-                path: 'permission',
-                icon: 'soup-can',
-                name: 'permission',
-                title: '权限管理',
-                component: resolve => { require(['../views/sys/permission.vue'], resolve); }
-            }
-        ]
-    },
+    // {
+    //     path: '/sysmanage',
+    //     icon: 'monitor',
+    //     name: 'sysmanage',
+    //     title: '系统管理',
+    //     component: Main,
+    //     children: [
+    //         {
+    //             path: 'user',
+    //             icon: 'ios-people',
+    //             name: 'user',
+    //             title: '用户管理',
+    //             component: resolve => { require(['../views/sys/user.vue'], resolve); }
+    //         },
+    //         {
+    //             path: 'role',
+    //             icon: 'flame',
+    //             name: 'role',
+    //             title: '角色管理',
+    //             component: resolve => { require(['../views/sys/role.vue'], resolve); }
+    //         },
+    //         {
+    //             path: 'permission',
+    //             icon: 'soup-can',
+    //             name: 'permission',
+    //             title: '权限管理',
+    //             component: resolve => { require(['../views/sys/permission.vue'], resolve); }
+    //         }
+    //     ]
+    // },
 ];
 
 const routers = [
