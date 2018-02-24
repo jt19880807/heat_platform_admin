@@ -2,7 +2,7 @@
     <div>
         <Row style="margin: 10px">
             <Col span="8">
-
+                &nbsp;
             </Col>
             <Col span="8" offset="8" style="text-align: right">
                 <Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />
@@ -199,7 +199,6 @@
                 this.initData();
             },
             onDataSelect(selection){
-                //console.log(selection.length);
                 this.selectData=selection;
             },
             //批量删除
@@ -212,7 +211,6 @@
                         batchDelProjects(this.selectData).then((response)=>{
                             if (response.data.result===this.selectData.length){
                                 this.initData();
-                                //this.currentPage=this.selectData.length==this.pageSize?this.currentPage-1:this.currentPage;
                                 this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }

@@ -31,9 +31,12 @@
                             <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="endDateChange" placeholder="Select date" :value="endDate" style="width: 120px"></DatePicker>
                             &nbsp;&nbsp;
                              <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
+                            <Button type="primary" icon="ios-download-outline" @click="exportData()" v-bind:disabled="data.length==0">导出</Button>
                         </Col>
                     </Row>
-                    <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
+                    <Row>
+                        <Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect" ></Table>
+                    </Row>
                     <Row style="margin: 10px">
                         <Col span="8">
                             <Button type="primary" @click="addHeatMeterReading" icon="plus">新增</Button>
@@ -196,7 +199,6 @@
                 endDate:'',
                 meterId:0,
                 meterType:1,
-
             }
         },
         methods: {
@@ -388,13 +390,18 @@
             selectDateChange(date){
               this.formValidate.date=date;
             },
+            //导出数据
+            exportData(){
+                this.$refs.selection.exportCsv({
+                    filename: 'The original data'
+                });
+            },
         },
         created(){
             this.initDate();
             this.projecIds=Cookies.get("projects");
             this.initProject();
             this.initProjectTree();
-
         }
 
     }

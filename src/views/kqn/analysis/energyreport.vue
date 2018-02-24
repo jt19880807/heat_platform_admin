@@ -449,7 +449,7 @@
             },
             initDate(){
                 var date=new Date();
-                this.startDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/01";
+                this.startDate=date.getFullYear()+"/"+(date.getMonth())+"/"+date.getDate();
                 this.endDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate();
             },
             treeSelectChange(option) {
@@ -515,7 +515,7 @@
                     environmentalBenefits_picinfo:this.environmentalBenefits_picinfo,
                 })
                     .then((response)=>{
-                        window.location.href="http://127.0.0.1:8082/exportEnergyReport?projectId="+this.tree_project_id+"&startDate="+this.startDate+"&endDate="+this.endDate+"&shownhxy="+this.nhxy+"&showhjxy="+this.hjxy;
+                        window.location.href="http://192.168.5.21:8082/exportEnergyReport?projectId="+this.tree_project_id+"&startDate="+this.startDate+"&endDate="+this.endDate+"&shownhxy="+this.nhxy+"&showhjxy="+this.hjxy;
                     }).catch(function (error) {
                     console.log(error);
                 });
@@ -536,11 +536,9 @@
                 }
             },
         },
-
         created(){
             this.initDate();
             this.initProjectTree();
         }
-
     }
 </script>

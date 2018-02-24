@@ -9,7 +9,7 @@ import axios from 'axios'
 //     }
 // });
 // //设置请求baseURL
- axios.defaults.baseURL='http://127.0.0.1:8082';
+ axios.defaults.baseURL='http://192.168.5.21:8082';
 // //设置默认请求头
 axios.defaults.headers = {
     "Content-Type": "application/json",
@@ -74,6 +74,33 @@ export const getAllUsers=()=>{
 export const batchDelUsers=params=>{
     return axios.post("/users-del",params);
 };
+// 插入用户信息
+export const insertUser=params=>{
+    return axios.post("/user",params);
+};
+// 修改用户信息
+export const updateUser=(userId,params)=>{
+    return axios.put("/user/"+userId,params);
+};
+
+//角色信息
+//获取所有的角色信息
+export const getAllRoles=()=>{
+  return axios.get("/roles");
+};
+//批量删除角色信息
+export const batchDelRoles=params=>{
+    return axios.post("/roles-del",params);
+};
+// 插入角色信息
+export const insertRole=params=>{
+    return axios.post("/role",params);
+};
+// 修改角色信息
+export const updateRole=(roleId,params)=>{
+    return axios.put("/role/"+roleId,params);
+};
+
 
 //分页获取指定ID或者全部的带搜索关键字的项目信息
 export const getProjects=(ids,num,size,keywords)=>{

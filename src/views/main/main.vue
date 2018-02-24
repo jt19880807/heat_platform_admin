@@ -34,30 +34,30 @@
                                         <Icon type="arrow-down-b"></Icon>
                                     </a>
                                     <DropdownMenu slot="list">
-                                        <DropdownItem name="ownSpace">个人中心</DropdownItem>
+                                        <!--<DropdownItem name="ownSpace">个人中心</DropdownItem>-->
                                         <DropdownItem name="loginout" divided>退出登录</DropdownItem>
                                     </DropdownMenu>
                                 </Dropdown>
                                 <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" style="background: #619fe7;margin-left: 10px;"></Avatar>
                             </Row>
                         </div>
-                        <div class="message-con">
-                            <Tooltip :content="messageCount > 0 ? '有' + messageCount + '条未读消息' : '无未读消息'" placement="bottom">
-                                <Badge :count="messageCount" dot>
-                                    <Icon type="ios-bell" :size="22"></Icon>
-                                </Badge>
-                            </Tooltip>
-                        </div>
-                        <div class="lock-screen-btn-con">
-                            <Tooltip content="锁屏" placement="bottom">
-                                <Icon type="locked" :size="20"></Icon>
-                            </Tooltip>
-                        </div>
-                        <div v-if="showFullScreenBtn" class="full-screen-btn-con">
-                            <Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">
-                                <Icon :type="isFullScreen ? 'arrow-shrink' : 'arrow-expand'" :size="23"></Icon>
-                            </Tooltip>
-                        </div>
+                        <!--<div class="message-con">-->
+                            <!--<Tooltip :content="messageCount > 0 ? '有' + messageCount + '条未读消息' : '无未读消息'" placement="bottom">-->
+                                <!--<Badge :count="messageCount" dot>-->
+                                    <!--<Icon type="ios-bell" :size="22"></Icon>-->
+                                <!--</Badge>-->
+                            <!--</Tooltip>-->
+                        <!--</div>-->
+                        <!--<div class="lock-screen-btn-con">-->
+                            <!--<Tooltip content="锁屏" placement="bottom">-->
+                                <!--<Icon type="locked" :size="20"></Icon>-->
+                            <!--</Tooltip>-->
+                        <!--</div>-->
+                        <!--<div v-if="showFullScreenBtn" class="full-screen-btn-con">-->
+                            <!--<Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">-->
+                                <!--<Icon :type="isFullScreen ? 'arrow-shrink' : 'arrow-expand'" :size="23"></Icon>-->
+                            <!--</Tooltip>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                 if (name === 'ownSpace') {
                     util.openPage(this, 'ownspace_index', '个人中心');
                 } else if (name === 'loginout') {
-
+                    util.openPage(this, 'login', '登录');
                 }
             },
             checkTag (name) {

@@ -42,63 +42,6 @@
                 </Card>
             </Col>
         </Row>
-
-        <!--<Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData">-->
-            <!--<div slot="footer">-->
-                <!--<Button type="error" size="large" @click="closeModal">关闭</Button>-->
-                <!--<Button type="primary" size="large" @click="ok">保存</Button>-->
-            <!--</div>-->
-            <!--<Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">-->
-                <!--<Row>-->
-                    <!--<FormItem label="表号" prop="meter_id">-->
-                        <!--<Select v-model="formValidate.meter_id">-->
-                            <!--<Option v-for="item in filter_meterList" :value="item.id" :key="item.number">{{ item.number }}</Option>-->
-                        <!--</Select>-->
-                    <!--</FormItem>-->
-                <!--</Row>-->
-                <!--<Row>-->
-                    <!--<FormItem label="读数日期" prop="date">-->
-                        <!--<DatePicker size="small" type="datetime" format="yyyy/MM/dd HH:mm" @on-change="selectDateChange" placeholder="Select date" :value="formValidate.date"  style="width: 150px"></DatePicker>-->
-                    <!--</FormItem>-->
-                <!--</Row>-->
-                <!--<Row>-->
-                    <!--<Col span="12">-->
-                        <!--<FormItem label="累计热量" prop="accumulationheat">-->
-                            <!--<InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.accumulationheat"/>&nbsp;MWH-->
-                        <!--</FormItem>-->
-                    <!--</Col>-->
-                    <!--<Col span="12">-->
-                        <!--<FormItem label="功率" prop="power">-->
-                            <!--<InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.power"/>&nbsp;KW-->
-                        <!--</FormItem>-->
-                    <!--</Col>-->
-                <!--</Row>-->
-                <!--<Row>-->
-                    <!--<Col span="12">-->
-                    <!--<FormItem label="瞬时流量" prop="instantaneousflow">-->
-                        <!--<InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.instantaneousflow"/>&nbsp;m³/h-->
-                    <!--</FormItem>-->
-                    <!--</Col>-->
-                    <!--<Col span="12">-->
-                    <!--<FormItem label="累计冷量" prop="accumulationcooling">-->
-                        <!--<InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.accumulationcooling"/>&nbsp;KWH-->
-                    <!--</FormItem>-->
-                    <!--</Col>-->
-                <!--</Row>-->
-                <!--<Row>-->
-                    <!--<Col span="12">-->
-                    <!--<FormItem label="供水温度" prop="supplywatertemp">-->
-                        <!--<InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.supplywatertemp"/>&nbsp;℃-->
-                    <!--</FormItem>-->
-                    <!--</Col>-->
-                    <!--<Col span="12">-->
-                    <!--<FormItem label="回水温度" prop="accumulationcooling">-->
-                        <!--<InputNumber :min="0" :max="10000" :step="1.5" v-model="formValidate.returnwatertemp"/>&nbsp;℃-->
-                    <!--</FormItem>-->
-                    <!--</Col>-->
-                <!--</Row>-->
-            <!--</Form>-->
-        <!--</Modal>-->
     </div>
 </template>
 <script>
