@@ -9,7 +9,7 @@ import axios from 'axios'
 //     }
 // });
 // //设置请求baseURL
- axios.defaults.baseURL='http://192.168.5.21:8082';
+ axios.defaults.baseURL='http://localhost:8082';
 // //设置默认请求头
 axios.defaults.headers = {
     "Content-Type": "application/json",

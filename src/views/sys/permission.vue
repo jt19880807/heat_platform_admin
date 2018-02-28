@@ -10,16 +10,17 @@
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-            <Button type="error" @click="deletedata" v-bind:disabled="selectdata.length==0" icon="trash-a">删除选定</Button>
+                <Button type="primary" @click="addRole" icon="plus">新增</Button>
+                <Button type="primary" @click="editRole" icon="edit" v-bind:disabled="selectData.length==0">编辑</Button>
+                <Button type="error" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-            <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
             </Col>
         </Row>
     </div>
 </template>
 <script>
-    import {getAllPermissionss,insertPermission,updatePermission} from '../../axios/http';
+    import {getAllPermissions,insertPermission,updatePermission} from '../../axios/http';
     export default {
         data () {
             return {
@@ -31,11 +32,37 @@
                     },
                     {
                         title: '权限名称',
-                        key: 'name'
+                        key: 'name',
+                        render: (h, params) => {
+                            const row = params.row;
+                            var text = "";
+                            if (row.level === 1){
+                                text='|-'+row.name;
+                                return h('p',text);
+                            } else if (row.level === 2){
+                                text='|-'+row.name;
+                                return h('p',{
+                                    style: {
+                                        'margin-left': '20px'
+                                    }
+                                }, text);
+                            }
+                            else if (row.level === 3){
+                                text='|-'+row.name;
+                                return h('p',{
+                                    style: {
+                                        'margin-left': '40px'
+                                    }
+                                }, text);
+                            }
+
+                            //const text = row.level === 1? '|-'+row.name : row.level === 2? '  |-'+row.name ?row.level === 3? '    |-'+row.name:"";
+
+                        }
                     },
                     {
                         title: '路径',
-                        key: 'path'
+                        key: 'url'
                     },
                     {
                         title: '权限代码',
@@ -46,8 +73,8 @@
                         key: 'menu_type',
                         render: (h, params) => {
                             const row = params.row;
-                            const color = 'black';
-                            const text = row.menu_type === 1? '菜单' : row.status === 2 ? '按钮' : '';
+                            const color = row.menu_type === 1 ? 'green' : row.menu_type === 2 ? 'red':"";
+                            const text = row.menu_type === 1? '菜单' : row.menu_type === 2 ? '按钮' : '';
                             return h('Tag', {
                                 props: {
                                     color: color
@@ -71,13 +98,14 @@
                     }
                 ],
                 data: [],
-                selectdata:[],
+                selectData:[],
             }
         },
         methods: {
             //加载数据
             initdata(){
-                getAllPermissionss().then((response)=>{
+                getAllPermissions().then((response)=>{
+                    console.log(JSON.stringify(response.data.result));
                     this.data=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
