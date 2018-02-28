@@ -13,14 +13,14 @@
             <Col span="16">
                 <Card >
                     <p slot="title">角色列表</p>
-                    <Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect">
+                    <Table highlight-row border stripe ref="selection" :columns="columns" :data="data" @on-current-change="onDataSelect">
 
                     </Table>
                     <Row style="margin: 10px">
                         <Col span="8">
-                        <Button type="primary" @click="addRole" icon="plus">新增</Button>
-                        <Button type="primary" @click="editRole" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                        <Button type="error" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                            <Button type="primary" @click="addRole" icon="plus">新增</Button>
+                            <Button type="primary" @click="editRole" icon="edit" v-bind:disabled="selectData.length==0">编辑</Button>
+                            <Button type="error" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="8" offset="8" style="text-align: right">
                         </Col>
@@ -59,7 +59,6 @@
                         </RadioGroup>
                     </FormItem>
                 </Row>
-
             </Form>
         </Modal>
     </div>
@@ -71,7 +70,7 @@
             return {
                 columns: [
                     {
-                        type: 'selection',
+                        type: 'index',
                         width: 60,
                         align: 'center'
                     },
@@ -103,7 +102,7 @@
                     }
                 ],
                 data: [],
-                selectData:[],
+                selectData:'',
                 formValidate: {
                     name: '',
                     code:'',
@@ -129,20 +128,21 @@
                     console.log(error);
                 });
             },
-            onDataSelect(selection){
-                this.selectData=selection;
+            onDataSelect(currentRow,oldCurrentRow){
+
+                this.selectData=currentRow;
+               // console.log(currentRow);
             },
             deletedata(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
-                        //console.log(this.selectData);
-                        this.total=this.total-this.selectData.length;
-                        batchDelRoles(this.selectdata).then((response)=>{
-                            if (response.data.result===this.selectData.length){
+                       //console.log(JSON.parse(this.selectData));
+                        batchDelRoles(this.selectData).then((response)=>{
+                            if (response.data.result===1){
                                 this.initData();
-                                this.$refs.selection.selectAll(false);//取消全选
+                                //this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
                             else {
@@ -162,10 +162,11 @@
                 this.modalTitle="添加角色";
             },
             editRole(){
-                this.formValidate.name=this.selectData[0].name;
-                this.formValidate.code=this.selectData[0].code;
-                this.formValidate.des=this.selectData[0].des;
-                this.selectData[0].status==0?this.formValidate.status="正常":this.formValidate.status="锁死";
+
+                this.formValidate.name=this.selectData.name;
+                this.formValidate.code=this.selectData.code;
+                this.formValidate.des=this.selectData.des;
+                this.selectData.status==0?this.formValidate.status="正常":this.formValidate.status="锁死";
                 this.showCurrentTableData=true;
                 this.isAdd=false;
                 this.modalTitle="修改角色";
@@ -198,7 +199,7 @@
                         console.log(error);
                     });
                 }else {
-                    updateRole(this.selectData[0].id,param).then((response)=>{
+                    updateRole(this.selectData.id,param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();
                             this.$refs.selection.selectAll(false);//取消全选

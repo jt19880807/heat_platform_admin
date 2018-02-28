@@ -101,6 +101,24 @@ export const updateRole=(roleId,params)=>{
     return axios.put("/role/"+roleId,params);
 };
 
+//权限信息
+//获取所有的权限信息
+export const getAllPermissions=()=>{
+    return axios.get("/permissions");
+};
+//批量删除权限信息
+export const batchDelPermissions=params=>{
+    return axios.post("/permissions-del",params);
+};
+// 插入权限信息
+export const insertPermission=params=>{
+    return axios.post("/permission",params);
+};
+// 修改權限信息
+export const updatePermission=(roleId,params)=>{
+    return axios.put("/permission/"+roleId,params);
+};
+
 
 //分页获取指定ID或者全部的带搜索关键字的项目信息
 export const getProjects=(ids,num,size,keywords)=>{

@@ -57,7 +57,7 @@
                     }
                     if (!tagHasOpened) {
                         let tag = this.tagsList.filter((item) => {
-                            console.log(item);
+                            //console.log(item);
                             if (item.children) {
                                 return active === item.children[0].name;
                             } else {

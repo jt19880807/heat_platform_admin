@@ -1,12 +1,12 @@
 <template>
     <div>
-        <Row style="margin: 10px">
-            <Col span="8"><Button type="primary" icon="plus">添加用户</Button></Col>
-            <Col span="8" offset="8" style="text-align: right">
-            <Input placeholder="请输入姓名" style="width: 200px; ;" />
-            <span  style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
-            </Col>
-        </Row>
+        <!--<Row style="margin: 10px">-->
+            <!--<Col span="8"><Button type="primary" icon="plus">添加用户</Button></Col>-->
+            <!--<Col span="8" offset="8" style="text-align: right">-->
+            <!--<Input placeholder="请输入姓名" style="width: 200px; ;" />-->
+            <!--<span  style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>-->
+            <!--</Col>-->
+        <!--</Row>-->
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-    import {getAllUsers,batchDelUsers} from '../../axios/http';
+    import {getAllPermissionss,insertPermission,updatePermission} from '../../axios/http';
     export default {
         data () {
             return {
@@ -30,20 +30,24 @@
                         align: 'center'
                     },
                     {
-                        title: '用户名',
-                        key: 'username'
+                        title: '权限名称',
+                        key: 'name'
                     },
                     {
-                        title: '角色',
-                        key: 'rolename'
+                        title: '路径',
+                        key: 'path'
                     },
                     {
-                        title: '状态',
-                        key: 'status',
+                        title: '权限代码',
+                        key: 'code'
+                    },
+                    {
+                        title: '类型',
+                        key: 'menu_type',
                         render: (h, params) => {
                             const row = params.row;
-                            const color = row.status === 0 ? 'green' : row.status === 2 ? 'red':"";
-                            const text = row.status === 0? '正常' : row.status === 2 ? '锁死' : '';
+                            const color = 'black';
+                            const text = row.menu_type === 1? '菜单' : row.status === 2 ? '按钮' : '';
                             return h('Tag', {
                                 props: {
                                     color: color
@@ -52,42 +56,17 @@
                         }
                     },
                     {
-                        title: '最后登录',
-                        key: 'last_login'
-                    },
-                    {
-                        title: '操作',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
+                        title: '状态',
+                        key: 'status',
                         render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.show(params.index)
-                                        }
-                                    }
-                                }, '查看'),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.remove(params.index)
-                                        }
-                                    }
-                                }, '删除')
-                            ]);
+                            const row = params.row;
+                            const color = row.status === 0 ? 'green' : row.status === 2 ? 'red':"";
+                            const text = row.status === 0? '正常' : row.status === 2 ? '禁用' : '';
+                            return h('Tag', {
+                                props: {
+                                    color: color
+                                }
+                            }, text);
                         }
                     }
                 ],
@@ -98,22 +77,11 @@
         methods: {
             //加载数据
             initdata(){
-                getAllUsers().then((response)=>{
+                getAllPermissionss().then((response)=>{
                     this.data=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
                 });
-            },
-            pageChange(page){
-
-            },
-            show (index) {
-                this.$Modal.info({
-                    title: '用户信息',
-                })
-            },
-            remove (index) {
-                this.data.splice(index, 1);
             },
             onDataSelect(selection){
                 this.selectdata=selection;
