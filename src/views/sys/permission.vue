@@ -7,17 +7,52 @@
             <!--<span  style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>-->
             <!--</Col>-->
         <!--</Row>-->
-        <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
+        <Row><Table highlight-row border stripe ref="selection" :columns="columns" :data="data" @on-current-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="primary" @click="addRole" icon="plus">新增</Button>
-                <Button type="primary" @click="editRole" icon="edit" v-bind:disabled="selectData.length==0">编辑</Button>
+                <Button type="primary" @click="addPermission" v-bind:disabled="selectData.length==0" icon="plus">新增</Button>
+                <Button type="primary" @click="editPermission" icon="edit" v-bind:disabled="selectData.length==0">编辑</Button>
                 <Button type="error" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
             </Col>
         </Row>
+        <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData">
+            <div slot="footer">
+                <Button type="error" size="large" @click="closeModal">关闭</Button>
+                <Button type="primary" size="large" @click="saveData">保存</Button>
+            </div>
+            <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
+                <Row >
+                    <FormItem label="父权限" prop="parentname">
+                        <Input v-model="formValidate.parentname" disabled/>
+                    </FormItem>
+                    <FormItem label="权限名" prop="name">
+                        <Input v-model="formValidate.name"/>
+                    </FormItem>
+                    <FormItem label="路径" prop="path">
+                        <Input v-model="formValidate.path"/>
+                    </FormItem>
+                    <FormItem label="权限编码" prop="code">
+                        <Input v-model="formValidate.code"/>
+                    </FormItem>
+                    <FormItem label="类型" prop="menu_type">
+                        <RadioGroup v-model="formValidate.menu_type">
+                            <Radio label="菜单"></Radio>
+                            <Radio label="按钮"></Radio>
+                        </RadioGroup>
+                    </FormItem>
+                    <FormItem label="状态" prop="status">
+                        <RadioGroup v-model="formValidate.status">
+                            <Radio label="正常"></Radio>
+                            <Radio label="锁死"></Radio>
+                        </RadioGroup>
+                    </FormItem>
+                </Row>
+            </Form>
+        </Modal>
     </div>
+
 </template>
 <script>
     import {getAllPermissions,insertPermission,updatePermission} from '../../axios/http';
@@ -25,11 +60,6 @@
         data () {
             return {
                 columns: [
-                    {
-                        type: 'selection',
-                        width: 60,
-                        align: 'center'
-                    },
                     {
                         title: '权限名称',
                         key: 'name',
@@ -55,9 +85,6 @@
                                     }
                                 }, text);
                             }
-
-                            //const text = row.level === 1? '|-'+row.name : row.level === 2? '  |-'+row.name ?row.level === 3? '    |-'+row.name:"";
-
                         }
                     },
                     {
@@ -98,21 +125,38 @@
                     }
                 ],
                 data: [],
-                selectData:[],
+                selectData:'',
+                formValidate: {
+                    name: '',
+                    path:'',
+                    code:'',
+                    menu_type:'菜单',
+                    status:'正常',
+                    parentname:'',
+                    parent_id:0
+                },
+                ruleValidate: {
+                    name: [
+                        { required: true, message: '权限名不能为空', trigger: 'blur' }
+                    ]
+                },
+                showCurrentTableData: false,
+                modalTitle:"",//弹出层标题
+                isAdd:true,//是否添加
             }
         },
         methods: {
             //加载数据
-            initdata(){
+            initData(){
                 getAllPermissions().then((response)=>{
-                    console.log(JSON.stringify(response.data.result));
+//                    console.log(JSON.stringify(response.data.result));
                     this.data=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
-            onDataSelect(selection){
-                this.selectdata=selection;
+            onDataSelect(currentRow,oldCurrentRow){
+                this.selectData=currentRow;
             },
             deletedata(){//删除选定数据
                 this.$Modal.confirm({
@@ -138,10 +182,86 @@
                     onCancel: () => {
                     }
                 });
-            }
+            },
+            addPermission(){
+                this.showCurrentTableData=true;
+                this.formValidate.parentname=this.selectData.name;
+                this.formValidate.parent_id=this.selectData.id;
+                this.isAdd=true;
+                this.modalTitle="添加权限";
+            },
+            editPermission(){
+//                console.log(JSON.stringify(this.data));
+                var parentid=this.selectData.parent_id;
+                var rootData=this.data;
+                console.log(parentid);
+                for (var i=0;i<rootData.length;i++){
+                    if (rootData[i].id==parentid){
+                        this.formValidate.parentname=rootData[i].name;
+                        break;
+                    }
+                }
+                this.formValidate.name=this.selectData.name;
+
+                this.formValidate.parent_id=this.selectData.parent_id;
+                this.formValidate.path=this.selectData.url;
+                this.formValidate.code=this.selectData.code;
+                this.selectData.menu_type==1?this.selectData.menu_type="菜单":this.selectData.menu_type="按钮";
+                this.selectData.status==0?this.formValidate.status="正常":this.formValidate.status="锁死";
+                this.showCurrentTableData=true;
+                this.isAdd=false;
+                this.modalTitle="修改权限";
+            },
+            //保存数据
+            saveData(){
+                this.$refs['formValidate'].validate((valid) => {
+                    if (valid) {
+                        this.savePermission();
+                    } else {
+                        //this.$Message.error('Fail!');
+                    }
+                });
+            },
+            //保存用户数据(新增或者修改)
+            savePermission(){
+                var param={
+                    name:this.formValidate.name,
+                    parent_id:this.formValidate.parent_id,
+                    url:this.formValidate.path,
+                    code:this.formValidate.code,
+                    level:this.selectData.level+1,
+                    menu_type: this.formValidate.menu_type=='菜单'?1:2,
+                    status: this.formValidate.status=='正常'?0:2,
+                };
+                if (this.isAdd){
+                    insertPermission(param).then((response)=>{
+                        if(response.data.result===1){
+                            this.initData();
+                            this.closeModal();
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }else {
+                    updatePermission(this.selectData.id,param).then((response)=>{
+                        if(response.data.result===1){
+                            this.initData();
+                            this.$refs.selection.selectAll(false);//取消全选
+                            this.closeModal();
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            //关闭
+            closeModal(){
+                this.$refs['formValidate'].resetFields();
+                this.showCurrentTableData=false;
+            },
         },
         created(){
-            this.initdata();
+            this.initData();
         }
 
     }
