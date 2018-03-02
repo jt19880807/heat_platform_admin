@@ -106,6 +106,9 @@ export const updateRole=(roleId,params)=>{
 export const getAllPermissions=()=>{
     return axios.get("/permissions");
 };
+export const getPermissions_Tree=()=>{
+    return axios.get("/permissions-tree");
+};
 //批量删除权限信息
 export const batchDelPermissions=params=>{
     return axios.post("/permissions-del",params);
@@ -114,7 +117,7 @@ export const batchDelPermissions=params=>{
 export const insertPermission=params=>{
     return axios.post("/permission",params);
 };
-// 修改權限信息
+// 修改权限信息
 export const updatePermission=(roleId,params)=>{
     return axios.put("/permission/"+roleId,params);
 };
