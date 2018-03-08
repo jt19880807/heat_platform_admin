@@ -100,6 +100,10 @@ export const insertRole=params=>{
 export const updateRole=(roleId,params)=>{
     return axios.put("/role/"+roleId,params);
 };
+//修改指定角色的权限信息
+export const updateRolePermission=(roleId,params)=>{
+    return axios.put("/editRolePermission/"+roleId,params);
+};
 
 //权限信息
 //获取所有的权限信息

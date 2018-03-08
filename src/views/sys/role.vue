@@ -30,12 +30,20 @@
             <Col span="8">
                 <Card >
                     <p slot="title">权限列表</p>
-                    <p>Content of no border type. Content of no border type. </p>
+                    <p><Tree :data="permissionData" show-checkbox @on-check-change="onPermissionChanged"></Tree> </p>
+                    <Row>
+                        <Col span="8">
+                        &nbsp;
+                        </Col>
+                        <Col span="8">
+                        <Button type="primary" size="large" @click="savePermissions" v-bind:disabled="checkedPermmissions.length==0">保存</Button>
+                        </Col>
+                        <Col span="8">
+                        </Col>
+                    </Row>
                 </Card>
             </Col>
-
         </Row>
-
         <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData">
             <div slot="footer">
                 <Button type="error" size="large" @click="closeModal">关闭</Button>
@@ -64,7 +72,8 @@
     </div>
 </template>
 <script>
-    import {batchDelRoles,insertRole,updateRole,getAllRoles} from '../../axios/http';
+    import {batchDelRoles,getPermissions_Tree,insertRole,updateRole,getAllRoles,updateRolePermission} from '../../axios/http';
+    import {checkeAllPermissions,checkePartPermissions} from '../../utils/index';
     export default {
         data () {
             return {
@@ -102,12 +111,14 @@
                     }
                 ],
                 data: [],
+                permissionData:[],
                 selectData:'',
                 formValidate: {
                     name: '',
                     code:'',
                     des:'',
-                    status:'正常'
+                    status:'正常',
+                    rights:'',
                 },
                 ruleValidate: {
                     name: [
@@ -117,6 +128,8 @@
                 showCurrentTableData: false,
                 modalTitle:"",//弹出层标题
                 isAdd:true,//是否添加
+                roleRights:'',
+                checkedPermmissions:[],
             }
         },
         methods: {
@@ -124,25 +137,42 @@
             initData(){
                 getAllRoles().then((response)=>{
                     this.data=response.data.result;
+                   // this.rights=response.data.result.rights;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            initPermissionData(){
+                getPermissions_Tree().then((response)=>{
+                    this.permissionData=response.data.result;
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
             onDataSelect(currentRow,oldCurrentRow){
-
                 this.selectData=currentRow;
-               // console.log(currentRow);
+                this.loadRolePermissions(this.selectData.rights);
+            },
+            loadRolePermissions(rights){
+              if (rights==="*"){//拥有全部权限
+                  checkeAllPermissions(this.permissionData);
+              } else {//拥有部分权限
+                  var intRight=[];
+                  var allRights=rights.substring(0,rights.length-1).split(",");
+                  for (var a in allRights){
+                      intRight.push(parseInt(a));
+                  }
+                  checkePartPermissions(this.permissionData,rights);
+              }
             },
             deletedata(){//删除选定数据
                 this.$Modal.confirm({
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
-                       //console.log(JSON.parse(this.selectData));
                         batchDelRoles(this.selectData).then((response)=>{
                             if (response.data.result===1){
                                 this.initData();
-                                //this.$refs.selection.selectAll(false);//取消全选
                                 this.$Message.success('删除成功');
                             }
                             else {
@@ -158,6 +188,7 @@
             },
             addRole(){
                 this.showCurrentTableData=true;
+                this.formValidate.rights='';
                 this.isAdd=true;
                 this.modalTitle="添加角色";
             },
@@ -188,6 +219,7 @@
                     code:this.formValidate.code,
                     des: this.formValidate.des,
                     status: this.formValidate.status=='正常'?0:2,
+                    rights:this.formValidate.rights,
                 };
                 if (this.isAdd){
                     insertRole(param).then((response)=>{
@@ -215,10 +247,36 @@
                 this.$refs['formValidate'].resetFields();
                 this.showCurrentTableData=false;
             },
+            //保存权限
+            savePermissions(){
+                var rights='';
+                if (this.checkedPermmissions.length>0) {
+                    for (var c in this.checkedPermmissions){
+                        rights+=this.checkedPermmissions[c].id+',';
+                    }
+                }
+                this.formValidate.rights=rights;
+                var param={
+                    rights:this.formValidate.rights,
+                };
+                updateRolePermission(this.selectData.id,param).then((response)=>{
+                    if(response.data.result===1){
+                        this.initData();
+                        this.closeModal();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            onPermissionChanged(selection){
+               //console.log(JSON.stringify( selection));
+                this.checkedPermmissions=selection;
+            },
         },
 
         created(){
             this.initData();
+            this.initPermissionData();
         }
 
     }

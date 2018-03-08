@@ -15,3 +15,31 @@ export const selectCityValue=(cityText,cityData)=>{
     }
     return result;
 };
+export  const checkeAllPermissions=(permissions)=>{
+  for (var p in permissions){
+      permissions[p].checked=true;
+      permissions[p].expand=true;
+      // if (permissions[p].children.length>0){
+           checkeAllPermissions(permissions[p].children);
+      // }
+  }
+};
+export  const checkePartPermissions=(permissions,rights)=>{
+
+    //var allRights=rights.split(",");
+    //console.log(allRights);
+    for (var p in permissions){
+        permissions[p].expand=true;
+
+        if(rights.includes(permissions[p].id)){
+            permissions[p].checked=true;
+        }
+        else {
+            permissions[p].checked=false;
+        }
+
+        // if (permissions[p].children.length>0){
+        checkePartPermissions(permissions[p].children,rights);
+        // }
+    }
+};
