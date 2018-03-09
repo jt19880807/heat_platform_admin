@@ -278,6 +278,5 @@
             this.initData();
             this.initPermissionData();
         }
-
     }
 </script>

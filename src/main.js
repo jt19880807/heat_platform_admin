@@ -121,11 +121,13 @@ const store=new Vuex.Store({
                             menuList[i - 1].children = childrenArr;
                         }
                     }
-                } else {
+                }
+                else {
                     if (item.children.length <= 1) {
                         menuList.push(item);
                     } else {
                         let i = menuList.push(item);
+                        console.log(i);
                         let childrenArr = [];
                         childrenArr = item.children.filter(child => {
                             if (child.access !== undefined) {
@@ -140,6 +142,7 @@ const store=new Vuex.Store({
                     }
                 }
             });
+
             state.menuList = menuList;
         },
     }
