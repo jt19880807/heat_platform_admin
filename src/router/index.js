@@ -207,14 +207,6 @@ router.beforeEach((to,from,next)=>{
             path: '/login'
         });
     }
-    // if (from.name==null){
-    //     next({
-    //         path: '/login'
-    //     });
-    // }
-    // else {
-    //     next();
-    // }
     next();
 });
 

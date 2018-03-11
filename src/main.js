@@ -99,23 +99,27 @@ const store=new Vuex.Store({
         },
         updateMenulist (state) {
             let accessCode =1;// parseInt(Cookies.get('access'));
+            let rights=sessionStorage.getItem("rights");
+            let menus=sessionStorage.getItem("menus");
+            let buttons=sessionStorage.getItem("buttons");
             let menuList = [];
             appRouter.forEach((item, index) => {
-                if (item.access !== undefined) {
-                    if (Util.showThisRoute(item.access, accessCode)) {
+                if (rights !== "*") {
+                    var menuList = menus.split(",");
+                    if (Util.oneOf(item.name, menuList)) {
                         if (item.children.length <= 1) {
                             menuList.push(item);
                         } else {
                             let i = menuList.push(item);
                             let childrenArr = [];
                             childrenArr = item.children.filter(child => {
-                                if (child.access !== undefined) {
-                                    if (child.access === accessCode) {
+                               // if (child.access !== undefined) {
+                                    if (Util.oneOf(child.name, menuList)) {
                                         return child;
                                     }
-                                } else {
-                                    return child;
-                                }
+                                // } else {
+                                //     return child;
+                                // }
 
                             });
                             menuList[i - 1].children = childrenArr;
@@ -127,7 +131,6 @@ const store=new Vuex.Store({
                         menuList.push(item);
                     } else {
                         let i = menuList.push(item);
-                        console.log(i);
                         let childrenArr = [];
                         childrenArr = item.children.filter(child => {
                             if (child.access !== undefined) {
