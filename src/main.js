@@ -104,9 +104,10 @@ const store=new Vuex.Store({
             let buttons=sessionStorage.getItem("buttons");
             let menuList = [];
             appRouter.forEach((item, index) => {
+
                 if (rights !== "*") {
-                    var menuList = menus.split(",");
-                    if (Util.oneOf(item.name, menuList)) {
+                    var roleMenus = menus.split(",");
+                    if (Util.oneOf(item.name, roleMenus)) {
                         if (item.children.length <= 1) {
                             menuList.push(item);
                         } else {
@@ -114,7 +115,7 @@ const store=new Vuex.Store({
                             let childrenArr = [];
                             childrenArr = item.children.filter(child => {
                                // if (child.access !== undefined) {
-                                    if (Util.oneOf(child.name, menuList)) {
+                                    if (Util.oneOf(child.name, roleMenus)) {
                                         return child;
                                     }
                                 // } else {
@@ -127,6 +128,7 @@ const store=new Vuex.Store({
                     }
                 }
                 else {
+                    console.log(rights);
                     if (item.children.length <= 1) {
                         menuList.push(item);
                     } else {
@@ -151,6 +153,24 @@ const store=new Vuex.Store({
     }
 });
 
+//权限指令
+Vue.directive('has', {
+    bind: function(el, binding) {
+
+        let rights=sessionStorage.getItem("rights");
+        let buttons=sessionStorage.getItem("buttons");
+        console.log(buttons);
+        if (rights !== "*") {
+            var roleButtons = buttons.split(",");
+            if (!Util.oneOf(binding.value, roleButtons)) {
+                el.parentNode.removeChild(el);
+            }
+        }
+        // if (!Vue.prototype.$_has(binding.value)) {
+        //     el.parentNode.removeChild(el);
+        // }
+    }
+});
 new Vue({
     el: '#app',
     router: router,

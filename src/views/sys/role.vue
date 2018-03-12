@@ -193,7 +193,6 @@
                 this.modalTitle="添加角色";
             },
             editRole(){
-
                 this.formValidate.name=this.selectData.name;
                 this.formValidate.code=this.selectData.code;
                 this.formValidate.des=this.selectData.des;
@@ -269,7 +268,7 @@
                 });
             },
             onPermissionChanged(selection){
-               //console.log(JSON.stringify( selection));
+               console.log(JSON.stringify( selection));
                 this.checkedPermmissions=selection;
             },
         },

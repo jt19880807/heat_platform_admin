@@ -12,7 +12,7 @@
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="primary" @click="addUser" icon="plus">新增</Button>
+                <Button type="primary" v-has="'user_add'" @click="addUser" icon="plus">新增</Button>
             <Button type="primary" @click="editUser" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
                 <Button type="error" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
