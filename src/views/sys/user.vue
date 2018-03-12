@@ -25,7 +25,7 @@
                 <Button type="error" size="large" @click="closeModal">关闭</Button>
                 <Button type="primary" size="large" @click="saveData">保存</Button>
             </div>
-            <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
+            <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="70">
                 <Row >
                     <FormItem label="用户名" prop="userName">
                         <Input v-model="formValidate.userName"/>
@@ -56,17 +56,30 @@
                         </RadioGroup>
                     </FormItem>
                 </Row>
+                <Row>
+                    <FormItem label="项目" prop="targetKeys">
+                        <Transfer
+                            :model="formValidate.targetKeys"
+                            :data="transferModel"
+                            :target-keys="formValidate.targetKeys"
+                            :render-format="render1"
+                            :titles="['已选择', '未选择']"
+                            @on-change="onTransferChange">
+
+                        </Transfer>
+                    </FormItem>
+                </Row>
             </Form>
         </Modal>
     </div>
 </template>
 <script>
-    import {getAllUsers,batchDelUsers,insertUser,updateUser,getAllRoles} from '../../axios/http';
+    import {getAllUsers,batchDelUsers,insertUser,updateUser,getAllRoles,getProjectTransferModel} from '../../axios/http';
     export default {
         data () {
-            const validateName = (rule, value, callback) => {
-                if (!value) {
-                    return callback(new Error('请输入用户名'));
+            const validateTargetKeys = (rule, value, callback) => {
+                if (value.length<=0) {
+                    return callback(new Error('请选择项目'));
                 }
             };
             const validatePass = (rule, value, callback) => {
@@ -124,6 +137,8 @@
                     }
                 ],
                 data: [],
+                transferModel:[],
+
                 selectData:[],
                 roleList:[],
                 formValidate: {
@@ -132,6 +147,7 @@
                     passwdCheck:'',
                     roleId:'',
                     status:'正常',
+                    targetKeys: [],
                 },
                 ruleValidate: {
                     userName: [
@@ -142,6 +158,9 @@
                     ],
                     passwdCheck: [
                         { required: true,validator: validatePassCheck, trigger: 'blur' }
+                    ],
+                    targetKeys:[
+                        { required: true ,validator: validateTargetKeys, trigger: 'blur'}
                     ],
                     roleId: [
                         { type: 'number',required: true, message: '请选择角色', trigger: 'change' },
@@ -161,6 +180,13 @@
                     console.log(error);
                 });
             },
+            initTransferModel(){
+                getProjectTransferModel("*").then((response)=>{
+                    this.transferModel=response.data.result;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             initRoles(){
                 getAllRoles().then((response)=>{
                     this.roleList=response.data.result;
@@ -173,6 +199,9 @@
             },
             onDataSelect(selection){
                 this.selectData=selection;
+            },
+            onTransferChange(newTargetKeys){
+                this.formValidate.targetKeys = newTargetKeys;
             },
             deletedata(){//删除选定数据
                 this.$Modal.confirm({
@@ -263,6 +292,7 @@
         created(){
             this.initRoles();
             this.initData();
+            this.initTransferModel();
         }
 
     }

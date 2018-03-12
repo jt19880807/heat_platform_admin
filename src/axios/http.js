@@ -140,8 +140,12 @@ export const getProjectTreeNoChildren=(ids)=>{
     return axios.get("/projecTreeNoChildren/"+ids);
 };
 //获取指定ID或者全部项目信息，用于下拉框，只返回ID和name
+export const getProjectTransferModel=(ids)=>{
+  return axios.get("/projecTransferModel/"+ids);
+};
+//获取指定ID或者全部项目信息，用于下拉框，只返回ID和name
 export const getProjectsList=(ids)=>{
-  return axios.get("/projects-list/"+ids);
+    return axios.get("/projects-list/"+ids);
 };
 //批量删除项目信息
 export const batchDelProjects=params=>{

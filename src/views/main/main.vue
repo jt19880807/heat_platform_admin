@@ -77,6 +77,7 @@
     import breadcrumbNav from "../../components/breadcrumbNav.vue";
     import tagsPageOpened from "../../components/tagsPageOpened.vue";
     import util from '../../libs/util.js';
+    import Cookies from 'js-cookie';
     export default {
         components:{
             sidebarMenu,
@@ -87,7 +88,7 @@
         data(){
             return{
                 hideMenuText: false,
-                userName: 'Admin',
+                userName: '',
                 showFullScreenBtn: window.navigator.userAgent.indexOf('MSIE') < 0,
                 isFullScreen: false,
                 messageCount: 10,
@@ -119,7 +120,7 @@
                 if (pathArr.length >= 2) {
                     this.$store.commit('addOpenSubmenu', pathArr[1].name);
                 }
-                //this.userName = Cookies.get('user');
+                this.userName = Cookies.get('username');
                 let messageCount = 3;
                 //this.messageCount = messageCount.toString();
             },
