@@ -98,13 +98,13 @@ const store=new Vuex.Store({
             state.menuList = menulist;
         },
         updateMenulist (state) {
+            console.log(JSON.stringify(appRouter));
             let accessCode =1;// parseInt(Cookies.get('access'));
             let rights=sessionStorage.getItem("rights");
             let menus=sessionStorage.getItem("menus");
             let buttons=sessionStorage.getItem("buttons");
             let menuList = [];
             appRouter.forEach((item, index) => {
-
                 if (rights !== "*") {
                     var roleMenus = menus.split(",");
                     if (Util.oneOf(item.name, roleMenus)) {
@@ -128,25 +128,27 @@ const store=new Vuex.Store({
                     }
                 }
                 else {
-                    console.log(rights);
+                    //console.log(rights);
                     if (item.children.length <= 1) {
                         menuList.push(item);
                     } else {
                         let i = menuList.push(item);
                         let childrenArr = [];
-                        childrenArr = item.children.filter(child => {
-                            if (child.access !== undefined) {
-                                if (Util.showThisRoute(child.access, accessCode)) {
-                                    return child;
-                                }
-                            } else {
-                                return child;
-                            }
-                        });
-                        menuList[i - 1].children = childrenArr;
+                        // childrenArr = item.children.filter(child => {
+                        //     if (child.access !== undefined) {
+                        //         if (Util.showThisRoute(child.access, accessCode)) {
+                        //             return child;
+                        //         }
+                        //     } else {
+                        //         return child;
+                        //     }
+                        // });
+                        // menuList[i - 1].children = childrenArr;
+                        menuList[i - 1].children = item.children;
                     }
                 }
             });
+           //console.log(rights);
 
             state.menuList = menuList;
         },
@@ -159,7 +161,7 @@ Vue.directive('has', {
 
         let rights=sessionStorage.getItem("rights");
         let buttons=sessionStorage.getItem("buttons");
-        console.log(buttons);
+       // console.log(buttons);
         if (rights !== "*") {
             var roleButtons = buttons.split(",");
             if (!Util.oneOf(binding.value, roleButtons)) {
@@ -183,6 +185,9 @@ new Vue({
         this.currentPageName = this.$route.name;
     },
     created () {
+        console.log("main.js_create");
+        this.$store.commit('updateMenulist');
+        // console.log(JSON.stringify(appRouter));
         let tagsList = [];
         appRouter.map((item) => {
             if (item.children.length <= 1) {

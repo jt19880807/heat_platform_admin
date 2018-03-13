@@ -13,19 +13,19 @@
         <Row style="margin: 10px">
             <Col span="8">
                 <Button type="primary" v-has="'user_add'" @click="addUser" icon="plus">新增</Button>
-            <Button type="primary" @click="editUser" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                <Button type="error" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                <Button type="primary" v-has="'user_edit'" @click="editUser" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                <Button type="error" v-has="'user_del'" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
                 <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
             </Col>
         </Row>
-        <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData">
+        <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData" :width="600">
             <div slot="footer">
                 <Button type="error" size="large" @click="closeModal">关闭</Button>
                 <Button type="primary" size="large" @click="saveData">保存</Button>
             </div>
-            <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="70">
+            <Form ref="formValidate" :model="formValidate"  :rules="ruleValidate" :label-width="80">
                 <Row >
                     <FormItem label="用户名" prop="userName">
                         <Input v-model="formValidate.userName"/>
@@ -62,7 +62,6 @@
                             :model="formValidate.targetKeys"
                             :data="transferModel"
                             :target-keys="formValidate.targetKeys"
-                            :render-format="render1"
                             :titles="['已选择', '未选择']"
                             @on-change="onTransferChange">
 
@@ -80,6 +79,9 @@
             const validateTargetKeys = (rule, value, callback) => {
                 if (value.length<=0) {
                     return callback(new Error('请选择项目'));
+                }
+                else {
+                    callback();
                 }
             };
             const validatePass = (rule, value, callback) => {
@@ -138,7 +140,6 @@
                 ],
                 data: [],
                 transferModel:[],
-
                 selectData:[],
                 roleList:[],
                 formValidate: {
@@ -208,7 +209,6 @@
                     title: '删除数据',
                     content: '<p>确定要删除选定的数据？</p>',
                     onOk: () => {
-                        console.log(this.selectData);
                         this.total=this.total-this.selectData.length;
                         batchDelUsers(this.selectdata).then((response)=>{
                             if (response.data.result===this.selectData.length){
@@ -228,11 +228,24 @@
                 });
             },
             addUser(){
+                this.formValidate.targetKeys=[];
                 this.showCurrentTableData=true;
                 this.isAdd=true;
                 this.modalTitle="添加用户";
             },
             editUser(){
+                var projects=this.selectData[0].projects;
+                if (projects=="*"){
+                    for (var i=0;i<this.transferModel.length;i++){
+                        this.formValidate.targetKeys.push(this.transferModel[i].key);
+                    }
+                }
+                else {
+                    var p_split = projects.split(",");
+                    for (var i=0;i<p_split.length-1;i++){
+                        this.formValidate.targetKeys.push(parseInt(p_split[i]));
+                    }
+                }
                 this.formValidate.userName=this.selectData[0].username;
                 this.formValidate.password=this.selectData[0].password;
                 this.formValidate.passwdCheck=this.selectData[0].password;
@@ -254,11 +267,20 @@
             },
             //保存用户数据(新增或者修改)
             saveUser(){
+                var selectdProjects='';
+                if (this.formValidate.targetKeys.length==this.transferModel.length){
+                    selectdProjects="*";
+                }
+                else {
+                    for (var i = 0; i < this.formValidate.targetKeys.length; i++) {
+                        selectdProjects += this.formValidate.targetKeys[i] + ",";
+                    }
+                }
                 var param={
                     username:this.formValidate.userName,
                     password:this.formValidate.password,
                     role_id: this.formValidate.roleId,
-                    projects: '*',
+                    projects: selectdProjects,
                     status: this.formValidate.status=='正常'?0:2,
                 };
                 if (this.isAdd){
@@ -271,6 +293,7 @@
                         console.log(error);
                     });
                 }else {
+                    console.log(param);
                     updateUser(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();

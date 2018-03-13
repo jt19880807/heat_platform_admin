@@ -14,9 +14,9 @@
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
         <Row style="margin: 10px">
             <Col span="8">
-                <Button type="primary" @click="addArea" icon="plus">新增</Button>
-                <Button type="primary" @click="editArea" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                <Button type="error" @click="deleteArea" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                <Button type="primary" v-has="'area_add'" @click="addArea" icon="plus">新增</Button>
+                <Button type="primary" v-has="'area_edit'" @click="editArea" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                <Button type="error" v-has="'area_del'" @click="deleteArea" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
                 <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>

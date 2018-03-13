@@ -27,14 +27,14 @@ const appRouter = [
     {
         path: '/projectmanage',
         icon: 'social-buffer',
-        name: 'projectmanage',
+        name: 'project',
         title: '项目管理',
         component: Main,
         children: [
             {
                 path: 'project',
                 icon: 'compose',
-                name: 'project',
+                name: 'baseinfo',
                 title: '基础信息',
                 component: resolve => { require(['../views/kqn/project.vue'], resolve); }
             },
@@ -58,7 +58,7 @@ const appRouter = [
     {
         path: '/devicemanage',
         icon: 'social-buffer',
-        name: 'devicemanage',
+        name: 'device',
         title: '设备管理',
         component: Main,
         children: [

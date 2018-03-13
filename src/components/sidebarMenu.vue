@@ -82,6 +82,7 @@
                 localStorage.currentPageName = to.name;
             },
             currentPageName () {
+                console.log("currentPageName");
                 this.openedSubmenuArr = this.$store.state.openedSubmenuArr;
                 this.$nextTick(() => {
                     this.$refs.sideMenu.updateOpened();

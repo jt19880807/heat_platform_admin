@@ -41,23 +41,7 @@
                                 <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" style="background: #619fe7;margin-left: 10px;"></Avatar>
                             </Row>
                         </div>
-                        <!--<div class="message-con">-->
-                            <!--<Tooltip :content="messageCount > 0 ? '有' + messageCount + '条未读消息' : '无未读消息'" placement="bottom">-->
-                                <!--<Badge :count="messageCount" dot>-->
-                                    <!--<Icon type="ios-bell" :size="22"></Icon>-->
-                                <!--</Badge>-->
-                            <!--</Tooltip>-->
-                        <!--</div>-->
-                        <!--<div class="lock-screen-btn-con">-->
-                            <!--<Tooltip content="锁屏" placement="bottom">-->
-                                <!--<Icon type="locked" :size="20"></Icon>-->
-                            <!--</Tooltip>-->
-                        <!--</div>-->
-                        <!--<div v-if="showFullScreenBtn" class="full-screen-btn-con">-->
-                            <!--<Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">-->
-                                <!--<Icon :type="isFullScreen ? 'arrow-shrink' : 'arrow-expand'" :size="23"></Icon>-->
-                            <!--</Tooltip>-->
-                        <!--</div>-->
+
                     </div>
                 </div>
             </div>
@@ -131,7 +115,23 @@
                 if (name === 'ownSpace') {
                     util.openPage(this, 'ownspace_index', '个人中心');
                 } else if (name === 'loginout') {
-                    util.openPage(this, 'login', '登录');
+                    // 退出登录
+                    Cookies.remove('username');
+                    Cookies.remove('projects');
+                    Cookies.remove('buildings');
+                    Cookies.remove('userid');
+                    this.$store.commit('clearOpenedSubmenu');
+                    // 清空打开的页面等数据，但是保存主题数据
+  //                  localStorage.clear();
+//                    if (theme) {
+//                        localStorage.theme = theme;
+//                    }
+//                    this.$store.commit('updateMenulist');
+                    this.$router.push({
+                        name: 'login'
+                    });
+                    this.$store.commit('updateMenulist');
+                   //util.openPage(this, 'login', '登录');
                 }
             },
             checkTag (name) {
@@ -159,9 +159,11 @@
             }
         },
         mounted () {
+            console.log("main.vue_mounted");
             this.init();
         },
         created(){
+            console.log("main.vue_create");
             // 权限菜单过滤相关
             this.$store.commit('updateMenulist');
             // 显示打开的页面的列表

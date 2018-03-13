@@ -19,9 +19,9 @@
                     <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
                     <Row style="margin: 10px">
                         <Col span="8">
-                            <Button type="primary" @click="addCollector" icon="plus">新增</Button>
-                            <Button type="primary" @click="editCollector" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                            <Button type="error" @click="deleteCollector" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                            <Button type="primary" v-has="'collector_add'" @click="addCollector" icon="plus">新增</Button>
+                            <Button type="primary" v-has="'collector_edit'" @click="editCollector" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                            <Button type="error" v-has="'collector_del'" @click="deleteCollector" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="8" offset="8" style="text-align: right">
                             <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>

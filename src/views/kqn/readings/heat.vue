@@ -39,9 +39,9 @@
                     </Row>
                     <Row style="margin: 10px">
                         <Col span="8">
-                            <Button type="primary" @click="addHeatMeterReading" icon="plus">新增</Button>
-                            <Button type="primary" @click="editHeatMeterReading" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
-                            <Button type="error" @click="deleteHeatMeterReading" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
+                            <Button type="primary" v-has="'heatreading_add'" @click="addHeatMeterReading" icon="plus">新增</Button>
+                            <Button type="primary" v-has="'heatreading_edit'" @click="editHeatMeterReading" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>
+                            <Button type="error" v-has="'heatreading_del'" @click="deleteHeatMeterReading" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="16" style="text-align: right">
                             <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>

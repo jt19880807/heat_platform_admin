@@ -99,7 +99,7 @@
                             sessionStorage.setItem("rights",response.data.result[0].rights);
                             sessionStorage.setItem("menus",response.data.result[0].menus);
                             sessionStorage.setItem("buttons",response.data.result[0].buttons);
-//                            console.log(response.data.result[0].buttons);
+
                             this.$router.push({
                                 name: 'home_index'
                             });
