@@ -198,6 +198,7 @@ const routers = [
 ];
 const router=new VueRouter({
     mode: 'history',
+    base: '/hot/',
     routes:routers
 });
 

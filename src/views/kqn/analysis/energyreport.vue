@@ -118,7 +118,7 @@
                         &nbsp;&nbsp;评估时间：&nbsp;&nbsp;
                         </Col>
                         <Col span="12" >
-                        <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{reportTime}}</label>
+                            <label style="border-bottom:#000000 solid 1px; display:block;text-align: center"> {{reportTime}}</label>
                         </Col>
                         <Col span="6" style="">
                         &nbsp;&nbsp;
