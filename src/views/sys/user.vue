@@ -293,7 +293,7 @@
                         console.log(error);
                     });
                 }else {
-                    console.log(param);
+                    //console.log(param);
                     updateUser(this.selectData[0].id,param).then((response)=>{
                         if(response.data.result===1){
                             this.initData();

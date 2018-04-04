@@ -16,7 +16,13 @@
                         <Icon type="ios-film-outline"></Icon>
                         采集器列表
                     </p>
-                    <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
+                    <Row style="margin: 10px; text-align: right">
+                        <Button type="primary" v-has="'collector_import'" icon="ios-cloud-upload-outline" @click="importData()">导入</Button>
+                        <Button type="primary" v-has="'collector_export'" icon="ios-cloud-download-outline" @click="exportData()" v-bind:disabled="data.length==0">导出</Button>
+                    </Row>
+                    <Row>
+                        <Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table>
+                    </Row>
                     <Row style="margin: 10px">
                         <Col span="8">
                             <Button type="primary" v-has="'collector_add'" @click="addCollector" icon="plus">新增</Button>
@@ -24,7 +30,7 @@
                             <Button type="error" v-has="'collector_del'" @click="deleteCollector" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="8" offset="8" style="text-align: right">
-                            <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
+                            <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
                         </Col>
                     </Row>
                 </Card>
@@ -59,11 +65,41 @@
 
             </Form>
         </Modal>
+        <Modal title="导入采集器" :closable=false :mask-closable=false v-model="showImportData">
+            <div slot="footer">
+                <Button type="error" size="large" @click="closeUploadModal">关闭</Button>
+            </div>
+            <Row>
+                <Col span="18">
+                    <Upload ref="uploadFile"
+                            action="//192.168.5.21:8082/importCollector"
+                            name="multipartFile"
+                            accept="'.xlsx'"
+                            :on-success="handleSuccess"
+                            :on-error="handleError"
+                            :before-upload="beforeUpload">
+                        <Button type="ghost" icon="ios-cloud-upload-outline">选择文件(.xlsx)</Button>
+                    </Upload>
+                </Col>
+                <Col span="6">
+                    <Button type="ghost" icon="ios-cloud-download-outline" @click="uploadTemplate">下载模板</Button>
+                </Col>
+            </Row>
+            <Row v-if="showImportResult">
+                <Col style="color: green">共计导入{{importCount}}条数据</Col>
+            </Row>
+            <Row v-if="importErrorResult.length>0">
+                <Col style="color: red">错误列表</Col>
+                <Col v-for="item in importErrorResult" style="color: red">{{item}}</Col>
+            </Row>
+        </Modal>
     </div>
 </template>
 <script>
     import {getCollectors,batchDelCollectors,insertCollector,updateCollector,getProjectTree,getBuildingWithIDAndAreaName,getProjectsList} from '../../../axios/http';
     import Cookies from 'js-cookie';
+    import {uploadImportTemplates} from '../../../utils/index';
+
     export default {
         data () {
             return {
@@ -126,8 +162,11 @@
                 tree_area_id:0,//筛选过滤的
                 tree_project_id:0,//筛选过滤的
                 tree_building_id:0,
-                defaultProjectId:0//默认加载第一个项目
-
+                defaultProjectId:0,//默认加载第一个项目
+                showImportData:false,
+                showImportResult:false,
+                importCount:0,
+                importErrorResult:[],
             }
         },
         methods: {
@@ -136,6 +175,7 @@
                 getCollectors(projectId,areaId,buildingId,this.currentPage,this.pageSize).then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
+                    //console.log(this.data);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -241,6 +281,16 @@
                 this.$refs['formValidate'].resetFields();
                 this.showCurrentTableData=false;//关闭Modal
             },
+            closeUploadModal(){
+                this.$refs['uploadFile'].clearFiles();
+                this.showImportResult=false;
+
+                this.importErrorResult=[];
+                this.showImportData=false;
+                if (this.importCount>0){
+                    this.initCollector(this.defaultProjectId, 0, 0);
+                }
+            },
             editCollector(){
 //                console.log(this.selectData[0]);
 //                console.log(JSON.stringify(this.selectData));
@@ -286,13 +336,37 @@
                     this.initCollector(this.tree_project_id, this.tree_area_id, this.tree_building_id);
                 }
             },
+            importData(){//导入数据
+                this.showImportData=true;
+            },
+            handleSuccess (res, file) {
+//              console.log(file);
+
+//                console.log("Success");
+                console.log(res);
+                this.showImportResult=true;
+                this.importCount=res.result[0].count;
+                this.importErrorResult=res.result[0].results;
+            },
+            handleError(error,file){
+              console.log("error");
+            },
+            beforeUpload(file){
+                this.$refs['uploadFile'].clearFiles();
+                //console.log("beforeUpload");
+            },
+            //下载模板
+            uploadTemplate(){
+                uploadImportTemplates("采集器导入模板.xlsx");
+            },
+            exportData(){//导出数据
+                window.location.href="http://192.168.5.21:8082/exportcollectors?projectId="+this.tree_project_id+"&areaId="+this.tree_area_id+"&buildingId="+this.tree_building_id
+            }
         },
         created(){
             this.projecIds=Cookies.get("projects");
             this.initProject();
             this.initProjectTree();
-
         }
-
     }
 </script>

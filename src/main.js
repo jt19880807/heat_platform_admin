@@ -8,6 +8,8 @@ import Util from './libs/util';
 import Cookies from 'js-cookie'
 
 
+
+
 Vue.config.productionTip = false;
 Vue.use(iview);
 Vue.use(Vuex);
@@ -98,58 +100,50 @@ const store=new Vuex.Store({
             state.menuList = menulist;
         },
         updateMenulist (state) {
-            console.log(JSON.stringify(appRouter));
+            // console.log(JSON.stringify(appRouter));
             let accessCode =1;// parseInt(Cookies.get('access'));
             let rights=sessionStorage.getItem("rights");
+            // console.log(rights==null);
             let menus=sessionStorage.getItem("menus");
             let buttons=sessionStorage.getItem("buttons");
             let menuList = [];
             appRouter.forEach((item, index) => {
-                if (rights !== "*") {
-                    var roleMenus = menus.split(",");
-                    if (Util.oneOf(item.name, roleMenus)) {
+                if (rights != null) {
+                    if (rights !== "*") {
+                        var roleMenus = menus.split(",");
+                        if (Util.oneOf(item.name, roleMenus)) {
+                            if (item.children.length <= 1) {
+                                menuList.push(item);
+                            } else {
+                                let i = menuList.push(item);
+                                let childrenArr = [];
+                                childrenArr = item.children.filter(child => {
+                                    // if (child.access !== undefined) {
+                                    if (Util.oneOf(child.name, roleMenus)) {
+                                        return child;
+                                    }
+                                });
+                                menuList[i - 1].children = childrenArr;
+                            }
+                        }
+                    }
+                    else {
                         if (item.children.length <= 1) {
                             menuList.push(item);
                         } else {
                             let i = menuList.push(item);
                             let childrenArr = [];
-                            childrenArr = item.children.filter(child => {
-                               // if (child.access !== undefined) {
-                                    if (Util.oneOf(child.name, roleMenus)) {
-                                        return child;
-                                    }
-                                // } else {
-                                //     return child;
-                                // }
-
-                            });
-                            menuList[i - 1].children = childrenArr;
+                            menuList[i - 1].children = item.children;
                         }
                     }
                 }
                 else {
-                    //console.log(rights);
-                    if (item.children.length <= 1) {
-                        menuList.push(item);
-                    } else {
-                        let i = menuList.push(item);
-                        let childrenArr = [];
-                        // childrenArr = item.children.filter(child => {
-                        //     if (child.access !== undefined) {
-                        //         if (Util.showThisRoute(child.access, accessCode)) {
-                        //             return child;
-                        //         }
-                        //     } else {
-                        //         return child;
-                        //     }
-                        // });
-                        // menuList[i - 1].children = childrenArr;
-                        menuList[i - 1].children = item.children;
-                    }
+                    // this.$router.push({
+                    //     name: 'login'
+                    // });
+
                 }
             });
-           //console.log(rights);
-
             state.menuList = menuList;
         },
     }
@@ -185,9 +179,13 @@ new Vue({
         this.currentPageName = this.$route.name;
     },
     created () {
-        console.log("main.js_create");
-        this.$store.commit('updateMenulist');
-        // console.log(JSON.stringify(appRouter));
+        let rights=sessionStorage.getItem("rights");
+        // console.log(rights==null);
+        if (rights == null) {
+            this.$router.push({
+                name: 'login'
+            });
+        }
         let tagsList = [];
         appRouter.map((item) => {
             if (item.children.length <= 1) {
@@ -197,6 +195,5 @@ new Vue({
             }
         });
         this.$store.commit('setTagsList', tagsList);
-
     }
 });

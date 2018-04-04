@@ -30,7 +30,7 @@
                             <span>结束日期&nbsp;&nbsp;</span>
                             <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="endDateChange" placeholder="Select date" :value="endDate" style="width: 120px"></DatePicker>
                             &nbsp;&nbsp;
-                             <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
+                            <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
                             <Button type="primary" icon="ios-download-outline" @click="exportData()" v-bind:disabled="data.length==0">导出</Button>
                         </Col>
                     </Row>
@@ -118,7 +118,7 @@
                 columns: [
                     {
                         type: 'selection',
-                        width: 40,
+                        width: 60,
                         align: 'center',
                     },
                     {
@@ -199,6 +199,7 @@
                 endDate:'',
                 meterId:0,
                 meterType:1,
+                allExportData:[],
             }
         },
         methods: {
@@ -393,7 +394,8 @@
             //导出数据
             exportData(){
                 this.$refs.selection.exportCsv({
-                    filename: 'The original data'
+                    filename: 'The original data',
+                    data: this.allExportData,
                 });
             },
         },

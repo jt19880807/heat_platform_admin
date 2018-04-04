@@ -12,7 +12,7 @@
             <sidebar-menu v-if="!hideMenuText" :menuList="menuList" :iconSize="14"></sidebar-menu>
             <sidebar-menu-shrink :icon-color="menuIconColor" v-else :menuList="menuList"></sidebar-menu-shrink>
         </div>
-        <div  class="main-header-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
+        <div class="main-header-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
             <div class="main-header">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.hideMenuText ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
@@ -41,7 +41,6 @@
                                 <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" style="background: #619fe7;margin-left: 10px;"></Avatar>
                             </Row>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -50,10 +49,11 @@
             </div>
         </div>
 
-        <div  class="single-page-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
+        <div class="single-page-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
             <router-view></router-view>
         </div>
     </div>
+
 </template>
 <script>
     import sidebarMenu from "../../components/sidebarMenu.vue";
@@ -130,7 +130,7 @@
                     this.$router.push({
                         name: 'login'
                     });
-                    this.$store.commit('updateMenulist');
+                    //this.$store.commit('updateMenulist');
                    //util.openPage(this, 'login', '登录');
                 }
             },
@@ -159,11 +159,9 @@
             }
         },
         mounted () {
-            console.log("main.vue_mounted");
             this.init();
         },
         created(){
-            console.log("main.vue_create");
             // 权限菜单过滤相关
             this.$store.commit('updateMenulist');
             // 显示打开的页面的列表

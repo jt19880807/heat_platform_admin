@@ -16,6 +16,7 @@
     "js-cookie": "^2.2.0",
     "less": "^3.0.0-alpha.3",
     "less-loader": "^4.0.5",
+    "public-ip": "^2.4.0",
     "qs": "^6.5.1",
     "vue": "^2.5.2",
     "vue-router": "^2.8.1",

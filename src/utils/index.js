@@ -43,3 +43,6 @@ export  const checkePartPermissions=(permissions,rights)=>{
         // }
     }
 };
+export  const uploadImportTemplates=(name)=>{
+    window.open("http://localhost:8082/import/"+name);
+};

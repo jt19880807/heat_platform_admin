@@ -9,7 +9,8 @@ import axios from 'axios'
 //     }
 // });
 // //设置请求baseURL
- axios.defaults.baseURL='http://localhost:8082';
+ axios.defaults.baseURL='http://192.168.5.21:8082';
+ // axios.defaults.baseURL='http://211.103.188.228:8082';
 // //设置默认请求头
 axios.defaults.headers = {
     "Content-Type": "application/json",
@@ -202,7 +203,7 @@ export const updateBuilding=(buildingId,params)=>{
     return axios.put("/building/"+buildingId,params);
 };
 
-//获取采集器信息
+//分页获取采集器信息
 export const getCollectors=(projectId,areaId,buildingId,num,size)=>{
     return axios.get("/collectors?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&num="+num+"&size="+size);
 };
@@ -305,6 +306,8 @@ export const getLastMonthHeatConsumptions=(projectId,startDate,endDate)=>{
 export const getLastAverageTemps=(projectId)=>{
     return axios.get("/lastAverageTempsByProjectId?projectId="+projectId);
 };
+
+
 
 
 

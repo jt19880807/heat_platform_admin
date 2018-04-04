@@ -53,7 +53,7 @@
                 columns: [
                     {
                         type: 'selection',
-                        width: 40,
+                        width: 60,
                         align: 'center',
                     },
                     {

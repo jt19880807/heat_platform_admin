@@ -18,7 +18,7 @@ const otherRouter={
     redirect: '/home',
     component: Main,
     children:[
-        {path:'home',title:'首页',name:'home_index',component:resolve=>{require(['../views/home/home.vue'], resolve); } },
+        { path:'home',title:'首页',name:'home_index',component:resolve=>{require(['../views/home/home.vue'], resolve); } },
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: resolve => { require(['../views/home/home.vue'], resolve); } },
         { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['../views/home/home.vue'], resolve); } }
     ]
@@ -136,13 +136,6 @@ const appRouter = [
                 title: '能耗分析',
                 component: resolve => { require(['../views/kqn/analysis/energy.vue'], resolve); }
             },
-            // {
-            //     path: 'ammeter',
-            //     icon: 'pound',
-            //     name: 'ammeter',
-            //     title: '温度分析',
-            //     component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
-            // },
             {
                 path: 'historydata',
                 icon: 'pound',
@@ -198,7 +191,7 @@ const routers = [
 ];
 const router=new VueRouter({
     mode: 'history',
-    base: '/hot/',
+    //base: '/MinolEMP/',
     routes:routers
 });
 

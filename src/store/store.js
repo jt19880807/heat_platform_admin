@@ -20,11 +20,11 @@ const goods_list =  {
     totalPrice:'',
     goods_list:[]
 
-}
+};
 const state = {
     userInfo,
     goods_list
-}
+};
 export default new Vuex.Store({
     state,
     mutations,

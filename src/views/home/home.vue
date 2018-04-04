@@ -3,7 +3,9 @@
     @import "../../styles/common.less";
 </style>
 <template>
+
     <div class="home-main">
+        <Alert banner closable type="warning">{{loginInfo}}</Alert>
         <Row style="margin: 10px">
             <Col span="6">
             <Select v-model="filter_project_id" filterable @on-change="projectChange" style="width:200px">
@@ -128,7 +130,13 @@
                 accountHeat:0,
                 accountElectricity:0,
                 startDate:'',
-                endDate:''
+                endDate:'',
+                lastLoginTime:Cookies.get('lastLoginTime'),
+                lastLoginCity:Cookies.get('lastLoginCity'),
+                username:Cookies.get('username'),
+                rolename:Cookies.get('rolename'),
+                loginInfo:'',
+
             }
         },
         methods: {
@@ -269,14 +277,17 @@
             },
             projectChange(Option){//项目下拉框发生改变时
                 this.filter_project_id = Option;
-            }
+            },
+            initLoginInfo(){
+                this.loginInfo='欢迎你，'+this.rolename+""+this.username+" ! ";
+                this.loginInfo+=this.lastLoginTime==''?'':"上次登录时间 "+this.lastLoginTime.split('.')[0]+" ";
+                this.loginInfo+=this.lastLoginCity==''?'':"上次登录地点 "+this.lastLoginCity;
+            },
         },
         created(){
-            //this.projecIds=Cookies.get("projects");
+            this.initLoginInfo();
             this.initDate();
             this.initProject();
-
         }
-
     }
 </script>
