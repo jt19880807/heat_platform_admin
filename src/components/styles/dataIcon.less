@@ -1,0 +1,39 @@
+.item {
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    width: 100%;
+    margin: 0 auto;
+
+    //background: red;
+    //height: 100px;
+}
+.item-icon {
+    margin-top: 3px;
+    //margin-right: -10px;
+    //background: red;
+    & > i {
+        font-size: 46px !important;
+    }
+}
+.item-info {
+   // background: yellow;
+    line-height: 25px;
+    text-align: center;
+    & > span {
+        color: #999;
+        font-size: 12px;
+    }
+}
+.item--easy {
+    flex-direction: column;
+    & > .item-icon {
+        margin: 0;
+    }
+    & > .item-info {
+        margin-top: -15px;
+        & > span {
+            font-size: 14px;
+        }
+    }
+}

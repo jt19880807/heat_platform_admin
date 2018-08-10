@@ -5,8 +5,8 @@
                 &nbsp;
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Input placeholder="请输入姓名" style="width: 200px; ;" />
-                <span  style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
+                <Input placeholder="用户名/角色名"  v-model="keyWords" clearable style="width: 200px;" />
+                <span  style="margin: 0 10px;"><Button type="primary" @click="initData(1)" icon="search">搜索</Button></span>
             </Col>
         </Row>
         <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
@@ -17,7 +17,7 @@
                 <Button type="error" v-has="'user_del'" @click="deletedata" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Page :total="this.data.length" show-total :pageSize=20 @on-change="pageChange"></Page>
+                <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
             </Col>
         </Row>
         <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData" :width="600">
@@ -73,7 +73,7 @@
     </div>
 </template>
 <script>
-    import {getAllUsers,batchDelUsers,insertUser,updateUser,getAllRoles,getProjectTransferModel} from '../../axios/http';
+    import {getUsers,batchDelUsers,insertUser,updateUser,getAllRoles,getProjectTransferModel} from '../../axios/http';
     export default {
         data () {
             const validateTargetKeys = (rule, value, callback) => {
@@ -170,13 +170,18 @@
                 showCurrentTableData: false,
                 modalTitle:"",//弹出层标题
                 isAdd:true,//是否添加
+                currentPage:1,//当前页码
+                pageSize:5,//每页数据量
+                total:0,//数据总量
+                keyWords:"",//搜索关键词
             }
         },
         methods: {
             //加载数据
-            initData(){
-                getAllUsers().then((response)=>{
-                    this.data=response.data.result;
+            initData(num){
+                getUsers(this.keyWords,num,this.pageSize).then((response)=>{
+                    this.total=response.data.total;
+                    this.data=response.data.list;
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -196,7 +201,8 @@
                 })
             },
             pageChange(page){
-
+                //this.currentPage=page;
+                this.initData(page);
             },
             onDataSelect(selection){
                 this.selectData=selection;
@@ -314,7 +320,7 @@
 
         created(){
             this.initRoles();
-            this.initData();
+            this.initData(1);
             this.initTransferModel();
         }
 

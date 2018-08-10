@@ -200,6 +200,7 @@
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
+                    this.tree_project_id=this.treeData[0].id;
                     this.initCollector(this.defaultProjectId, 0, 0);
                     //console.log(JSON.stringify(this.treeData));
                 }).catch(function (error) {
@@ -360,7 +361,7 @@
                 uploadImportTemplates("采集器导入模板.xlsx");
             },
             exportData(){//导出数据
-                window.location.href="http://192.168.5.21:8082/exportcollectors?projectId="+this.tree_project_id+"&areaId="+this.tree_area_id+"&buildingId="+this.tree_building_id
+                window.location.href="http://192.168.5.21:8082/collectors/export?projectId="+this.tree_project_id+"&areaId="+this.tree_area_id+"&buildingId="+this.tree_building_id
             }
         },
         created(){

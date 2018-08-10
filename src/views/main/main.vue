@@ -3,27 +3,33 @@
 </style>
 <template>
     <div id="main" class="main" :class="{'main-hide-text': hideMenuText}">
-        <div class="sidebar-menu-con" :style="{width: hideMenuText?'60px':'200px', overflow: hideMenuText ? 'visible' : 'auto', background:'#495060'}">
-         <!--background: $store.state.menuTheme === 'dark'?'#495060':'white'}">-->
-            <div class="logo-con">
-                <img v-show="!hideMenuText"  src="../../images/logo.png">
-                <img v-show="hideMenuText" src="../../images/logo-min.png">
-            </div>
-            <sidebar-menu v-if="!hideMenuText" :menuList="menuList" :iconSize="14"></sidebar-menu>
-            <sidebar-menu-shrink :icon-color="menuIconColor" v-else :menuList="menuList"></sidebar-menu-shrink>
-        </div>
-        <div class="main-header-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
+        <div class="main-header-con" >
             <div class="main-header">
-                <div class="navicon-con">
-                    <Button :style="{transform: 'rotateZ(' + (this.hideMenuText ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
-                        <Icon type="navicon" size="32"></Icon>
-                    </Button>
+                <div class="logo-con">
+                    <img src="../../images/logo-min.png">
                 </div>
-                <div class="header-middle-con">
-                    <div class="main-breadcrumb">
-                        <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
-                    </div>
+                <div class="header-text">热量表数据平台</div>
+                <div class="layout-nav">
+                    <Menu mode="horizontal" theme="dark" active-name="1" @on-select="mainMenuChanged">
+                        <MenuItem name="1">
+                            数据管理
+                        </MenuItem>
+                        <MenuItem name="2">
+                            基础配置
+                        </MenuItem>
+                        <MenuItem name="3">
+                            用户管理
+                        </MenuItem>
+                        <MenuItem name="4">
+                            系统管理
+                        </MenuItem>
+                    </Menu>
                 </div>
+                <!--<div class="header-middle-con">-->
+                <!--<div class="main-breadcrumb">-->
+                <!--<breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>-->
+                <!--</div>-->
+                <!--</div>-->
                 <div class="header-avator-con">
                     <div class="main-header">
                         <div class="user-dropdown-menu-con">
@@ -44,16 +50,70 @@
                     </div>
                 </div>
             </div>
-            <div class="tags-con">
-                <tags-page-opened :pageTagsList="pageTagsList"></tags-page-opened>
-            </div>
+            <!--<div class="tags-con">-->
+            <!--<tags-page-opened :pageTagsList="pageTagsList"></tags-page-opened>-->
+            <!--</div>-->
+        </div>
+        <div class="sidebar-con" :style="{width: $store.state.hideSidePage?'0px':'200px', overflow: $store.state.hideSidePage ? 'hidden' : 'visible'}">
+            <transition name="tran_project" mode="out-in">
+
+                <div v-if="!hideMenuText" class="sidebar-con-menu" key="tran_menu">
+                    <Button style="margin-left:200px;margin-top: 20px;" ghost type="primary" size="small" @click="toggleClick">
+                        项<br>目<br>列<br>表<br>
+                    </Button>
+                    <div style="width: 100%;height: 100%;margin-top: -100px;">
+                        <sidebar-menu  :menuList="menuList" :iconSize="14"></sidebar-menu>
+                    </div>
+                </div>
+                <div v-else class="sidebar-con-project" key="tran_object">
+                    <Button style="margin-left:200px;margin-top: 20px;" ghost type="primary" size="small" @click="toggleClick">
+                        菜<br>单<br>列<br>表<br>
+                    </Button>
+                    <div style="width: 100%;height: 100%;margin-top: -100px;">
+                        <Input icon="ios-search-strong" style="margin: 20px;width: 170px;" placeholder="请输入关键词" />
+                        <Tree :data="projectData"  style="font-size: 39px;margin-left: 20px;text-color:green;" @on-select-change="projectChange"/>
+                    </div>
+                </div>
+            </transition>
+            <!--<div class="navicon-con" v-if="!hideMenuText">-->
+                <!--<Button :style="{'margin-left': $store.state.hideSidePage?'0px':'200px'}" ghost type="primary" size="small" @click="toggleClick">-->
+                    <!--菜<br>单<br>列<br>表<br>-->
+                <!--</Button>-->
+
+            <!--</div>-->
         </div>
 
-        <div class="single-page-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
-            <router-view></router-view>
+        <div class="single-page-con" :style="{paddingLeft: $store.state.hideSidePage?'0px':'210px'}">
+            <div class="header-middle-con" style="z-index: 100;">
+                <div class="main-breadcrumb" >
+                    <Row >
+                        <Col span="12">
+                            <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
+                        </Col>
+                        <Col span="12" style="text-align: right">
+                        <!--<div style="float: right;width: 300px;">-->
+                        <Input v-model="searchData" icon="ios-search-strong" style="width: 300px;" placeholder="请输入关键字..."
+                               @on-change="searchChange" @on-blur	="filterData=[]"/>
+
+                        <!--</div>-->
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+            <div v-show="filterData.length>0" class="search_div">
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="item in filterData">
+                        {{ item.title }}
+                    </li>
+                </ul>
+            </div>
+            <!--<div //style="minHeight: 280px;background:#fff;width:100%;z-index: 100;">-->
+            <div>
+                <router-view></router-view>
+            </div>
+
         </div>
     </div>
-
 </template>
 <script>
     import sidebarMenu from "../../components/sidebarMenu.vue";
@@ -71,12 +131,85 @@
         },
         data(){
             return{
-                hideMenuText: false,
+                hideMenuText: true,
                 userName: '',
                 showFullScreenBtn: window.navigator.userAgent.indexOf('MSIE') < 0,
                 isFullScreen: false,
                 messageCount: 10,
-                lockScreenSize: 0
+                lockScreenSize: 0,
+                projectData: [
+                    {
+                        title: '明光热源厂',
+                        expand: true,
+                        type:1,
+                        children: [
+                            {
+                                title: '明光换热站',
+                                expand: true,
+                                type:2,
+                                children: [
+                                    {
+                                        title: '明光小区',
+                                        type:3,
+                                        children: [
+                                            {
+                                                title: '1号楼',
+                                                type:4,
+                                            },
+                                            {
+                                                title: '2号楼',
+                                                type:4,
+                                            },
+                                            {
+                                                title: '3号楼',
+                                                type:4,
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        title: '万达热源厂',
+                        expand: true,
+                        type:1,
+                        children: [
+                            {
+                                title: '万达换热站',
+                                type:2,
+                                expand: true,
+                                children: [
+                                    {
+                                        title: '万达小区',
+                                        type:3,
+                                        children: [
+                                            {
+                                                title: '1号楼',
+                                                type:4,
+                                            },
+                                            {
+                                                title: '2号楼',
+                                                type:4,
+                                            },
+                                            {
+                                                title: '3号楼',
+                                                type:4,
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                searchData:'',
+                filterData:[
+//                    {name:'明光换热站',type:'换热站'},
+//                    {name:'明光小区',type:'小区'},
+//                    {name:'万达换热站',type:'换热站'},
+//                    {name:'万达小区',type:'小区'},
+                ],
             }
         },
         computed:{
@@ -121,17 +254,9 @@
                     Cookies.remove('buildings');
                     Cookies.remove('userid');
                     this.$store.commit('clearOpenedSubmenu');
-                    // 清空打开的页面等数据，但是保存主题数据
-  //                  localStorage.clear();
-//                    if (theme) {
-//                        localStorage.theme = theme;
-//                    }
-//                    this.$store.commit('updateMenulist');
                     this.$router.push({
                         name: 'login'
                     });
-                    //this.$store.commit('updateMenulist');
-                   //util.openPage(this, 'login', '登录');
                 }
             },
             checkTag (name) {
@@ -143,16 +268,87 @@
                 if (!openpageHasTag) {  //  解决关闭当前标签后再点击回退按钮会退到当前页时没有标签的问题
                     util.openNewPage(this, name, this.$route.params || {}, this.$route.query || {});
                 }
+            },
+            mainMenuChanged(active){
+                switch (active){
+                    case '1':
+                        this.hideMenuText = true;
+                        this.$router.push({
+                            name: 'otherRouter'
+                        });
+                        break;
+                    case '2':
+                        this.hideMenuText = true;
+                        this.$router.push({
+                            name: 'project'
+                        });
+                        break;
+                    case '3':
+                        this.$store.commit('setMenuList',active);
+                        this.hideMenuText=false;
+                        this.$router.push({
+                            name: 'userInfo'
+                        });
+                        break;
+                    case '4':
+                        this.$store.commit('setMenuList',active);
+                        this.hideMenuText=false;
+                        this.$router.push({
+                            name: 'manager'
+                        });
+                        break;
+                }
+            },
+            projectChange(option){
+                //console.log(this.$router);
+                if (option[0].type!==1){
+                    switch (option[0].type){
+                        case 2:
+                            this.$router.push({
+                                name: 'exchange_index'
+                            });
+                            break;
+                        case 3:
+                            this.$router.push({
+                                name: 'zone_index'
+                            });
+                            break;
+                        case 4:
+                            this.$router.push({
+                                name: 'building_index'
+                            });
+                            break;
+                    }
+                }
+            },
+            searchChange(){
+                console.log(this.searchData);
+                var keyWord=this.searchData;
+                var filter=[];
+                //this.filterData.removeAll();
+                this.projectData.map(function (project) {
+                    if (project.title.includes(keyWord)){
+                        filter.push(project);
+                    }
+                });
+                console.log(filter);
+                this.filterData=filter;
             }
         },
         watch: {
             '$route' (to) {
                 this.$store.commit('setCurrentPageName', to.name);
-                let pathArr = util.setCurrentPath(this, to.name);
-                if (pathArr.length > 2) {
-                    this.$store.commit('addOpenSubmenu', pathArr[1].name);
+                if (to.name!=='home_index'){
+                    this.$store.commit('toggleSidsPage', false);
+                }else {
+                    this.$store.commit('toggleSidsPage', true);
                 }
-                this.checkTag(to.name);
+                if (to.name==='zone_index'){
+                    this.$store.commit('setMenuList',5);
+                }
+                if (to.name==='building_index'){
+                    this.$store.commit('setMenuList',6);
+                }
             },
             lang () {
                 util.setCurrentPath(this, this.$route.name);  // 在切换语言时用于刷新面包屑

@@ -2,10 +2,10 @@
     <div>
         <Row style="margin: 10px">
             <Col span="8">
-
+            &nbsp;
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Input placeholder="请输入关键词搜索." v-model="keyWords"  style="width: 200px;" />
+                <Input placeholder="请输入关键词搜索." v-model="keyWords" clearable="true" style="width: 200px;" />
                 <span  style="margin: 0 10px;">
                     <Button type="primary" @click="initData"  icon="search">搜索</Button>
                 </span>
@@ -19,7 +19,7 @@
                 <Button type="error" v-has="'area_del'" @click="deleteArea" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
             </Col>
             <Col span="8" offset="8" style="text-align: right">
-                <Page v-bind:total="total" show-total v-bind::pageSize="pageSize" @on-change="pageChange"></Page>
+                <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
             </Col>
         </Row>
         <Modal v-bind:title="modalTitle" :closable=false :mask-closable=false v-model="showCurrentTableData">
@@ -88,14 +88,13 @@
                     ],
                     cityValue: [
                         { required: true,type: 'array', message: '请选择所属地区', trigger: 'change' },
-//                        { type: 'array', max: 2, message: 'Choose two hobbies at best', trigger: 'change' }
                     ],
                 },
                 showCurrentTableData: false,
                 modalTitle:"",//弹出层标题
                 isAdd:true,//是否添加
                 currentPage:1,//当前页码
-                pageSize:6,//每页数据量
+                pageSize:20,//每页数据量
                 total:0,//数据总量
                 keyWords:"",//搜索关键词
                 cityData:[],

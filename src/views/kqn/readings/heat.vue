@@ -23,19 +23,23 @@
                                 <Option :value="0" >全部</Option>
                                 <Option v-for="item in filter_meterList" :value="item.id" :key="item.number">{{ item.number }}</Option>
                             </Select>
+                            <Select v-model="filter_meter_error" filterable @on-change="meterErrorChange" style="width:80px">
+                                <Option :value="0" >全部</Option>
+                                <Option :value="1" >正常</Option>
+                                <Option :value="2" >异常</Option>
+                            </Select>
                         </Col>
                         <Col span="16" style="text-align: right">
                             <span>开始日期&nbsp;&nbsp;</span>
-                           <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="startDateChange" placeholder="Select date" :value="startDate"  style="width: 120px"></DatePicker>
+                            <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="startDateChange" placeholder="Select date" :value="startDate"  style="width: 120px"></DatePicker>
                             <span>结束日期&nbsp;&nbsp;</span>
                             <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="endDateChange" placeholder="Select date" :value="endDate" style="width: 120px"></DatePicker>
-                            &nbsp;&nbsp;
                             <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
                             <Button type="primary" icon="ios-download-outline" @click="exportData()" v-bind:disabled="data.length==0">导出</Button>
                         </Col>
                     </Row>
                     <Row>
-                        <Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect" ></Table>
+                        <Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect" size="small" ></Table>
                     </Row>
                     <Row style="margin: 10px">
                         <Col span="8">
@@ -44,7 +48,7 @@
                             <Button type="error" v-has="'heatreading_del'" @click="deleteHeatMeterReading" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="16" style="text-align: right">
-                            <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
+                            <Page v-bind:total="total" :current="currentPage" show-total v-bind:pageSize="pageSize" @on-change="pageChange" show-sizer @on-page-size-change="pageSizeChange"></Page>
                         </Col>
                     </Row>
                 </Card>
@@ -120,10 +124,13 @@
                         type: 'selection',
                         width: 60,
                         align: 'center',
+                        fixed: 'left'
                     },
                     {
                         title: '表号',
                         key: 'number',
+                        fixed: 'left',
+                        width: 150,
                         render: (h, params) => {
                             return h('div', [
                                 h('strong', params.row.meter.number)
@@ -132,31 +139,90 @@
                     },{
                         title: '读数日期',
                         width:140,
-                        key: 'date'
+                        key: 'date',
+                        fixed: 'left',
                     },{
                         title: '累计热量(MWH)',
-                        key: 'accumulationheat'
+                        key: 'accumulationheat',
+                        width: 130,
                     },
                     {
                         title: '累计冷量(KWH)',
                         key: 'accumulationcooling',
+                        width: 130,
                     },
                     {
                         title: '瞬时流量(m³/h)',
-                        key: 'instantaneousflow'
+                        key: 'instantaneousflow',
+                        width: 130,
                     },
                     {
                         title: '功率(KW)',
-                        key: 'power'
+                        key: 'power',
+                        width: 130,
                     },
                     {
                         title: '供水温度(℃)',
-                        key: 'supplywatertemp'
+                        key: 'supplywatertemp',
+                        width: 130,
                     },
 
                     {
                         title: '回水温度(℃)',
-                        key: 'returnwatertemp'
+                        key: 'returnwatertemp',
+                        width: 130,
+                    },
+                    {
+                        title:'温差(℃)',
+                        key:'tempdiff',
+                        width: 130,
+                    },
+                    {
+                        title:'状态',
+                        key:'status',
+                        fixed: 'right',
+                        width: 120,
+                        render: (h, params) => {
+                            const row = params.row;
+                            const color = row.status === '正常' ? 'green' : 'red';
+                            const text = row.status=== '正常' ?'正常':'异常';
+                            if (row.status=== '正常'){
+                                return h('Tag', {
+                                props: {
+                                    type: 'dot',
+                                    color: color
+                                }
+                            }, text);
+                            }
+                            else {
+                                return h('Tooltip', {
+                                    props: {
+                                        trigger: 'hover',
+                                        placement: 'left-start',
+                                        transfer:true
+                                    }
+                                }, [
+                                    h('Tag', {
+                                        props: {
+                                            type: 'dot',
+                                            color: color,
+                                        }
+                                    }, text),
+                                    h('div', {
+                                        slot: 'content'
+                                    }, [
+                                        h('div', row.status.split(',').map(item => {
+                                            return h('p', {
+                                                style: {
+                                                    textAlign: 'center',
+                                                    padding: '4px'
+                                                }
+                                            }, item)
+                                        }))
+                                    ])
+                                ]);
+                            }
+                        }
                     }
                 ],
                 data: [],
@@ -184,7 +250,7 @@
                 modalTitle:"",//弹出层标题
                 isAdd:true,//是否添加
                 currentPage:1,//当前页码
-                pageSize:20,//每页数据量
+                pageSize:10,//每页数据量
                 total:0,//数据总量
                 projectList:[],//项目列表
                 buildingList:[],//楼栋列表
@@ -195,6 +261,7 @@
                 tree_building_id:0,
                 defaultProjectId:0,//默认加载第一个项目
                 filter_meter_id:0,
+                filter_meter_error:0,
                 startDate:'',
                 endDate:'',
                 meterId:0,
@@ -204,8 +271,8 @@
         },
         methods: {
             //加载数据
-            initHeatMeterReadings(projectId,areaId,buildingId,meterId){
-                getHeatMeterReadings(projectId,areaId,buildingId,meterId,this.startDate,this.endDate+" 23:59:59",this.currentPage,this.pageSize)
+            initHeatMeterReadings(projectId,areaId,buildingId,meterId,num){
+                getHeatMeterReadings(projectId,areaId,buildingId,meterId,this.filter_meter_error,this.startDate,this.endDate+" 23:59:59",num,this.pageSize)
                     .then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
@@ -253,7 +320,11 @@
             },
             pageChange(page){
                 this.currentPage=page;
-                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.meterId);
+                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.meterId,this.currentPage);
+            },
+            pageSizeChange(pageSize){
+                this.pageSize=pageSize;
+                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.meterId,this.currentPage);
             },
             onDataSelect(selection){
                 this.selectData=selection;
@@ -377,10 +448,17 @@
             },
             meterChange(option){
               this.filter_meter_id=option;
+                this.filter_meter_error=0;
               this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id);
             },
+            meterErrorChange(option){
+                this.currentPage=1;
+                this.filter_meter_error=option;
+                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id,this.currentPage);
+            },
             searchData(){
-                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id);
+                this.currentPage=1;
+                this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.filter_meter_id,this.currentPage);
             },
             startDateChange(date){
               this.startDate=date;
@@ -393,18 +471,15 @@
             },
             //导出数据
             exportData(){
-                this.$refs.selection.exportCsv({
-                    filename: 'The original data',
-                    data: this.allExportData,
-                });
-            },
+                window.location.href="http://192.168.5.21:8082/heatMeterReading/export?projectId="+this.tree_project_id+"&areaId="+this.tree_area_id+"&buildingId="+this.tree_building_id+"&meterId="+this.filter_meter_id+"&errorCode="+this.filter_meter_error+"&startDate="+this.startDate+"&endDate="+this.endDate+" 23:59:59";
+            }
         },
         created(){
             this.initDate();
             this.projecIds=Cookies.get("projects");
             this.initProject();
             this.initProjectTree();
+            this.initHeatMeterReadings(this.tree_project_id, this.tree_area_id, this.tree_building_id,this.meterId,1);
         }
-
     }
 </script>

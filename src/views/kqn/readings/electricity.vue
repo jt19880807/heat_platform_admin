@@ -24,19 +24,14 @@
                            <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="startDateChange" placeholder="Select date" :value="startDate"  style="width: 120px"></DatePicker>
                             <span>结束日期&nbsp;&nbsp;</span>
                             <DatePicker size="small" type="date" format="yyyy/MM/dd" @on-change="endDateChange" placeholder="Select date" :value="endDate" style="width: 120px"></DatePicker>
-                            &nbsp;&nbsp;
-                             <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
+                            <Button type="primary" icon="ios-search" @click="searchData">查询</Button>
+                            <Button type="primary" icon="ios-download-outline" @click="exportData()" v-bind:disabled="data.length==0">导出</Button>
                         </Col>
                     </Row>
-                    <Row><Table border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
+                    <Row><Table size="small" border stripe ref="selection" :columns="columns" :data="data" @on-selection-change="onDataSelect"></Table></Row>
                     <Row style="margin: 10px">
-                        <!--<Col span="8">-->
-                            <!--&lt;!&ndash;<Button type="primary" @click="addPowerConsumption" icon="plus">新增</Button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<Button type="primary" @click="editPowerConsumption" icon="edit" v-bind:disabled="selectData.length!==1">编辑</Button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<Button type="error" @click="deletePowerConsumption" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>&ndash;&gt;-->
-                        <!--</Col>-->
                         <Col span="24" style="text-align: right">
-                            <Page v-bind:total="total" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
+                            <Page v-bind:total="total" :current="currentPage" show-total v-bind:pageSize="pageSize" @on-change="pageChange"></Page>
                         </Col>
                     </Row>
                 </Card>
@@ -66,10 +61,15 @@
                         }
                     },{
                         title: '读数日期',
-                        key: 'date'
+                        key: 'date',
+
                     },{
                         title: '日耗电量(KWH)',
-                        key: 'consumption'
+                        key: 'day_power'
+                    },
+                    {
+                        title: '累积耗电量(KWH)',
+                        key: 'accumulate_power'
                     }
                 ],
                 data: [],
@@ -92,7 +92,7 @@
                 modalTitle:"",//弹出层标题
                 isAdd:true,//是否添加
                 currentPage:1,//当前页码
-                pageSize:20,//每页数据量
+                pageSize:10,//每页数据量
                 total:0,//数据总量
                 projectList:[],//项目列表
                 buildingList:[],//楼栋列表
@@ -109,8 +109,8 @@
         },
         methods: {
             //加载数据
-            initPowerConsumptions(projectId,areaId,buildingId,meterId){
-                getPowerConsumptions(projectId,areaId,buildingId,meterId,this.startDate,this.endDate+" 23:59:59",this.currentPage,this.pageSize)
+            initPowerConsumptions(projectId,areaId,buildingId,meterId,num){
+                getPowerConsumptions(projectId,areaId,buildingId,meterId,this.startDate,this.endDate+" 23:59:59",num,this.pageSize)
                     .then((response)=>{
                     this.total=response.data.total;
                     this.data=response.data.list;
@@ -118,39 +118,18 @@
                     console.log(error);
                 });
             },
-            //加载项目数据
-//            initProject(){
-//                getProjectsList(Cookies.get('projects')).then((response)=>{
-//                    this.projectList=response.data.result;
-//                }).catch(function (error) {
-//                    console.log(error);
-//                });
-//            },
-//            initBuildingList(projectId){
-//                getBuildingWithIDAndAreaName(projectId).then((response)=>{
-//                    this.buildingList=response.data.result;
-//                }).catch(function (error) {
-//                    console.log(error);
-//                });
-//            },
             initProjectTree(){
                 getProjectTree(Cookies.get("projects")).then((response)=>{
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
+                    this.tree_project_id=this.treeData[0].id;
                     //this.initFilterMeter(this.defaultProjectId, this.tree_area_id, this.tree_building_id);
-                    this.initPowerConsumptions(this.defaultProjectId, 0, 0,0);
+                    this.initPowerConsumptions(this.defaultProjectId, 0, 0,0,1);
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
-//            initFilterMeter(projectId,areaId,buildingId){
-//                getMetersWithIDAndNumber(projectId,areaId,buildingId,this.meterType).then((response)=>{
-//                    this.filter_meterList=response.data.result;
-//                }).catch(function (error) {
-//                    console.log(error);
-//                });
-//            },
             initDate(){
                 var date=new Date();
                 this.startDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/01";
@@ -158,7 +137,7 @@
             },
             pageChange(page){
                 this.currentPage=page;
-                this.initPowerConsumptions(this.tree_project_id, this.tree_area_id, this.tree_building_id,0);
+                this.initPowerConsumptions(this.tree_project_id, this.tree_area_id, this.tree_building_id,0,this.currentPage);
             },
             onDataSelect(selection){
                 this.selectData=selection;
@@ -189,7 +168,8 @@
                 }
             },
             searchData(){
-                this.initPowerConsumptions(this.tree_project_id, this.tree_area_id, this.tree_building_id,0);
+                this.currentPage=1;
+                this.initPowerConsumptions(this.tree_project_id, this.tree_area_id, this.tree_building_id,0,1);
             },
             startDateChange(date){
               this.startDate=date;
@@ -197,16 +177,16 @@
             endDateChange(date){
                 this.endDate=date;
             },
-//            selectDateChange(date){
-//              this.formValidate.date=date;
-//            },
+            //导出数据
+            exportData(){
+                window.location.href="http://192.168.5.21:8082/powerConsumptions/export?projectId="+this.tree_project_id+"&areaId="+this.tree_area_id+"&buildingId="+this.tree_building_id+"&meterId=0&startDate="+this.startDate+"&endDate="+this.endDate+" 23:59:59";
+            }
         },
         created(){
             this.initDate();
             this.projecIds=Cookies.get("projects");
             //this.initProject();
             this.initProjectTree();
-
         }
 
     }

@@ -43,33 +43,34 @@
         methods: {
             changeMenu (active) {
                 if (active !== 'accesstest_index') {
-                    let pageOpenedList = this.$store.state.pageOpenedList;
-                    let openedPageLen = pageOpenedList.length;
-                    let i = 0;
-                    let tagHasOpened = false;
-                    while (i < openedPageLen) {
-                        if (active === pageOpenedList[i].name) {  // 页面已经打开
-                            this.$store.commit('moveToSecond', i);
-                            tagHasOpened = true;
-                            break;
-                        }
-                        i++;
-                    }
-                    if (!tagHasOpened) {
-                        let tag = this.tagsList.filter((item) => {
-                            //console.log(item);
-                            if (item.children) {
-                                return active === item.children[0].name;
-                            } else {
-                                return active === item.name;
-                            }
-                        });
-                        tag = tag[0];
-                        tag = tag.children ? tag.children[0] : tag;
-                        this.$store.commit('increateTag', tag);
-                        //localStorage.pageOpenedList = JSON.stringify(this.$store.state.pageOpenedList); // 本地存储已打开页面
-                    }
-                    this.$store.commit('setCurrentPageName', active);
+//                    let pageOpenedList = this.$store.state.pageOpenedList;
+//                    let openedPageLen = pageOpenedList.length;
+//                    let i = 0;
+//                    let tagHasOpened = false;
+//                    while (i < openedPageLen) {
+//                        if (active === pageOpenedList[i].name) {  // 页面已经打开
+//                            this.$store.commit('moveToSecond', i);
+//                            tagHasOpened = true;
+//                            break;
+//                        }
+//                        i++;
+//                    }
+//                    if (!tagHasOpened) {
+//                        let tag = this.tagsList.filter((item) => {
+//                            //console.log(item);
+//                            if (item.children) {
+//                                return active === item.children[0].name;
+//                            } else {
+//                                return active === item.name;
+//                            }
+//                        });
+//                        tag = tag[0];
+//                        tag = tag.children ? tag.children[0] : tag;
+//                        this.$store.commit('increateTag', tag);
+//                        //localStorage.pageOpenedList = JSON.stringify(this.$store.state.pageOpenedList); // 本地存储已打开页面
+//                    }
+//                    this.$store.commit('setCurrentPageName', active);
+                    // console.log(active);
                     this.$router.push({
                         name: active
                     });
@@ -82,7 +83,6 @@
                 localStorage.currentPageName = to.name;
             },
             currentPageName () {
-                console.log("currentPageName");
                 this.openedSubmenuArr = this.$store.state.openedSubmenuArr;
                 this.$nextTick(() => {
                     this.$refs.sideMenu.updateOpened();

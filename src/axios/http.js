@@ -68,8 +68,8 @@ export const login=params=>{
     return axios.post("/login",params)
 };
 //获取所有住户信息
-export const getAllUsers=()=>{
-    return axios.get('/users')
+export const getUsers=(keywords,num,size)=>{
+    return axios.get('/users?keywords='+keywords+'&num='+num+'&size='+size);
 };
 //批量删除住户信息
 export const batchDelUsers=params=>{
@@ -246,8 +246,8 @@ export const updateMeter=(meterId,params)=>{
 };
 
 //获取热量信息
-export const getHeatMeterReadings=(projectId,areaId,buildingId,meterId,startDate,endDate,num,size)=>{
-    return axios.get("/heatMeterReadings?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+export const getHeatMeterReadings=(projectId,areaId,buildingId,meterId,errorCode,startDate,endDate,num,size)=>{
+    return axios.get("/heatMeterReadings?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&meterId="+meterId+"&errorCode="+errorCode+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
 //批量删除热量信息
 export const batchDelHeatMeterReadings=params=>{
@@ -267,8 +267,8 @@ export const getPowerConsumptions=(projectId,areaId,buildingId,meterId,startDate
     return axios.get("/powerConsumptions?projectId="+projectId+"&areaId="+areaId+"&buildingId="+buildingId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
 //获取平均温度信息
-export const getAverageTemps=(projectId,startDate,endDate,num,size)=>{
-    return axios.get("/averageTemps?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+export const getAverageTemps=(projectId,errorCode,startDate,endDate,num,size)=>{
+    return axios.get("/averageTemps?projectId="+projectId+"&errorCode="+errorCode+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
 
 //获取能耗分析
@@ -277,8 +277,12 @@ export const getEnergys=(projectId,startDate,endDate)=>{
 };
 
 //获取历史数据
-export const getHisttoryData=(projectId,startDate,endDate)=>{
-    return axios.get("/historydata?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&count=2");
+export const getHisttoryData=(projectId,startDate,endDate,count)=>{
+    return axios.get("/historydata?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&count="+count);
+};
+//导出历史数据
+export const exportHisttoryData=(projectId,startDate,endDate,count)=>{
+    return axios.get("/historydata/export?projectId="+projectId+"&startDate="+startDate+"&endDate="+endDate+"&count="+count);
 };
 //获取能耗报告
 export const getEnergyReport=(projectId,startDate,endDate)=>{

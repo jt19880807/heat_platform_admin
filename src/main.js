@@ -2,14 +2,10 @@ import Vue from 'vue';
 import App from './App.vue';
 import iview from 'iview';
 import 'iview/dist/styles/iview.css';
-import {router,otherRouter,appRouter} from './router';
+import {router,otherRouter,userRouter,settingRouter,viewRouter,zoneRouter,buildRouter,appRouter} from './router';
 import Vuex from "vuex";
 import Util from './libs/util';
 import Cookies from 'js-cookie'
-
-
-
-
 Vue.config.productionTip = false;
 Vue.use(iview);
 Vue.use(Vuex);
@@ -20,13 +16,18 @@ const store=new Vuex.Store({
             token:Cookies.get('token')||''
         },
         routers:[
-           otherRouter,
-            ...appRouter
+            otherRouter,
+            ...userRouter,
+            ...settingRouter,
+            viewRouter,
+            zoneRouter,
+            buildRouter
         ],
         menuList: [],
         tagsList: [...otherRouter.children],
         pageOpenedList: [],
         currentPageName: '',
+        hideSidePage:true,
         currentPath: [
             {
                 title: '首页',
@@ -35,7 +36,7 @@ const store=new Vuex.Store({
             }
         ],  // 面包屑数组
         openedSubmenuArr: [],  // 要展开的菜单数组
-        menuTheme: 'dark', // 主题
+        menuTheme: 'light', // 主题
         theme: ''
     },
     mutations:{
@@ -96,14 +97,25 @@ const store=new Vuex.Store({
         unlock (state) {
             Cookies.set('locking', '0');
         },
-        setMenuList (state, menulist) {
-            state.menuList = menulist;
+        setMenuList (state, active) {
+
+            if (active==3){
+                state.menuList = userRouter;
+            }
+            if (active==4){
+                state.menuList = settingRouter;
+            }
+            if (active==5){
+                state.menuList = zoneRouter;
+            }
+            if (active==6){
+                state.menuList = buildRouter;
+            }
+            // state.menuList = menulist;
         },
         updateMenulist (state) {
-            // console.log(JSON.stringify(appRouter));
             let accessCode =1;// parseInt(Cookies.get('access'));
             let rights=sessionStorage.getItem("rights");
-            // console.log(rights==null);
             let menus=sessionStorage.getItem("menus");
             let buttons=sessionStorage.getItem("buttons");
             let menuList = [];
@@ -118,7 +130,6 @@ const store=new Vuex.Store({
                                 let i = menuList.push(item);
                                 let childrenArr = [];
                                 childrenArr = item.children.filter(child => {
-                                    // if (child.access !== undefined) {
                                     if (Util.oneOf(child.name, roleMenus)) {
                                         return child;
                                     }
@@ -138,13 +149,12 @@ const store=new Vuex.Store({
                     }
                 }
                 else {
-                    // this.$router.push({
-                    //     name: 'login'
-                    // });
-
                 }
             });
             state.menuList = menuList;
+        },
+        toggleSidsPage (state,value) {
+            state.hideSidePage = value;
         },
     }
 });
@@ -152,19 +162,14 @@ const store=new Vuex.Store({
 //权限指令
 Vue.directive('has', {
     bind: function(el, binding) {
-
         let rights=sessionStorage.getItem("rights");
         let buttons=sessionStorage.getItem("buttons");
-       // console.log(buttons);
         if (rights !== "*") {
             var roleButtons = buttons.split(",");
             if (!Util.oneOf(binding.value, roleButtons)) {
                 el.parentNode.removeChild(el);
             }
         }
-        // if (!Vue.prototype.$_has(binding.value)) {
-        //     el.parentNode.removeChild(el);
-        // }
     }
 });
 new Vue({
@@ -180,12 +185,6 @@ new Vue({
     },
     created () {
         let rights=sessionStorage.getItem("rights");
-        // console.log(rights==null);
-        if (rights == null) {
-            this.$router.push({
-                name: 'login'
-            });
-        }
         let tagsList = [];
         appRouter.map((item) => {
             if (item.children.length <= 1) {

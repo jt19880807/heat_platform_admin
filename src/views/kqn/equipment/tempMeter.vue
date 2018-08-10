@@ -266,6 +266,7 @@
                     this.total=response.data.total;
                     this.treeData=response.data.result;
                     this.defaultProjectId=this.treeData[0].id;
+                    this.tree_project_id=this.treeData[0].id;
                     this.initFilterCollector(this.defaultProjectId, this.tree_area_id, this.tree_building_id);
                     this.initMeter(this.defaultProjectId, 0, 0);
                     //console.log(JSON.stringify(this.treeData));
