@@ -15,19 +15,20 @@ const store=new Vuex.Store({
             name:Cookies.get('name')||'',
             token:Cookies.get('token')||''
         },
-        routers:[
-            otherRouter,
-            ...userRouter,
-            ...settingRouter,
-            viewRouter,
-            zoneRouter,
-            buildRouter
-        ],
+        // routers:[
+        //     otherRouter,
+        //     ...userRouter,
+        //     ...settingRouter,
+        //     viewRouter,
+        //     zoneRouter,
+        //     buildRouter
+        // ],
         menuList: [],
         tagsList: [...otherRouter.children],
         pageOpenedList: [],
         currentPageName: '',
-        hideSidePage:true,
+        hideSidePage:localStorage.getItem("hideSidePage")?JSON.parse(localStorage.getItem("hideSidePage")): true,
+        hideProjectMenu:localStorage.getItem("hideProjectMenu")?JSON.parse(localStorage.getItem("hideProjectMenu")): true,
         currentPath: [
             {
                 title: '首页',
@@ -37,7 +38,9 @@ const store=new Vuex.Store({
         ],  // 面包屑数组
         openedSubmenuArr: [],  // 要展开的菜单数组
         menuTheme: 'light', // 主题
-        theme: ''
+        theme: '',
+        projectData:sessionStorage.getItem("projectTreeData")?JSON.parse(sessionStorage.getItem("projectTreeData")): [],
+        selectedTreeNode:sessionStorage.getItem("selectedTreeNode")?JSON.parse(sessionStorage.getItem("selectedTreeNode")): [],
     },
     mutations:{
         setTagsList (state, list) {
@@ -98,20 +101,18 @@ const store=new Vuex.Store({
             Cookies.set('locking', '0');
         },
         setMenuList (state, active) {
-
-            if (active==3){
+            if (active===3){
                 state.menuList = userRouter;
             }
-            if (active==4){
+            if (active===4){
                 state.menuList = settingRouter;
             }
-            if (active==5){
+            if (active===5){
                 state.menuList = zoneRouter;
             }
-            if (active==6){
+            if (active===6){
                 state.menuList = buildRouter;
             }
-            // state.menuList = menulist;
         },
         updateMenulist (state) {
             let accessCode =1;// parseInt(Cookies.get('access'));
@@ -154,8 +155,18 @@ const store=new Vuex.Store({
             state.menuList = menuList;
         },
         toggleSidsPage (state,value) {
-            state.hideSidePage = value;
+            state.hideSidePage = localStorage.getItem("hideSidePage")?JSON.parse(localStorage.getItem("hideSidePage")): true;
         },
+        toggleHideProjectMenu (state,value) {
+            state.hideProjectMenu = localStorage.getItem("hideProjectMenu")?JSON.parse(localStorage.getItem("hideProjectMenu")): true;
+        },
+        setProjectTreeData(state,data){
+            state.projectData=data;
+        },
+        setSelectedTreeNode(state,data){
+            state.selectedTreeNode=data;
+            //console.log(state.selectedTreeNode);
+        }
     }
 });
 
@@ -172,6 +183,7 @@ Vue.directive('has', {
         }
     }
 });
+export default store;
 new Vue({
     el: '#app',
     router: router,
@@ -196,3 +208,4 @@ new Vue({
         this.$store.commit('setTagsList', tagsList);
     }
 });
+

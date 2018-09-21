@@ -112,16 +112,16 @@
               password: [
                 { validator: validatePassCheck, trigger: 'blur' }
               ],
-                checkCode:[
-                    {validator:validateCheckCode,trigger:'blur'}
-                ],
+//                checkCode:[
+//                    {validator:validateCheckCode,trigger:'blur'}
+//                ],
             },
               identifyCodes: "23456789abcdefjhgkmnpqrstuvwxyzABCDEFJHJKLMNPQRSTUVWXYZ",
               identifyCode: "",
               clientIP:'',
           }
         },
-          mounted() {
+        mounted() {
               this.identifyCode = "";
               this.makeCode(this.identifyCodes, 4);
               const publicIp = require('public-ip');
@@ -132,7 +132,6 @@
           },
         methods:{
           handleSubmit(){
-              //console.log(this.clientIP);
               this.erromsg.password='';
               this.erromsg.username='';
               this.$refs['loginForm'].validate((valid)=>{
@@ -140,46 +139,43 @@
                     login({
                         username:this.form.userName,
                         password:this.form.password,
-                        clientIP:this.clientIP
+                        //clientIP:this.clientIP
                     }).then((response)=>{
-                        if (response.data.msg=="成功"){
-                            console.log(response.data.result[0]);
+                        //console.log(response.data);
+                        if (response.data.status===0){
                             //将用户名保存到Cookie中
                             Cookies.set('username',this.form.userName,{expires: 1});
-                            Cookies.set('projects',response.data.result[0].projects,{expires: 1});
-                            Cookies.set('buildings',response.data.result[0].projects,{expires: 1});
-                            Cookies.set('userid',response.data.result[0].id,{expires: 1});
-                            Cookies.set('rolename',response.data.result[0].rolename,{expires: 1});
-                            if (response.data.result[0].loginInfo!=undefined) {
-                                Cookies.set('lastLoginTime', response.data.result[0].loginInfo.lastlogin_time, {expires: 1});
-                                Cookies.set('lastLoginCity', response.data.result[0].loginInfo.lastlogin_city, {expires: 1});
-                            }
-                            else {
-                                Cookies.set('lastLoginTime', '', {expires: 1});
-                                Cookies.set('lastLoginIP', '', {expires: 1});
-                            }
-                            sessionStorage.setItem("rights",response.data.result[0].rights);
-                            sessionStorage.setItem("menus",response.data.result[0].menus);
-                            sessionStorage.setItem("buttons",response.data.result[0].buttons);
+//                            Cookies.set('projects',response.data.result[0].projects,{expires: 1});
+//                            Cookies.set('buildings',response.data.result[0].projects,{expires: 1});
+//                            Cookies.set('userid',response.data.result[0].id,{expires: 1});
+//                            Cookies.set('rolename',response.data.result[0].rolename,{expires: 1});
+//                            if (response.data.result[0].loginInfo!=undefined) {
+//                                Cookies.set('lastLoginTime', response.data.result[0].loginInfo.lastlogin_time, {expires: 1});
+//                                Cookies.set('lastLoginCity', response.data.result[0].loginInfo.lastlogin_city, {expires: 1});
+//                            }
+//                            else {
+//                                Cookies.set('lastLoginTime', '', {expires: 1});
+//                                Cookies.set('lastLoginIP', '', {expires: 1});
+//                            }
+//                            sessionStorage.setItem("rights",response.data.result[0].rights);
+//                            sessionStorage.setItem("menus",response.data.result[0].menus);
+//                            sessionStorage.setItem("buttons",response.data.result[0].buttons);
+                            sessionStorage.setItem("builds","*");
                             this.$router.push({
                                 name: 'home_index'
                             });
                         }
-                        else if (response.data.msg=="密码错误"){
+                        else if (response.data.status===2){
                             this.erromsg.password=response.data.msg;
                             this.$refs.loginForm.validateField('password');
                         }
-                        else if (response.data.msg=="用户不存在"){
+                        else if (response.data.status===1){
                             this.erromsg.username=response.data.msg;
                             this.$refs['loginForm'].validateField('userName');
                         }
                     }).catch(function (error) {
                         console.log(error);
                     });
-                  //alert(this.form.userName+":"+this.form.password);
-    //                this.$router.push({
-    //                    name: 'home_index'
-    //                });
                 }
               })
           },

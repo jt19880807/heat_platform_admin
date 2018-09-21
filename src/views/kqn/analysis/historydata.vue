@@ -238,7 +238,7 @@
                 for (var i=0;i<this.historyCount;i++){
                     yAxis.push(filterData["value"+i]==='暂无数据'?null:filterData["value"+i].split('%')[0]);
                 }
-                console.log(yAxis);
+                //console.log(yAxis);
                 return yAxis;
             },
             //加载耗热量图表

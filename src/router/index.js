@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Main from '../views/main/main.vue'
 import VueRouter from 'vue-router'
 import Cookies from 'js-cookie'
+import store from '../main.js'
+
 Vue.use(VueRouter);
 
 const loginRouter = {
@@ -271,59 +273,59 @@ const viewRouter=[
 ];
 const zoneRouter = [
     {
-        path: '/projectmanage',
+        path: '/nodaData',
         icon: 'social-buffer',
         name: 'zone_homeMeter',
         title: '户表数据',
         component: Main,
         children: [
             {
-                path: 'project',
+                path: 'zone_homeMeter_lastData',
                 icon: 'compose',
                 name: 'zone_homeMeter_lastData',
                 title: '实时数据',
                 component: resolve => { require(['../views/heat/data/lastData.vue'], resolve); }
             },
             {
-                path: 'area',
+                path: 'zone_homeMeter_histtoryData',
                 icon: 'pound',
                 name: 'zone_homeMeter_histtoryData',
                 title: '历史数据',
                 component: resolve => { require(['../views/heat/data/historyData.vue'], resolve); }
             },
             {
-                path: 'building',
+                path: 'zone_homeMeter_useData',
                 icon: 'ios-home',
                 name: 'zone_homeMeter_useData',
                 title: '用量数据',
-                component: resolve => { require(['../views/kqn/building.vue'], resolve); }
+                component: resolve => { require(['../views/heat/data/zone_useheat.vue'], resolve); }
             },
             {
-                path: 'building',
+                path: 'zone_homeMeter_contrast',
                 icon: 'ios-home',
                 name: 'zone_homeMeter_contrast',
                 title: '对比分析',
-                component: resolve => { require(['../views/heat/data/homeMeter_contrast.vue'], resolve); }
+                component: resolve => { require(['../views/heat/data/zone_homeMeter_contrast.vue'], resolve); }
             },
 
         ]
     },
     {
-        path: '/devicemanage',
+        path: '/meterData',
         icon: 'social-buffer',
         name: 'zone_buildMeter',
         title: '大表数据',
         component: Main,
         children: [
             {
-                path: 'collector',
+                path: 'zone_buildMeter_data',
                 icon: 'compose',
                 name: 'zone_buildMeter_data',
                 title: '读数',
                 component: resolve => { require(['../views/kqn/equipment/collector.vue'], resolve); }
             },
             {
-                path: 'ammeter',
+                path: 'zone_buildMeter_eca',
                 icon: 'pound',
                 name: 'zone_buildMeter_eca',
                 title: '能耗分析',
@@ -332,21 +334,21 @@ const zoneRouter = [
         ]
     },
     {
-        path: '/dataquery',
+        path: '/bill',
         icon: 'social-buffer',
         name: 'zone_bill',
         title: '账单数据',
         component: Main,
         children: [
             {
-                path: 'heatreading',
+                path: 'zone_bill_settlement',
                 icon: 'compose',
                 name: 'zone_bill_settlement',
                 title: '季末结算',
                 component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
             },
             {
-                path: 'electricity',
+                path: 'zone_bill_stationReport',
                 icon: 'pound',
                 name: 'zone_bill_stationReport',
                 title: '台账报表',
@@ -360,35 +362,35 @@ const buildRouter = [
     {
         path: '/projectmanage',
         icon: 'social-buffer',
-        name: 'zone_homeMeter',
+        name: 'build_homeMeter',
         title: '户表数据',
         component: Main,
         children: [
             {
                 path: 'project',
                 icon: 'compose',
-                name: 'zone_homeMeter_lastData',
+                name: 'build_homeMeter_lastData',
                 title: '实时数据',
-                component: resolve => { require(['../views/kqn/project.vue'], resolve); }
+                component: resolve => { require(['../views/heat/data/lastData.vue'], resolve); }
             },
             {
                 path: 'area',
                 icon: 'pound',
-                name: 'zone_homeMeter_histtoryData',
+                name: 'build_homeMeter_histtoryData',
                 title: '历史数据',
-                component: resolve => { require(['../views/kqn/area.vue'], resolve); }
+                component: resolve => { require(['../views/heat/data/historyData.vue'], resolve); }
             },
             {
                 path: 'building',
                 icon: 'ios-home',
-                name: 'zone_homeMeter_useData',
+                name: 'build_homeMeter_useData',
                 title: '用量数据',
-                component: resolve => { require(['../views/kqn/building.vue'], resolve); }
+                component: resolve => { require(['../views/heat/data/build_useheat.vue'], resolve); }
             },
             {
                 path: 'building',
                 icon: 'ios-home',
-                name: 'zone_homeMeter_contrast',
+                name: 'build_homeMeter_contrast',
                 title: '对比分析',
                 component: resolve => { require(['../views/kqn/building.vue'], resolve); }
             },
@@ -398,21 +400,21 @@ const buildRouter = [
     {
         path: '/devicemanage',
         icon: 'social-buffer',
-        name: 'zone_buildMeter',
+        name: 'build_buildMeter',
         title: '大表数据',
         component: Main,
         children: [
             {
                 path: 'collector',
                 icon: 'compose',
-                name: 'zone_buildMeter_data',
+                name: 'build_buildMeter_data',
                 title: '读数',
                 component: resolve => { require(['../views/kqn/equipment/collector.vue'], resolve); }
             },
             {
                 path: 'ammeter',
                 icon: 'pound',
-                name: 'zone_buildMeter_eca',
+                name: 'build_buildMeter_eca',
                 title: '能耗分析',
                 component: resolve => { require(['../views/kqn/equipment/amMeter.vue'], resolve); }
             }
@@ -421,21 +423,21 @@ const buildRouter = [
     {
         path: '/dataquery',
         icon: 'social-buffer',
-        name: 'zone_bill',
+        name: 'build_bill',
         title: '账单数据',
         component: Main,
         children: [
             {
                 path: 'heatreading',
                 icon: 'compose',
-                name: 'zone_bill_settlement',
+                name: 'build_bill_settlement',
                 title: '季末结算',
                 component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
             },
             {
                 path: 'electricity',
                 icon: 'pound',
-                name: 'zone_bill_stationReport',
+                name: 'build_bill_stationReport',
                 title: '台账报表',
                 component: resolve => { require(['../views/kqn/readings/electricity.vue'], resolve); }
             },
@@ -459,12 +461,20 @@ const router=new VueRouter({
 });
 
 router.beforeEach((to,from,next)=>{
+    if (to.name!=='home_index'){
+        localStorage.setItem("hideSidePage",false);
+        store.commit('toggleSidsPage', false);
+    }else {
+        localStorage.setItem("hideSidePage",true);
+        store.commit('toggleSidsPage', true);
+    }
     if (!Cookies.get('username')&&to.name!=='login'){
         next({
             path: '/login'
         });
     }
     next();
+
 });
 
 export {router,otherRouter,userRouter,settingRouter,viewRouter,zoneRouter,buildRouter,appRouter};

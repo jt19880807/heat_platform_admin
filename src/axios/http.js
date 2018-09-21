@@ -1,72 +1,83 @@
 import axios from 'axios'
-// const Axios = axios.create({
-//     baseURL: "http://127.0.0.1:8080", // 因为我本地做了反向代理
-//     timeout: 10000,
-//     responseType: "json",
-//     withCredentials: false, // 是否允许带cookie这些
-//     headers: {
-//         "Content-Type": "application/x-www-form-urlencoded"
-//     }
-// });
-// //设置请求baseURL
- axios.defaults.baseURL='http://192.168.5.21:8082';
- // axios.defaults.baseURL='http://211.103.188.228:8082';
+ //axios.defaults.baseURL='http://192.168.5.21:8082';
+  axios.defaults.baseURL='http://192.168.5.21:8088';
 // //设置默认请求头
 axios.defaults.headers = {
     "Content-Type": "application/json",
     "Accept":"application/json"
 };
-//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-// 带cookie请求
-axios.defaults.withCredentials = true;
-// http request 拦截器
-// axios.interceptors.request.use(
-//     config => {
-//         //if (store.state.userInfo.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-//             config.headers.Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4sQVVUSF9XUklURSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTA5NTMyNzY4fQ.C77UTIX5m7dPnZKnD9WIrl_ar4cZLaoum7ft5yepGuE6lnhW7ssqgvJbsJKdhypxh72_ZUcktlai6xBrbmx5NA";
-//        //}
-//         return config;
-//     },
-//     err => {
-//         return Promise.reject(err);
-//     });
-// axios.interceptors.request.use(function (config) {    // 这里的config包含每次请求的内容
-//     //if (store.getters.getToken) {
-//         config.headers.Authorization ='Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4sQVVUSF9XUklURSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTA5NTMyNzY4fQ.C77UTIX5m7dPnZKnD9WIrl_ar4cZLaoum7ft5yepGuE6lnhW7ssqgvJbsJKdhypxh72_ZUcktlai6xBrbmx5NA';
-//     //}
-//     return config;
-// }, function (err) {
-//     return Promise.reject(err);
-// });
-//
-// Axios.interceptors.response.use(
-//     undefined,
-//     error => {
-//         let res = error.response;
-//         switch (res.status) {
-//             case 401:
-//                 // 返回 401 清除token信息并跳转到登录页面
-//                 // store.commit(types.LOGOUT);
-//                 // router.replace({
-//                 //     path: '/app/login',
-//                 //     query: {redirect: router.currentRoute.fullPath}
-//                 // });
-//                 break;
-//             case 403:
-//                 console.log('您没有该操作权限');
-//                 break;
-//             // alert('您没有该操作权限');
-//             case 500:
-//                 console.log('服务器错误');
-//                 break;
-//             // alert('服务器错误');
-//         }
-//         return Promise.reject(error.response.data)   // 返回接口返回的错误信息
-//     });
-
 export const login=params=>{
     return axios.post("/login",params)
 };
+
+//获取项目的地图数据
+export const getProjectMapData=(ids)=>{
+    return axios.get("/projectMapData/"+ids);
+};
+//获取项目的基础信息
+export const getProjectBaseInfo=(ids)=>{
+    return axios.get("/projectBaseInfo/"+ids);
+};
+//获取项目树信息
+export const getProjectTree=(ids)=>{
+    return axios.get("/projectTree/"+ids);
+};
+//获取项目树信息
+export const getHouseholdsAndArea=(buildIds,type,name)=>{
+    return axios.get("/householdsAndArea?buildIds="+buildIds+"&type="+type+"&name="+name);
+};
+//获取单位面积热耗
+export const getAreaHeat=(buildIds,type,name,startDate,endDate)=>{
+    return axios.get("/areaHeat?buildIds="+buildIds+"&type="+type+"&name="+name+"&startDate="+startDate+"&endDate="+endDate);
+};
+//获取进水温度分析
+export const entrance_temp_analyse=(buildIds,type,name)=>{
+    return axios.get("/entrance_temp_analyse?buildIds="+buildIds+"&type="+type+"&name="+name);
+};
+
+//户表数据
+//获取户表实时数据
+export const getLastNodeData=(buildIds,type,name,entrancetemp,num,size)=>{
+    return axios.get("/lastNodeData?buildIds="+buildIds+"&type="+type+"&name="+name+"&entrancetemp="+entrancetemp+"&num="+num+"&size="+size);
+};
+//获取户表历史数据
+export const getHistoryNodeData=(buildIds,type,name,startDate,endDate,num,size)=>{
+    return axios.get("/historyNodeData?buildIds="+buildIds+"&type="+type+"&name="+name+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+};
+//获取小区的日用热量
+export const getZoneDayHeat=(buildIds,type,name,date)=>{
+    return axios.get("/zoneDayHeat?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date);
+};
+//获取小区的月用热量
+export const getZoneMonthHeat=(buildIds,type,name,date)=>{
+    return axios.get("/zoneMonthHeat?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date);
+};
+//获取楼栋的日用热量
+export const getBuildDayHeat=(buildIds,type,name,date,num,size)=>{
+    return axios.get("/buildDayHeat?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date+"&num="+num+"&size="+size);
+};
+//获取楼栋的月用热量
+export const getBuildMonthHeat=(buildIds,type,name,date,num,size)=>{
+    return axios.get("/buildMonthHeat?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date+"&num="+num+"&size="+size);
+};
+
+//获取小区的历史对比数据
+export const getZoneContrast=(buildIds,type,name,date)=>{
+    return axios.get("/zoneContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date);
+};
+//获取楼栋的历史对比数据
+export const getBuildContrast=(buildIds,type,name,date,num,size)=>{
+    return axios.get("/buildContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date+"&num="+num+"&size="+size);
+};
+
+
+
+
+
+
+
+
+// 旧的项目
 //获取所有住户信息
 export const getUsers=(keywords,num,size)=>{
     return axios.get('/users?keywords='+keywords+'&num='+num+'&size='+size);
@@ -133,9 +144,9 @@ export const getProjects=(ids,num,size,keywords)=>{
   return axios.get("/projects/"+ids+"?num="+num+"&size="+size+"&keywords="+keywords);
 };
 //分页获取指定ID或者全部的项目信息,包含下面的小区楼栋信息
-export const getProjectTree=(ids)=>{
-    return axios.get("/projectree/"+ids);
-};
+// export const getProjectTree=(ids)=>{
+//     return axios.get("/projectree/"+ids);
+// };
 //分页获取指定ID或者全部的项目信息,不包含下面的小区楼栋信息
 export const getProjectTreeNoChildren=(ids)=>{
     return axios.get("/projecTreeNoChildren/"+ids);

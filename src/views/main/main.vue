@@ -25,19 +25,20 @@
                         </MenuItem>
                     </Menu>
                 </div>
-                <!--<div class="header-middle-con">-->
-                <!--<div class="main-breadcrumb">-->
-                <!--<breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>-->
-                <!--</div>-->
-                <!--</div>-->
                 <div class="header-avator-con">
                     <div class="main-header">
+                        <div style="width: 300px;float:left">
+                            <Input v-model="searchData" icon="ios-search-strong"
+                                   style="width: 300px;margin-top:5%;" placeholder="请输入关键字"
+                                   @on-change="searchChange" @on-blur	="filterData=[]"/>
+                        </div>
+
                         <div class="user-dropdown-menu-con">
                             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                                 <Dropdown trigger="click" @on-click="handleClickUserDropdown">
                                     <a href="javascript:void(0)">
                                         <span class="main-user-name">{{ userName }}</span>
-                                        <Icon type="arrow-down-b"></Icon>
+                                        <Icon type="arrow-down-b" style="color: #fff"></Icon>
                                     </a>
                                     <DropdownMenu slot="list">
                                         <!--<DropdownItem name="ownSpace">个人中心</DropdownItem>-->
@@ -50,63 +51,61 @@
                     </div>
                 </div>
             </div>
-            <!--<div class="tags-con">-->
-            <!--<tags-page-opened :pageTagsList="pageTagsList"></tags-page-opened>-->
-            <!--</div>-->
         </div>
-        <div class="sidebar-con" :style="{width: $store.state.hideSidePage?'0px':'200px', overflow: $store.state.hideSidePage ? 'hidden' : 'visible'}">
+        <div class="sidebar-con" :style="{width: hideSidePage?'0px':'200px', overflow: hideSidePage ? 'hidden' : 'visible'}">
             <transition name="tran_project" mode="out-in">
 
                 <div v-if="!hideMenuText" class="sidebar-con-menu" key="tran_menu">
-                    <Button style="margin-left:200px;margin-top: 20px;" ghost type="primary" size="small" @click="toggleClick">
+                    <Button v-if="!$store.state.hideProjectMenu" style="margin-left:200px;margin-top: 20px;" ghost type="primary" size="small" @click="toggleClick">
                         项<br>目<br>列<br>表<br>
                     </Button>
                     <div style="width: 100%;height: 100%;margin-top: -100px;">
                         <sidebar-menu  :menuList="menuList" :iconSize="14"></sidebar-menu>
                     </div>
                 </div>
+
                 <div v-else class="sidebar-con-project" key="tran_object">
-                    <Button style="margin-left:200px;margin-top: 20px;" ghost type="primary" size="small" @click="toggleClick">
+                    <Button v-if="!$store.state.hideProjectMenu"
+                            style="margin-left:200px;margin-top: 20px;"
+                            ghost
+                            type="primary"
+                            size="small"
+                            @click="toggleClick">
                         菜<br>单<br>列<br>表<br>
                     </Button>
-                    <div style="width: 100%;height: 100%;margin-top: -100px;">
+                    <div :style="{marginTop: !$store.state.hideProjectMenu?'-100px':'0px'}">
                         <Input icon="ios-search-strong" style="margin: 20px;width: 170px;" placeholder="请输入关键词" />
-                        <Tree :data="projectData"  style="font-size: 39px;margin-left: 20px;text-color:green;" @on-select-change="projectChange"/>
+                        <Tree ref="tree" :data="projectTree"  style="font-size: 39px;margin-left: 20px;" @on-select-change="projectChange"/>
                     </div>
                 </div>
             </transition>
-            <!--<div class="navicon-con" v-if="!hideMenuText">-->
-                <!--<Button :style="{'margin-left': $store.state.hideSidePage?'0px':'200px'}" ghost type="primary" size="small" @click="toggleClick">-->
-                    <!--菜<br>单<br>列<br>表<br>-->
-                <!--</Button>-->
-
-            <!--</div>-->
         </div>
 
         <div class="single-page-con" :style="{paddingLeft: $store.state.hideSidePage?'0px':'210px'}">
-            <div class="header-middle-con" style="z-index: 100;">
-                <div class="main-breadcrumb" >
-                    <Row >
-                        <Col span="12">
-                            <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
-                        </Col>
-                        <Col span="12" style="text-align: right">
-                        <!--<div style="float: right;width: 300px;">-->
-                        <Input v-model="searchData" icon="ios-search-strong" style="width: 300px;" placeholder="请输入关键字..."
-                               @on-change="searchChange" @on-blur	="filterData=[]"/>
+            <!--<div class="header-middle-con" style="z-index: 100;">-->
+                <!--<div class="main-breadcrumb" >-->
+                    <!--<Row >-->
+                        <!--<Col span="12">-->
+                        <!--&nbsp;-->
+                            <!--&lt;!&ndash;<breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>&ndash;&gt;-->
+                        <!--</Col>-->
+                        <!--<Col span="12" style="text-align: right">-->
+                        <!--&lt;!&ndash;<div style="float: right;width: 300px;">&ndash;&gt;-->
+                        <!--<Input v-model="searchData" icon="ios-search-strong" style="width: 300px;" placeholder="请输入关键字..."-->
+                               <!--@on-change="searchChange" @on-blur	="filterData=[]"/>-->
 
-                        <!--</div>-->
-                        </Col>
-                    </Row>
-                </div>
-            </div>
-            <div v-show="filterData.length>0" class="search_div">
-                <ul class="list-group">
-                    <li class="list-group-item" v-for="item in filterData">
-                        {{ item.title }}
-                    </li>
-                </ul>
-            </div>
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--</Col>-->
+                    <!--</Row>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div v-show="filterData.length>0" class="search_div">-->
+                <!--<ul class="list-group">-->
+                    <!--<li class="list-group-item" v-for="item in filterData">-->
+                        <!--{{ item.title }}-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</div>-->
             <!--<div //style="minHeight: 280px;background:#fff;width:100%;z-index: 100;">-->
             <div>
                 <router-view></router-view>
@@ -127,7 +126,7 @@
             sidebarMenu,
             sidebarMenuShrink,
             breadcrumbNav,
-            tagsPageOpened
+            tagsPageOpened,
         },
         data(){
             return{
@@ -137,72 +136,6 @@
                 isFullScreen: false,
                 messageCount: 10,
                 lockScreenSize: 0,
-                projectData: [
-                    {
-                        title: '明光热源厂',
-                        expand: true,
-                        type:1,
-                        children: [
-                            {
-                                title: '明光换热站',
-                                expand: true,
-                                type:2,
-                                children: [
-                                    {
-                                        title: '明光小区',
-                                        type:3,
-                                        children: [
-                                            {
-                                                title: '1号楼',
-                                                type:4,
-                                            },
-                                            {
-                                                title: '2号楼',
-                                                type:4,
-                                            },
-                                            {
-                                                title: '3号楼',
-                                                type:4,
-                                            },
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        title: '万达热源厂',
-                        expand: true,
-                        type:1,
-                        children: [
-                            {
-                                title: '万达换热站',
-                                type:2,
-                                expand: true,
-                                children: [
-                                    {
-                                        title: '万达小区',
-                                        type:3,
-                                        children: [
-                                            {
-                                                title: '1号楼',
-                                                type:4,
-                                            },
-                                            {
-                                                title: '2号楼',
-                                                type:4,
-                                            },
-                                            {
-                                                title: '3号楼',
-                                                type:4,
-                                            },
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
                 searchData:'',
                 filterData:[
 //                    {name:'明光换热站',type:'换热站'},
@@ -210,17 +143,25 @@
 //                    {name:'万达换热站',type:'换热站'},
 //                    {name:'万达小区',type:'小区'},
                 ],
+                selectedNode:[],
+                projectTreeData:[],
             }
         },
         computed:{
             menuList () {
                 return this.$store.state.menuList;
             },
+            hideSidePage(){
+                return this.$store.state.hideSidePage;
+            },
+            projectTree(){
+                this.projectTreeData=this.$store.state.projectData;
+                return this.projectTreeData;
+            },
             menuIconColor () {
                 return this.$store.state.menuTheme === 'dark' ? 'white' : '#495060';
             },
             currentPath () {
-                //console.log(JSON.stringify(this.$store.state.currentPath));
                 return this.$store.state.currentPath;  // 当前面包屑数组
             },
             pageTagsList () {
@@ -232,14 +173,13 @@
         },
         methods:{
             init () {
-                this.$store.commit('setCurrentPageName', this.$route.name);
-                let pathArr = util.setCurrentPath(this, this.$route.name);
-                if (pathArr.length >= 2) {
-                    this.$store.commit('addOpenSubmenu', pathArr[1].name);
-                }
+//                this.$store.commit('setCurrentPageName', this.$route.name);
+//                let pathArr = util.setCurrentPath(this, this.$route.name);
+//                if (pathArr.length >= 2) {
+//                    this.$store.commit('addOpenSubmenu', pathArr[1].name);
+//                }
                 this.userName = Cookies.get('username');
-                let messageCount = 3;
-                //this.messageCount = messageCount.toString();
+//                let messageCount = 3;
             },
             toggleClick () {
                 this.hideMenuText = !this.hideMenuText;
@@ -300,29 +240,50 @@
                 }
             },
             projectChange(option){
-                //console.log(this.$router);
-                if (option[0].type!==1){
-                    switch (option[0].type){
-                        case 2:
-                            this.$router.push({
-                                name: 'exchange_index'
-                            });
-                            break;
-                        case 3:
-                            this.$router.push({
-                                name: 'zone_index'
-                            });
-                            break;
-                        case 4:
-                            this.$router.push({
-                                name: 'building_index'
-                            });
-                            break;
+                if (option.length > 0) {
+                    //console.log(option);
+                    if (option[0].type !== "0" && option[0].type !== "1") {
+                        sessionStorage.setItem("projectTreeData", JSON.stringify(this.projectTreeData));
+                        this.$store.commit('setProjectTreeData', this.projectTreeData);
+                        this.selectedNode = this.$refs.tree.getSelectedNodes();
+                        sessionStorage.setItem("selectedTreeNode", JSON.stringify(this.$refs.tree.getSelectedNodes()));
+                        this.$store.commit('setSelectedTreeNode', this.$refs.tree.getSelectedNodes());
+                        if (option[0].type!=='2'){
+                            localStorage.setItem("hideProjectMenu",false);
+                            this.$store.commit('toggleHideProjectMenu', false);
+                        }
+                        else {
+                            localStorage.setItem("hideProjectMenu",true);
+                            this.$store.commit('toggleHideProjectMenu', true);
+                        }
+                        switch (option[0].type) {
+                            case "2":
+                                this.$router.push({
+                                    name: 'exchange_index'
+                                });
+                                break;
+                            case "3":
+                                this.$router.push({
+                                    name: 'zone_index'
+                                });
+                                break;
+                            case "4":
+                                this.$router.push({
+                                    name: 'building_index'
+                                });
+                                break;
+                        }
                     }
+                    else {
+                        localStorage.setItem("hideProjectMenu",true);
+                        this.$store.commit('toggleHideProjectMenu', true);
+                    }
+                }
+                else {
+                    this.selectedNode[0].selected=true;
                 }
             },
             searchChange(){
-                console.log(this.searchData);
                 var keyWord=this.searchData;
                 var filter=[];
                 //this.filterData.removeAll();
@@ -331,18 +292,12 @@
                         filter.push(project);
                     }
                 });
-                console.log(filter);
                 this.filterData=filter;
             }
         },
         watch: {
             '$route' (to) {
                 this.$store.commit('setCurrentPageName', to.name);
-                if (to.name!=='home_index'){
-                    this.$store.commit('toggleSidsPage', false);
-                }else {
-                    this.$store.commit('toggleSidsPage', true);
-                }
                 if (to.name==='zone_index'){
                     this.$store.commit('setMenuList',5);
                 }
@@ -350,8 +305,13 @@
                     this.$store.commit('setMenuList',6);
                 }
             },
-            lang () {
-                util.setCurrentPath(this, this.$route.name);  // 在切换语言时用于刷新面包屑
+            projectTreeData:function (newVue, oldVue) {
+                if (newVue.length>0) {
+                    if (!sessionStorage.getItem("selectedTreeNode")) {
+                        sessionStorage.setItem("selectedTreeNode", JSON.stringify(newVue[0].children[0].children));
+                        this.$store.commit('setSelectedTreeNode', newVue[0].children[0].children);
+                    }
+                }
             }
         },
         mounted () {

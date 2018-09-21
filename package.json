@@ -14,6 +14,7 @@
     "babel-preset-es2015": "^6.24.1",
     "countup": "^1.8.2",
     "echarts": "^3.8.5",
+    "element-ui": "^2.4.6",
     "iview": "^2.14.2",
     "js-cookie": "^2.2.0",
     "less": "^3.0.0-alpha.3",

@@ -344,7 +344,6 @@
 //              console.log(file);
 
 //                console.log("Success");
-                console.log(res);
                 this.showImportResult=true;
                 this.importCount=res.result[0].count;
                 this.importErrorResult=res.result[0].results;

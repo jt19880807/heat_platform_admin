@@ -48,7 +48,7 @@
         },
         watch: {
             val:function (v,oldv) {
-                console.log(v);
+//                console.log(v);
                 this.mColor=v>0?'red':'green';
             }
         }

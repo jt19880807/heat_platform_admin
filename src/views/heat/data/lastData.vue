@@ -6,46 +6,53 @@
     <div class="home-main">
         <div class="header-title-div">
             <div class="header-title" >
-                明光1号楼实时数据
+                {{title}}实时数据
             </div>
         </div>
         <Row>
             <div class="tools_div">
                 <Row style="padding-top: 10px;margin-left: 20px;">
                     <Col span="6">
-                    进水温度：<Input-number :max="100" :min="1" v-model="value1" size="small"></Input-number>
-                    --<Input-number :max="100" :min="1" v-model="value2" size="small"></Input-number>
+                    进水温度：<Input-number :max="100" :min="0" v-model="e0" size="small"></Input-number>
+                    --<Input-number :max="100" :min="0" v-model="e1" size="small"></Input-number>
                     </Col>
                     <Col span="6"></Col>
                     <Col span="6"></Col>
                     <Col span="6">
-                        <Button>搜索</Button>
+                        <Button @click="searchClick">搜索</Button>
                         <Button>导出</Button>
                     </Col>
                 </Row>
                 <br/>
                 <Row style="margin-left: 20px;">
                     <Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">
-                        <Checkbox label="grzt">供热状态</Checkbox>
-                        <Checkbox label="jlfs">计量方式</Checkbox>
-                        <Checkbox label="ljrl">累积热量</Checkbox>
-                        <Checkbox label="rgl">热功率</Checkbox>
-                        <Checkbox label="ljll">累积流量</Checkbox>
-                        <Checkbox label="ssll">瞬时流量</Checkbox>
-                        <Checkbox label="gswd">供水温度</Checkbox>
-                        <Checkbox label="hswd">回水温度</Checkbox>
-                        <Checkbox label="wc">温差</Checkbox>
-                        <Checkbox label="dyzt">电压状态</Checkbox>
-                        <Checkbox label="cbsj">抄表时间</Checkbox>
+                        <Checkbox label="charge_mode">计量方式</Checkbox>
+                        <Checkbox label="cu_heat">累积热量</Checkbox>
+                        <Checkbox label="heat_power">热功率</Checkbox>
+                        <Checkbox label="cu_flow">累积流量</Checkbox>
+                        <Checkbox label="instant_flowrate">瞬时流量</Checkbox>
+                        <Checkbox label="entrance_temp">供水温度</Checkbox>
+                        <Checkbox label="exit_temp">回水温度</Checkbox>
+                        <Checkbox label="diff_temp">温差</Checkbox>
+                        <Checkbox label="battery_status">电压状态</Checkbox>
+                        <Checkbox label="add_time">抄表时间</Checkbox>
                     </Checkbox-group>
                 </Row>
             </div>
         </Row>
         <br/>
         <Row>
-            <Table border stripe  :columns="tableColumns" :data="data" ></Table>
+            <Table border stripe  :columns="tableColumns" :data="lastNodeData" ></Table>
         </Row>
-
+        <Row style="margin: 10px">
+            <Col span="8">
+              &nbsp;
+            </Col>
+            <Col span="16" style="text-align: right">
+                <Page :total="page.total" :current="page.currentPage" show-total  :pageSize="page.pageSize"
+                      @on-change="pageChange"/>
+            </Col>
+        </Row>
     </div>
 </template>
 <script>
@@ -53,184 +60,108 @@
     import VeRing from 'v-charts/lib/ring.common';
     import VeHistogramfrom from 'v-charts/lib/histogram.common';
     import dataIcon from "../../../components/dataIcon.vue";
+    import {getLastNodeData} from '../../../axios/http';
     export default {
         data(){
             return {
-                columns: [
-                    {
-                        title: '房间',
-                        key: 'fj'
-                    },
-                    {
-                        title: '户主',
-                        key: 'hz'
-                    },
-                    {
-                        title: '房间位置',
-                        key: 'fjwz',
-                    },
-                    {
-                        title: '供热面积',
-                        key: 'grmj'
-                    },
-                    {
-                        title: '供热状态',
-                        key: 'grzt'
-                    },
-                    {
-                        title: '计量方式',
-                        key: 'jlfs'
-                    },
-                    {
-                        title: '表号',
-                        key: 'bh'
-                    },
-                    {
-                        title: '累积热量',
-                        key: 'ljrl'
-                    },
-                    {
-                        title: '热功率',
-                        key: 'rgl'
-                    },
-                    {
-                        title: '累积流量',
-                        key: 'ljll'
-                    },
-                    {
-                        title: '瞬时流量',
-                        key: 'ssll'
-                    },
-                    {
-                        title: '供水温度',
-                        key: 'gswd'
-                    },
-                    {
-                        title: '回水温度',
-                        key: 'hswd'
-                    },
-                    {
-                        title: '温差',
-                        key: 'wc'
-                    },
-                    {
-                        title: '电压状态',
-                        key: 'dyzt'
-                    },
-                    {
-                        title: '抄表时间',
-                        key: 'cbsj'
-                    }
-                ],
                 self: this,
-                data: this.mockTableData(),
+                lastNodeData: [],
                 tableColumns: [],
-                tableColumnsChecked: ['grzt', 'jlfs', 'bh', 'ljrl', 'rgl', 'ljll', 'ssll', 'gswd', 'hswd', 'wc', 'dyzt','cbsj'],
-                value1:45,
-                value2:50,
+                tableColumnsChecked: [ 'charge_mode', 'heat_met_addr', 'cu_heat', 'heat_power', 'cu_flow', 'instant_flowrate', 'entrance_temp', 'exit_temp', 'diff_temp', 'battery_status','add_time'],
+                e0:0,
+                e1:100,
+                page:{
+                    currentPage:1,//当前页码
+                    pageSize:10,//每页数据量
+                    total:0,//数据总量
+                },
+                selectedTreeNode:{},
+                builds:'',
             }
         },
+        computed:{
+            title () {
+                this.selectedTreeNode=this.$store.state.selectedTreeNode[0];
+                return this.selectedTreeNode.name;
+            },
+        },
         methods:{
-            mockTableData () {
-                let data = [];
-                function getNum() {
-                    return Math.floor(Math.random () * 10000 + 1);
-                }
-                for (let i = 0; i < 10; i++) {
-                    data.push({
-                        fj: "1-10"+i,
-                        hz: "张XX"+i,
-                        fjwz: "边侧",
-                        grmj: getNum(),
-                        grzt: "正常",
-                        jlfs: "热计量",
-                        bh: "4122516"+i,
-                        ljrl: getNum(),
-                        rgl: getNum(),
-                        ljll: getNum(),
-                        ssll: getNum(),
-                        gswd: getNum(),
-                        hswd: getNum(),
-                        wc: getNum(),
-                        dyzt: "正常",
-                        cbsj: "2018-8-09",
-
-                    })
-                }
-                return data;
+            init(){
+                this.builds=sessionStorage.getItem("builds");
             },
             getTableColumns () {
                 const tableColumnList = {
-                    fj:{
+                    b_name:{
+                        title: '楼号',
+                        key: 'b_name'
+                    },
+                    user_code:{
                         title: '房间',
-                        key: 'fj'
+                            key: 'user_code'
                     },
-                    hz:{
-                            title: '户主',
-                            key: 'hz'
-                        },
-                    fjwz:{
+                    host_name:{
+                        title: '户主',
+                            key: 'host_name'
+                    },
+                    location:{
                         title: '房间位置',
-                        key: 'fjwz',
+                        key: 'location',
                     },
-                    grmj:{
+                    area:{
                         title: '供热面积',
-                        key: 'grmj'
+                            key: 'area'
                     },
-                    grzt:{
-                        title: '供热状态',
-                        key: 'grzt'
-                    },
-                    jlfs:{
+                    charge_mode:{
                         title: '计量方式',
-                        key: 'jlfs'
+                            key: 'charge_mode'
                     },
-                    bh:{
+                    heat_met_addr:{
                         title: '表号',
-                        key: 'bh'
+                            key: 'heat_met_addr'
                     },
-                    ljrl:{
+                    cu_heat:{
                         title: '累积热量',
-                        key: 'ljrl'
+                            key: 'cu_heat'
                     },
-                    rgl:{
+                    heat_power:{
                         title: '热功率',
-                        key: 'rgl'
+                            key: 'heat_power'
                     },
-                    ljll:{
+                    cu_flow:{
                         title: '累积流量',
-                        key: 'ljll'
+                            key: 'cu_flow'
                     },
-                    ssll:{
+                    instant_flowrate:{
                         title: '瞬时流量',
-                        key: 'ssll'
+                            key: 'instant_flowrate'
                     },
-                    gswd:{
+                    entrance_temp:{
                         title: '供水温度',
-                        key: 'gswd'
+                            key: 'entrance_temp'
                     },
-                    hswd:{
+                    exit_temp:{
                         title: '回水温度',
-                        key: 'hswd'
+                            key: 'exit_temp'
                     },
-                    wc:{
+                    diff_temp:{
                         title: '温差',
-                        key: 'wc'
+                            key: 'diff_temp'
                     },
-                    dyzt:{
+                    battery_status: {
                         title: '电压状态',
-                        key: 'dyzt'
+                            key: 'battery_status'
                     },
-                    cbsj:{
+                    add_time:{
                         title: '抄表时间',
-                        key: 'cbsj'
+                            key: 'add_time'
                     }
                 };
-
-                let data = [tableColumnList.fj,tableColumnList.hz,tableColumnList.fjwz,tableColumnList.grmj];
-
+                let data = [];
+                if (this.selectedTreeNode.type==="3"){
+                    data.push(tableColumnList.b_name);
+                }
+                data.push(tableColumnList.user_code,tableColumnList.host_name,tableColumnList.location,tableColumnList.area);
                 this.tableColumnsChecked.forEach(col => data.push(tableColumnList[col]));
-
                 return data;
             },
             changeTableColumns () {
@@ -238,10 +169,41 @@
             },
             toggleFav (index) {
                 this.tableData2[index].fav = this.tableData2[index].fav === 0 ? 1 : 0;
-            }
+            },
+            initLastNodeData(){
+              getLastNodeData(this.builds,
+                  this.selectedTreeNode.type,
+                  this.selectedTreeNode.name,
+                  this.e0+"-"+this.e1,
+                  this.page.currentPage,
+                  this.page.pageSize)
+                  .then((respose)=>{
+                    this.page.total=respose.data.total;
+                    this.lastNodeData=respose.data.list;
+                    //console.log(this.page.total);
+                  }).catch(function (error) {
+                  console.log(error);
+              });
+            },
+            pageChange(page){
+                this.page.currentPage=page;
+                this.initLastNodeData();
+            },
+            searchClick(){
+                this.initLastNodeData();
+            },
         },
         mounted () {
+            this.init();
             this.changeTableColumns();
+        },
+        watch: {
+            selectedTreeNode(){
+               // console.log(this.page.total);
+                this.initLastNodeData();
+                //console.log(this.page.total);
+            },
+
         },
         created(){
 

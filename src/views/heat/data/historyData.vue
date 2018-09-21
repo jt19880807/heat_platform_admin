@@ -6,44 +6,42 @@
     <div class="home-main">
         <div class="header-title-div">
             <div class="header-title" >
-                明光1号楼历史数据
+                {{title}} 历史数据
             </div>
         </div>
         <Row>
             <div class="tools_div">
                 <Row style="padding-top: 10px;margin-left: 20px;">
                     <Col span="6">
-                    查询时间：<DatePicker type="daterange" split-panels placeholder="Select date" style="width: 200px"></DatePicker>
+                    查询时间：<DatePicker :value="dateValue"
+                                     type="daterange"
+                                     format="yyyy/MM/dd"
+                                     placement="bottom-end"
+                                     split-panels
+                                     style="width: 200px"
+                                     @on-change="dateChange"/>
                     </Col>
                     <Col span="6"></Col>
                     <Col span="6"></Col>
                     <Col span="6">
-                    <Button>搜索</Button>
+                    <Button @click="searchClick">搜索</Button>
                     </Col>
                 </Row>
-                <!--<br/>-->
-                <!--<Row style="margin-left: 20px;">-->
-                    <!--<Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">-->
-                        <!--<Checkbox label="grzt">供热状态</Checkbox>-->
-                        <!--<Checkbox label="jlfs">计量方式</Checkbox>-->
-                        <!--<Checkbox label="ljrl">累积热量</Checkbox>-->
-                        <!--<Checkbox label="rgl">热功率</Checkbox>-->
-                        <!--<Checkbox label="ljll">累积流量</Checkbox>-->
-                        <!--<Checkbox label="ssll">瞬时流量</Checkbox>-->
-                        <!--<Checkbox label="gswd">供水温度</Checkbox>-->
-                        <!--<Checkbox label="hswd">回水温度</Checkbox>-->
-                        <!--<Checkbox label="wc">温差</Checkbox>-->
-                        <!--<Checkbox label="dyzt">电压状态</Checkbox>-->
-                        <!--<Checkbox label="cbsj">抄表时间</Checkbox>-->
-                    <!--</Checkbox-group>-->
-                <!--</Row>-->
             </div>
         </Row>
         <br/>
         <Row>
-            <Table border stripe  :columns="columns" :data="data" ></Table>
+            <Table border stripe  :columns="tableColumns" :data="historyData" ></Table>
         </Row>
-
+        <Row style="margin: 10px">
+            <Col span="8">
+            &nbsp;
+            </Col>
+            <Col span="16" style="text-align: right">
+            <Page :total="page.total" :current="page.currentPage" show-total  :pageSize="page.pageSize"
+                  @on-change="pageChange"/>
+            </Col>
+        </Row>
     </div>
 </template>
 <script>
@@ -51,194 +49,108 @@
     import VeRing from 'v-charts/lib/ring.common';
     import VeHistogramfrom from 'v-charts/lib/histogram.common';
     import dataIcon from "../../../components/dataIcon.vue";
+    import {formatDate,initDate} from '../../../utils';
+    import {getHistoryNodeData} from '../../../axios/http';
     export default {
         data(){
             return {
-                columns: [
-                    {
-                        title: '名称',
-                        key: 'name',
-                        align: 'center',
-                        width: 200,
-                    },
-                    {
-                        title: '整体',
-                        align: 'center',
-                        children: [
-                            {
-                                title: '用热量',
-                                key: 'all_heat',
-                                align: 'center',
-                            },
-                            {
-                                title: '供热面积',
-                                key: 'all_area',
-                                align: 'center',
-                            },
-                            {
-                                title: '平均单耗',
-                                key: 'all_avg',
-                                align: 'center',
-                            },
-                        ]
-                    },
-                    {
-                        title: '边侧',
-                        align: 'center',
-                        children: [
-                            {
-                                title: '用热量',
-                                key: 'side_heat',
-                                align: 'center',
-                            },
-                            {
-                                title: '供热面积',
-                                key: 'side_area',
-                                align: 'center',
-                            },
-                            {
-                                title: '平均单耗',
-                                key: 'side_avg',
-                                align: 'center',
-                            },
-                        ]
-                    },
-                    {
-                        title: '顶层',
-                        align: 'center',
-                        children: [
-                            {
-                                title: '用热量',
-                                key: 'top_heat',
-                                align: 'center',
-                            },
-                            {
-                                title: '供热面积',
-                                key: 'top_area',
-                                align: 'center',
-                            },
-                            {
-                                title: '平均单耗',
-                                key: 'top_avg',
-                                align: 'center',
-                            },
-                        ]
-                    },
-                ],
                 self: this,
-                data: this.mockTableData(),
+                historyData: [],
                 tableColumns: [],
-                tableColumnsChecked: ['grzt', 'jlfs', 'bh', 'ljrl', 'rgl', 'ljll', 'ssll', 'gswd', 'hswd', 'wc', 'dyzt','cbsj'],
-                value1:45,
-                value2:50,
+                tableColumnsChecked: [ 'charge_mode', 'heat_met_addr', 'cu_heat', 'heat_power', 'cu_flow', 'instant_flowrate', 'entrance_temp', 'exit_temp', 'diff_temp', 'battery_status','add_time'],
+                dateValue:[],
+                selectedTreeNode:{},
+                builds:'',
+                page:{
+                    currentPage:1,//当前页码
+                    pageSize:10,//每页数据量
+                    total:0,//数据总量
+                },
             }
         },
+        computed:{
+            title () {
+                this.selectedTreeNode=this.$store.state.selectedTreeNode[0];
+                return this.selectedTreeNode.name;
+            },
+        },
         methods:{
-            mockTableData () {
-                let data = [];
-                function getNum() {
-                    return Math.floor(Math.random () * 10000 + 1);
-                }
-                data.push({
-                    name: "明光小区",
-                    all_heat: getNum(),
-                    all_area: getNum(),
-                    all_avg: getNum()+"%",
-                    side_heat: getNum(),
-                    side_area: getNum(),
-                    side_avg: getNum()+"%",
-                    top_heat: getNum(),
-                    top_area: getNum(),
-                    top_avg: getNum()+"%",
-                });
-                for (let i = 0; i < 5; i++) {
-                    data.push({
-                        name: (i+1)+"号楼",
-                        all_heat: getNum(),
-                        all_area: getNum(),
-                        all_avg: getNum()+"%",
-                        side_heat: getNum(),
-                        side_area: getNum(),
-                        side_avg: getNum()+"%",
-                        top_heat: getNum(),
-                        top_area: getNum(),
-                        top_avg: getNum()+"%",
-                    });
-                }
-                return data;
+            init(){
+                this.builds=sessionStorage.getItem("builds");
             },
             getTableColumns () {
                 const tableColumnList = {
-                    fj:{
+                    b_name:{
+                        title: '楼号',
+                        key: 'b_name'
+                    },
+                    user_code:{
                         title: '房间',
-                        key: 'fj'
+                        key: 'user_code'
                     },
-                    hz:{
+                    host_name:{
                         title: '户主',
-                        key: 'hz'
+                        key: 'host_name'
                     },
-                    fjwz:{
+                    location:{
                         title: '房间位置',
-                        key: 'fjwz',
+                        key: 'location',
                     },
-                    grmj:{
+                    area:{
                         title: '供热面积',
-                        key: 'grmj'
+                        key: 'area'
                     },
-                    grzt:{
-                        title: '供热状态',
-                        key: 'grzt'
-                    },
-                    jlfs:{
+                    charge_mode:{
                         title: '计量方式',
-                        key: 'jlfs'
+                        key: 'charge_mode'
                     },
-                    bh:{
+                    heat_met_addr:{
                         title: '表号',
-                        key: 'bh'
+                        key: 'heat_met_addr'
                     },
-                    ljrl:{
+                    cu_heat:{
                         title: '累积热量',
-                        key: 'ljrl'
+                        key: 'cu_heat'
                     },
-                    rgl:{
+                    heat_power:{
                         title: '热功率',
-                        key: 'rgl'
+                        key: 'heat_power'
                     },
-                    ljll:{
+                    cu_flow:{
                         title: '累积流量',
-                        key: 'ljll'
+                        key: 'cu_flow'
                     },
-                    ssll:{
+                    instant_flowrate:{
                         title: '瞬时流量',
-                        key: 'ssll'
+                        key: 'instant_flowrate'
                     },
-                    gswd:{
+                    entrance_temp:{
                         title: '供水温度',
-                        key: 'gswd'
+                        key: 'entrance_temp'
                     },
-                    hswd:{
+                    exit_temp:{
                         title: '回水温度',
-                        key: 'hswd'
+                        key: 'exit_temp'
                     },
-                    wc:{
+                    diff_temp:{
                         title: '温差',
-                        key: 'wc'
+                        key: 'diff_temp'
                     },
-                    dyzt:{
+                    battery_status: {
                         title: '电压状态',
-                        key: 'dyzt'
+                        key: 'battery_status'
                     },
-                    cbsj:{
+                    add_time:{
                         title: '抄表时间',
-                        key: 'cbsj'
+                        key: 'add_time'
                     }
                 };
-
-                let data = [tableColumnList.fj,tableColumnList.hz,tableColumnList.fjwz,tableColumnList.grmj];
-
+                let data = [];
+                if (this.selectedTreeNode.type==="3"){
+                    data.push(tableColumnList.b_name);
+                }
+                data.push(tableColumnList.user_code,tableColumnList.host_name,tableColumnList.location,tableColumnList.area);
                 this.tableColumnsChecked.forEach(col => data.push(tableColumnList[col]));
-
                 return data;
             },
             changeTableColumns () {
@@ -246,13 +158,52 @@
             },
             toggleFav (index) {
                 this.tableData2[index].fav = this.tableData2[index].fav === 0 ? 1 : 0;
-            }
+            },
+            initDate(){
+                var inDate=initDate();
+                this.$set(this.dateValue,0,inDate[0]);
+                this.$set(this.dateValue,1,inDate[1]);
+            },
+            initHistoryData(){
+                getHistoryNodeData(this.builds,
+                    this.selectedTreeNode.type,
+                    this.selectedTreeNode.name,
+                    this.dateValue[0],
+                    this.dateValue[1],
+                    this.page.currentPage,
+                    this.page.pageSize)
+                    .then((respose)=>{
+                        this.page.total=respose.data.total;
+                        this.historyData=respose.data.list;
+                        //console.log(this.page.total);
+                    }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            searchClick(){
+                this.initHistoryData();
+            },
+            pageChange(page){
+                this.page.currentPage=page;
+                this.initHistoryData();
+            },
+            dateChange(date1,date2){
+                this.$set(this.dateValue,0,date1[0]);
+                this.$set(this.dateValue,1,date1[1]);
+            },
         },
         mounted () {
+            this.init();
             this.changeTableColumns();
         },
-        created(){
+        watch: {
+            selectedTreeNode(){
+                this.initHistoryData();
+            },
 
+        },
+        created(){
+            this.initDate();
         }
     }
 </script>

@@ -485,7 +485,7 @@
                     }]
                 });
                 this.energyEfficiency_picinfo=energyEfficiency_bar.getDataURL();
-                console.log(this.energyEfficiency_picinfo);
+                //console.log(this.energyEfficiency_picinfo);
 
             },
             initeEnvironmentalBenefitsBar(){

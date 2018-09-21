@@ -48,7 +48,8 @@
                             <Button type="error" v-has="'heatreading_del'" @click="deleteHeatMeterReading" v-bind:disabled="selectData.length==0" icon="trash-a">删除</Button>
                         </Col>
                         <Col span="16" style="text-align: right">
-                            <Page v-bind:total="total" :current="currentPage" show-total v-bind:pageSize="pageSize" @on-change="pageChange" show-sizer @on-page-size-change="pageSizeChange"></Page>
+                            <Page v-bind:total="total" :current="currentPage" show-total v-bind:pageSize="pageSize"
+                                  @on-change="pageChange" show-sizer @on-page-size-change="pageSizeChange"></Page>
                         </Col>
                     </Row>
                 </Card>
