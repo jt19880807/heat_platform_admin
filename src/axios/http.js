@@ -62,12 +62,18 @@ export const getBuildMonthHeat=(buildIds,type,name,date,num,size)=>{
 };
 
 //获取小区的历史对比数据
-export const getZoneContrast=(buildIds,type,name,date)=>{
-    return axios.get("/zoneContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date);
+export const getZoneContrast=(buildIds,type,name,startDate,endDate)=>{
+    return axios.get("/zoneContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&startDate="+startDate+"&endDate="+endDate);
 };
 //获取楼栋的历史对比数据
-export const getBuildContrast=(buildIds,type,name,date,num,size)=>{
-    return axios.get("/buildContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&date="+date+"&num="+num+"&size="+size);
+export const getBuildContrast=(buildIds,type,name,startDate,endDate,num,size)=>{
+    return axios.get("/buildContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+};
+
+//大表数据
+//获取大表读数
+export const getMeterData=(zoneId,buildId,meterId,startDate,endDate,num,size)=>{
+    return axios.get("/meterData?zoneId="+zoneId+"&buildId="+buildId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
 
 

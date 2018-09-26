@@ -21,8 +21,7 @@
                     <Col span="6"></Col>
                     <Col span="6"></Col>
                     <Col span="6">
-                    <Button @click="searchClick">搜索</Button>
-                    <Button>导出</Button>
+                        <Button @click="searchClick">搜索</Button>
                     </Col>
                 </Row>
             </div>
@@ -30,7 +29,7 @@
         <br/>
         <Row>
             <Card>
-
+                <ve-histogramfrom :data="contrastHeat" :settings="chartSettings"></ve-histogramfrom>
             </Card>
 
         </Row>
@@ -38,7 +37,6 @@
 </template>
 <script>
     import inforCard from '../../../components/inforCard.vue';
-    import VeRing from 'v-charts/lib/ring.common';
     import VeHistogramfrom from 'v-charts/lib/histogram.common';
     import dataIcon from "../../../components/dataIcon.vue";
     import {getZoneContrast} from '../../../axios/http';
@@ -53,7 +51,25 @@
                 builds:'',
                 currentHeatSession:'',//当前供暖季
                 heatSessions:[],
+                contrastHeat:{
+                    columns: ['buildName', 'currentHeat', 'lastHeat', 'beforeHeat'],
+                    rows: [
+                    ]
+                },
+                chartSettings:{
+                    labelMap: {
+                        'currentHeat': '',
+                        'lastHeat': '',
+                        'beforeHeat':'',
+                    }
+                },
+                startDate:'',
+                endDate:'',
+
             }
+        },
+        components: {
+            VeHistogramfrom,
         },
         computed:{
             title () {
@@ -66,22 +82,38 @@
                 this.builds=sessionStorage.getItem("builds");
                 this.heatSessions=initHeatSession();
                 this.currentHeatSession=this.heatSessions[0].value;
+
             },
             initContrastHeat(){
+                // initLabelMap
+                this.initLabelMap();
+                getZoneContrast(this.builds,
+                    this.selectedTreeNode.type,
+                    this.selectedTreeNode.name,
+                    this.startDate,
+                    this.endDate)
+                    .then((respose)=>{
+                    this.contrastHeat.rows=respose.data.result;
+                }).catch((error)=>{
 
+                    })
+            },
+            initLabelMap(){
+                var session=parseInt(this.currentHeatSession);
+                this.chartSettings.labelMap.currentHeat=session+"";
+                this.chartSettings.labelMap.lastHeat=session-1+"";
+                this.chartSettings.labelMap.beforeHeat=session-2+"";
+                this.startDate=session+"/11/01";
+                this.endDate=session+1+"/10/31";
             },
             searchClick(){
-//                this.initLastNodeData();
-            },
-
-            searchClick(){
-
+                this.initContrastHeat();
             },
             dateChange(date){
             },
         },
         mounted () {
-//            this.initUseHeat(this.tabValue);
+            this.initContrastHeat();
 
         },
         watch: {
