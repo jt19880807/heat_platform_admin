@@ -31,7 +31,7 @@
                     <Col span="6"></Col>
                     <Col span="6">
                         <Button @click="searchClick">搜索</Button>
-                        <Button>导出</Button>
+                        <Button @click="exportClick">导出</Button>
                     </Col>
                 </Row>
             </div>
@@ -41,7 +41,7 @@
             <Card>
                 <Tabs :value="tabValue" @on-click="tabClick">
                     <TabPane label="日用量" name="name1">
-                        <Table border stripe  :columns="tableColumn" :data="dayHeat" ></Table>
+                        <Table border stripe  :columns="tableColumn" :data="dayHeat" ref="dayTable"></Table>
                         <Row style="margin: 10px">
                             <Col span="8">
                             &nbsp;
@@ -53,7 +53,7 @@
                         </Row>
                     </TabPane>
                     <TabPane label="月用量" name="name2">
-                        <Table border stripe  :columns="tableColumn" :data="monthHeat" ></Table>
+                        <Table border stripe  :columns="tableColumn" :data="monthHeat" ref="monthTable"></Table>
                         <Row style="margin: 10px">
                             <Col span="8">
                             &nbsp;
@@ -151,7 +151,7 @@
             toggleFav (index) {
                 this.tableData2[index].fav = this.tableData2[index].fav === 0 ? 1 : 0;
             },
-            initUseHeat(name){
+            initAlermData(name){
                 if (name==='name1') {
                     getBuildDayHeat(this.builds,
                         this.selectedTreeNode.type,
@@ -182,20 +182,20 @@
                 }
             },
             searchClick(){
-                this.initUseHeat(this.tabValue);
+                this.initAlermData(this.tabValue);
             },
             tabClick(name){
                 this.tabValue=name;
                 if (name==='name1'&&this.dayHeat.length===0) {
-                    this.initUseHeat(name);
+                    this.initAlermData(name);
                 }
                 if (name==='name2'&&this.monthHeat.length===0) {
-                    this.initUseHeat(name);
+                    this.initAlermData(name);
                 }
 
             },
             searchClick(){
-                this.initUseHeat(this.tabValue);
+                this.initAlermData(this.tabValue);
             },
             dateChange(date){
                 if(this.tabValue==='name1'){
@@ -212,16 +212,28 @@
                 else {
                     this.monthPage.currentPage=page;
                 }
-                this.initUseHeat(this.tabValue);
-            }
+                this.initAlermData(this.tabValue);
+            },
+            exportClick(){
+                if(this.tabValue==='name1'){
+                    this.$refs.dayTable.exportCsv({
+                        filename: this.selectedTreeNode.name+"日用量数据"
+                    });
+                }
+                else {
+                    this.$refs.monthTable.exportCsv({
+                        filename: this.selectedTreeNode.name+"月用量数据"
+                    });
+                }
+            },
         },
         mounted () {
-            this.initUseHeat(this.tabValue);
+            this.initAlermData(this.tabValue);
 
         },
         watch: {
             selectedTreeNode(){
-                this.initUseHeat(this.tabValue);
+                this.initAlermData(this.tabValue);
             },
 
         },

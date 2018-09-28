@@ -7,7 +7,7 @@
             <div class="item-icon" :style="{color: mColor}">
                 <Icon :type="iconType" :size="iconSize"></Icon>
             </div>
-            <div class="item-info">
+            <div class="item-info" @click="cardClick" >
                 <span>{{introText}}</span>
                 <h3 :style="{color: this.mColor}">{{val}}</h3>
             </div>
@@ -27,6 +27,7 @@
             color: String,
             iconType: String,
             introText: String,
+            alermType:Number,
             countSize: {
                 type: String,
                 default: '30px'
@@ -40,15 +41,21 @@
                 default: 40
             }
         },
+        methods:{
+            cardClick(){
+                this.$store.commit('setAlermType', this.alermType);
+                this.$router.push({
+                    name: 'alerm_index'
+                });
+            },
+        },
         mounted () {
             this.$nextTick(() => {
-//                console.log(this.val);
                 this.mColor=this.val>0?'red':'green';
             });
         },
         watch: {
             val:function (v,oldv) {
-//                console.log(v);
                 this.mColor=v>0?'red':'green';
             }
         }

@@ -69,11 +69,26 @@ export const getZoneContrast=(buildIds,type,name,startDate,endDate)=>{
 export const getBuildContrast=(buildIds,type,name,startDate,endDate,num,size)=>{
     return axios.get("/buildContrast?buildIds="+buildIds+"&type="+type+"&name="+name+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
 };
-
+//获取小区的历史对比数据
+export const getNodeAlermCount=(buildIds,type,name)=>{
+    return axios.get("/nodeAlermCount?buildIds="+buildIds+"&type="+type+"&name="+name);
+};
+//获取小区的历史对比数据
+export const getNodeAlermInfo=(buildIds,type,name,alermType,num,size)=>{
+    return axios.get("/nodeAlermInfo?buildIds="+buildIds+"&type="+type+"&name="+name+"&alermType="+alermType+"&num="+num+"&size="+size);
+};
+//获取报警类型
+export const getAlermTypes=()=>{
+    return axios.get("/alermTypes");
+};
 //大表数据
 //获取大表读数
 export const getMeterData=(zoneId,buildId,meterId,startDate,endDate,num,size)=>{
     return axios.get("/meterData?zoneId="+zoneId+"&buildId="+buildId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate+"&num="+num+"&size="+size);
+};
+//获取大表读数
+export const getMeterECA=(zoneId,buildId,meterId,startDate,endDate)=>{
+    return axios.get("/meterECA?zoneId="+zoneId+"&buildId="+buildId+"&meterId="+meterId+"&startDate="+startDate+"&endDate="+endDate);
 };
 
 

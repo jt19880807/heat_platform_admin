@@ -22,7 +22,8 @@ const otherRouter={
     children:[
         { path:'home',title:'首页',name:'home_index',component:resolve=>{require(['../views/home/home.vue'], resolve); } },
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: resolve => { require(['../views/home/home.vue'], resolve); } },
-        { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['../views/home/home.vue'], resolve); } }
+        { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['../views/home/home.vue'], resolve); } },
+        { path: 'alerm', title: '报警信息', name: 'alerm_index', component: resolve => { require(['../views/heat/data/nodeAlerms.vue'], resolve); } }
     ]
 };
 const appRouter = [
@@ -337,22 +338,22 @@ const zoneRouter = [
         path: '/bill',
         icon: 'social-buffer',
         name: 'zone_bill',
-        title: '账单数据',
+        title: '台账报表',
         component: Main,
         children: [
-            {
-                path: 'zone_bill_settlement',
-                icon: 'compose',
-                name: 'zone_bill_settlement',
-                title: '季末结算',
-                component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
-            },
+            // {
+            //     path: 'zone_bill_settlement',
+            //     icon: 'compose',
+            //     name: 'zone_bill_settlement',
+            //     title: '季末结算',
+            //     component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
+            // },
             {
                 path: 'zone_bill_stationReport',
                 icon: 'pound',
                 name: 'zone_bill_stationReport',
                 title: '台账报表',
-                component: resolve => { require(['../views/kqn/readings/electricity.vue'], resolve); }
+                component: resolve => { require(['../views/heat/data/zone_bill.vue'], resolve); }
             },
 
         ]
@@ -397,30 +398,30 @@ const buildRouter = [
 
         ]
     },
-    {
-        path: '/dataquery',
-        icon: 'social-buffer',
-        name: 'build_bill',
-        title: '账单数据',
-        component: Main,
-        children: [
-            {
-                path: 'heatreading',
-                icon: 'compose',
-                name: 'build_bill_settlement',
-                title: '季末结算',
-                component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
-            },
-            {
-                path: 'electricity',
-                icon: 'pound',
-                name: 'build_bill_stationReport',
-                title: '台账报表',
-                component: resolve => { require(['../views/kqn/readings/electricity.vue'], resolve); }
-            },
-
-        ]
-    },
+    // {
+    //     path: '/dataquery',
+    //     icon: 'social-buffer',
+    //     name: 'build_bill',
+    //     title: '账单数据',
+    //     component: Main,
+    //     children: [
+    //         {
+    //             path: 'heatreading',
+    //             icon: 'compose',
+    //             name: 'build_bill_settlement',
+    //             title: '季末结算',
+    //             component: resolve => { require(['../views/kqn/readings/heat.vue'], resolve); }
+    //         },
+    //         {
+    //             path: 'electricity',
+    //             icon: 'pound',
+    //             name: 'build_bill_stationReport',
+    //             title: '台账报表',
+    //             component: resolve => { require(['../views/kqn/readings/electricity.vue'], resolve); }
+    //         },
+    //
+    //     ]
+    // },
 ];
 const routers = [
     loginRouter,

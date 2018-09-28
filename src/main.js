@@ -41,6 +41,7 @@ const store=new Vuex.Store({
         theme: '',
         projectData:sessionStorage.getItem("projectTreeData")?JSON.parse(sessionStorage.getItem("projectTreeData")): [],
         selectedTreeNode:sessionStorage.getItem("selectedTreeNode")?JSON.parse(sessionStorage.getItem("selectedTreeNode")): [],
+        alermType:0,
     },
     mutations:{
         setTagsList (state, list) {
@@ -166,6 +167,9 @@ const store=new Vuex.Store({
         setSelectedTreeNode(state,data){
             state.selectedTreeNode=data;
             //console.log(state.selectedTreeNode);
+        },
+        setAlermType(state,data){
+            state.alermType=data;
         }
     }
 });

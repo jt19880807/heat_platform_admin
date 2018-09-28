@@ -6,7 +6,7 @@
     <div class="home-main">
         <div class="header-title-div">
             <div class="header-title" >
-                {{title}}热量表能耗分析
+                {{title}}大表能耗分析
             </div>
         </div>
         <Row>
@@ -19,14 +19,14 @@
                                    placement="bottom-end"
                                    split-panels
                                    style="width: 200px"
-                                   @on-change="dateChange"/></Col>
-
+                                   transfer="true"
+                                   @on-change="dateChange"/>
                     </Col>
                     <Col span="6"></Col>
                     <Col span="6"></Col>
                     <Col span="6">
                         <Button @click="searchClick">搜索</Button>
-                        <Button>导出</Button>
+                        <Button @click="exportClick">导出</Button>
                     </Col>
                 </Row>
             </div>
@@ -36,14 +36,14 @@
             <Card>
                 <Tabs :value="tabValue" @on-click="tabClick">
                     <TabPane label="表格" name="name1">
-                        <Table border stripe  :columns="tableColumn" :data="dayHeat" ></Table>
+                        <Table border stripe  :columns="tableColumn" :data="ecaData" ref="table"></Table>
                     </TabPane>
                     <TabPane label="图表" name="name2">
                         <Row>
-                            <ve-histogramfrom :data="contrastHeat" :settings="chartSettings"></ve-histogramfrom>
+                            <ve-histogramfrom :data="contrastHeat1" :settings="chartSettings"></ve-histogramfrom>
                         </Row>
                         <Row>
-                            <ve-histogramfrom :data="contrastHeat" :settings="chartSettings"></ve-histogramfrom>
+                            <ve-histogramfrom :data="contrastHeat2" :settings="chartSettings2"></ve-histogramfrom>
                         </Row>
                     </TabPane>
                 </Tabs>
@@ -57,39 +57,69 @@
     import VeRing from 'v-charts/lib/ring.common';
     import VeHistogramfrom from 'v-charts/lib/histogram.common';
     import dataIcon from "../../../components/dataIcon.vue";
-    import {getZoneDayHeat,getZoneMonthHeat} from '../../../axios/http';
+    import {getMeterECA} from '../../../axios/http';
     import {formatDate,initDate} from '../../../utils';
     export default {
         data(){
             return {
                 self: this,
-                lastNodeData: [],
+                ecaData: [],
                 selectedTreeNode:{},
                 builds:'',
                 dateValue:[],
                 tableColumn:[
                     {
-                        title: '楼号',
-                        key: 'buildName'
+                        title: '表号',
+                        key: 'meter_addr'
                     },
                     {
-                        title: '面积',
+                        title: '楼号',
+                        key: 'b_name'
+                    },
+                    {
+                        title: '供热面积(㎡)',
                         key: 'area'
                     },
                     {
-                        title: '日累计热量',
+                        title: '用热量(MWH)',
                         key: 'useHeat'
                     },
                     {
-                        title: '平均能耗',
+                        title: '单位能耗(MWH/㎡)',
                         key: 'avgHeat'
                     },
                     {
-                        title: '累计流量',
-                        key: 'useFlow'
+                        title: '平均进水温度(℃)',
+                        key: 'avg_in_temp'
+                    },
+                    {
+                        title: '平均回水温度(℃)',
+                        key: 'avg_out_temp'
                     },
                 ],
                 tabValue:'name1',
+                contrastHeat1:{
+                    columns: ['meter_addr', 'area', 'useHeat'],
+                    rows: [
+                    ]
+                },
+                contrastHeat2:{
+                    columns: ['meter_addr', 'avgHeat'],
+                    rows: [
+                    ]
+                },
+                chartSettings:{
+                    axisSite: { right: ['useHeat'] },
+                    labelMap: {
+                        'area': '面积',
+                        'useHeat': '用热量',
+                    }
+                },
+                chartSettings2:{
+                    labelMap: {
+                        'avgHeat': '单位能耗'
+                    }
+                },
             }
         },
         components: {
@@ -104,69 +134,46 @@
         methods:{
             init(){
                 this.builds=sessionStorage.getItem("builds");
-                var date=new Date();
             },
             initDate(){
                 var inDate=initDate();
                 this.$set(this.dateValue,0,inDate[0]);
                 this.$set(this.dateValue,1,inDate[1]);
             },
-            initUseHeat(name){
-                if (name==='name1') {
-                    getZoneDayHeat(this.builds,
-                        this.selectedTreeNode.type,
-                        this.selectedTreeNode.name,
-                        this.dayValue)
-                        .then((respose) => {
-                            this.dayHeat = respose.data.result;
-                        }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
-                else if(name==='name2'){
-                    getZoneMonthHeat(this.builds,
-                        this.selectedTreeNode.type,
-                        this.selectedTreeNode.name,
-                        this.monthValue+"/01")
-                        .then((respose) => {
-                            this.monthHeat = respose.data.result;
-                        }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
+            initECAData(){
+                getMeterECA(this.selectedTreeNode.id,
+                    0,
+                    0,
+                    this.dateValue[0],
+                    this.dateValue[1],)
+                    .then((respose)=>{
+                        this.ecaData=respose.data.result;
+                        this.contrastHeat1.rows=respose.data.result;
+                        this.contrastHeat2.rows=respose.data.result;
+                    }).catch(function (error) {
+                    console.log(error);
+                });
             },
-            searchClick(){
-                this.initLastNodeData();
+            exportClick(){
+                this.$refs.table.exportCsv({
+                    filename: this.selectedTreeNode.name+"大表能耗分析"
+                });
             },
             tabClick(name){
-                this.tabValue=name;
-                if (name==='name1'&&this.dayHeat.length===0) {
-                    this.initUseHeat(name);
-                }
-                if (name==='name2'&&this.monthHeat.length===0) {
-                    this.initUseHeat(name);
-                }
-
             },
             searchClick(){
-                this.initUseHeat(this.tabValue);
+                this.initECAData();
             },
             dateChange(date){
-                if(this.tabValue==='name1'){
-                    this.dayValue=date;
-                }
-                else {
-                    this.monthValue=date;
-                }
+                this.dayValue=date;
             }
         },
-        mounted () {
-            this.initUseHeat(this.tabValue);
-
+        mounted(){
+            this.initECAData();
         },
         watch: {
             selectedTreeNode(){
-                this.initUseHeat(this.tabValue);
+                this.initECAData();
             },
 
         },

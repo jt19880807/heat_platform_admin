@@ -22,7 +22,7 @@
                     <Col span="6"></Col>
                     <Col span="6">
                         <Button @click="searchClick">搜索</Button>
-                        <Button @click="searchClick">导出</Button>
+                        <Button @click="exportClick">导出</Button>
                     </Col>
                 </Row>
             </div>
@@ -30,7 +30,7 @@
         <br/>
         <Row>
             <Card>
-                <Table border stripe  :columns="tableColumn" :data="contrastHeat" ></Table>
+                <Table border stripe  :columns="tableColumn" :data="contrastHeat" ref="table"></Table>
                 <Row style="margin: 10px">
                     <Col span="8">
                     &nbsp;
@@ -162,6 +162,11 @@
             searchClick(){
                 this.initContrastHeat();
             },
+            exportClick(){
+                this.$refs.table.exportCsv({
+                    filename: this.selectedTreeNode.name+"历史对比数据"
+                });
+            },
             dateChange(date){
             },
         },
@@ -171,7 +176,7 @@
         },
         watch: {
             selectedTreeNode(){
-                //this.initUseHeat(this.tabValue);
+                //this.initAlermData(this.tabValue);
             },
 
         },

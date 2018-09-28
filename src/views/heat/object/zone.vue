@@ -110,49 +110,57 @@
                 <Row>
                     <Col span="3">
                     <data-icon
-                        :val="count.error1"
+                        :val="alermData.rows[0].room_count"
+                        :alermType="alermData.rows[0].id"
                         iconType="alert-circled"
                         intro-text="通讯故障" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error1"
+                        :val="alermData.rows[1].room_count"
+                        :alermType="alermData.rows[1].id"
                         iconType="alert-circled"
                         intro-text="多天通讯故障" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[2].room_count"
+                        :alermType="alermData.rows[2].id"
                         iconType="alert-circled"
                         intro-text="电池欠压" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[3].room_count"
+                        :alermType="alermData.rows[3].id"
                         iconType="alert-circled"
                         intro-text="流量过小" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[4].room_count"
+                        :alermType="alermData.rows[4].id"
                         iconType="alert-circled"
                         intro-text="供回水接反" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[5].room_count"
+                        :alermType="alermData.rows[5].id"
                         iconType="alert-circled"
                         intro-text="流量超限" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[6].room_count"
+                        :alermType="alermData.rows[6].id"
                         iconType="alert-circled"
                         intro-text="进水温度低" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[7].room_count"
+                        :alermType="alermData.rows[7].id"
                         iconType="alert-circled"
                         intro-text="进水温度高" />
                     </Col>
@@ -160,43 +168,49 @@
                 <Row>
                     <Col span="3">
                     <data-icon
-                        :val="count.error1"
+                        :val="alermData.rows[8].room_count"
+                        :alermType="alermData.rows[8].id"
                         iconType="alert-circled"
                         intro-text="出水温度低" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[9].room_count"
+                        :alermType="alermData.rows[9].id"
                         iconType="alert-circled"
                         intro-text="供暖日用量为零" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[10].room_count"
+                        :alermType="alermData.rows[10].id"
                         iconType="alert-circled"
                         intro-text="未供暖用量非零" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[11].room_count"
+                        :alermType="alermData.rows[11].id"
                         iconType="alert-circled"
                         intro-text="温差过大" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[12].room_count"
+                        :alermType="alermData.rows[12].id"
                         iconType="alert-circled"
                         intro-text="典型测温故障" />
                     </Col>
                     <Col span="3">
                     <data-icon
-                        :val="count.error0"
+                        :val="alermData.rows[13].room_count"
+                        :alermType="alermData.rows[13].id"
                         iconType="alert-circled"
                         intro-text="瞬时流量为零" />
                     </Col>
                 </Row>
                 <Row>
-                    <ve-histogramfrom :data="alertData"></ve-histogramfrom>
+                    <ve-histogramfrom :data="alermData" :settings="chartSettings"></ve-histogramfrom>
                 </Row>
             </Card>
         </Row>
@@ -217,7 +231,7 @@
     import VeRing from 'v-charts/lib/ring.common';
     import VeHistogramfrom from 'v-charts/lib/histogram.common';
     import dataIcon from "../../../components/dataIcon.vue";
-    import {getHouseholdsAndArea,entrance_temp_analyse} from '../../../axios/http';
+    import {getHouseholdsAndArea,entrance_temp_analyse,getNodeAlermCount} from '../../../axios/http';
     export default {
         data(){
             return {
@@ -243,24 +257,29 @@
                         { 'title': '供热面积', 'vlue': 12000 },
                     ]
                 },
-                alertData:{
-                    columns: ['title', '户数'],
+                alermData:{
+                    columns: ['name', 'room_count'],
                     rows: [
-                        { 'title': '通讯故障', '户数': 10},
-                        { 'title': '多天通讯故障', '户数': 10 },
-                        { 'title': '电池欠压', '户数': 0 },
-                        { 'title': '流量过小', '户数': 0 },
-                        { 'title': '供回水接反', '户数': 0 },
-                        { 'title': '流量超限', '户数': 0 },
-                        { 'title': '进水温度低', '户数': 0 },
-                        { 'title': '进水温度高', '户数': 0 },
-                        { 'title': '出水温度低', '户数': 10 },
-                        { 'title': '供暖日用量为零', '户数': 0 },
-                        { 'title': '未供暖用量非零', '户数': 0 },
-                        { 'title': '温差过大', '户数': 0 },
-                        { 'title': '典型测温故障', '户数': 0 },
-                        { 'title': '瞬时流量为零', '户数': 0 },
+                        { 'title': '通讯故障', 'room_count': 0},
+                        { 'title': '多天通讯故障', 'room_count': 0 },
+                        { 'title': '电池欠压', 'room_count': 0 },
+                        { 'title': '流量过小', 'room_count': 0 },
+                        { 'title': '供回水接反', 'room_count': 0 },
+                        { 'title': '流量超限', 'room_count': 0 },
+                        { 'title': '进水温度低', 'room_count': 0 },
+                        { 'title': '进水温度高', 'room_count': 0 },
+                        { 'title': '出水温度低', 'room_count': 0 },
+                        { 'title': '供暖日用量为零', 'room_count': 0 },
+                        { 'title': '未供暖用量非零', 'room_count': 0 },
+                        { 'title': '温差过大', 'room_count': 0 },
+                        { 'title': '典型测温故障', 'room_count': 0 },
+                        { 'title': '瞬时流量为零', 'room_count': 0 },
                     ]
+                },
+                chartSettings:{
+                    labelMap: {
+                        'room_count': '户数',
+                    }
                 },
                 areaHeatBarData:{
                     columns: ['title', '户数'],
@@ -273,7 +292,6 @@
                 },
                 selectedTreeNode:{},
                 builds:sessionStorage.getItem("builds"),
-                //builds:'',
                 option : {
                     tooltip : {
                         trigger: 'axis'
@@ -336,7 +354,7 @@
         computed:{
             title () {
                 this.selectedTreeNode=this.$store.state.selectedTreeNode[0];
-                return this.selectedTreeNode.title;
+                return this.selectedTreeNode.name;
             },
         },
         methods:{
@@ -346,7 +364,7 @@
                 this.heatChart.setOption(this.option);
             },
             initHeatChart(){
-                entrance_temp_analyse(this.builds,this.selectedTreeNode.type,this.selectedTreeNode.title)
+                entrance_temp_analyse(this.builds,this.selectedTreeNode.type,this.selectedTreeNode.name)
                     .then((respose)=>{
                         if (respose.data.status===0) {
                             this.entrance_temp_analyse.low_40=respose.data.result.low_40;
@@ -367,9 +385,17 @@
             },
             initHouseholdsAndArea(){
 //                this.count.totalUser=9;
-                getHouseholdsAndArea(this.builds,this.selectedTreeNode.type,this.selectedTreeNode.title)
+                getHouseholdsAndArea(this.builds,this.selectedTreeNode.type,this.selectedTreeNode.name)
                     .then((respose)=>{
                         this.count=respose.data.result;
+                    }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            initNodeAlerm(){
+                getNodeAlermCount(this.builds,this.selectedTreeNode.type,this.selectedTreeNode.name)
+                    .then((respose)=>{
+                        this.alermData.rows=respose.data.result;
                     }).catch(function (error) {
                     console.log(error);
                 });
@@ -378,18 +404,18 @@
         mounted(){
             this.init();
             this.initHeatChart();
+            this.initNodeAlerm();
         },
         watch: {
             selectedTreeNode(){
                 this.initHouseholdsAndArea();
                 this.initHeatChart();
+                this.initNodeAlerm();
             },
 
         },
         created(){
-//            this.count.totalUser=9;
-            //this.areaHeatBarData=this.areaHeatBarData2;
-//            console.log("zone create");
+
         }
     }
 </script>

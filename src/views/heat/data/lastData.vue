@@ -20,7 +20,7 @@
                     <Col span="6"></Col>
                     <Col span="6">
                         <Button @click="searchClick">搜索</Button>
-                        <Button>导出</Button>
+                        <Button @click="exportClick">导出</Button>
                     </Col>
                 </Row>
                 <br/>
@@ -42,7 +42,7 @@
         </Row>
         <br/>
         <Row>
-            <Table border stripe  :columns="tableColumns" :data="lastNodeData" ></Table>
+            <Table border stripe  :columns="tableColumns" :data="lastNodeData" ref="table"></Table>
         </Row>
         <Row style="margin: 10px">
             <Col span="8">
@@ -191,6 +191,11 @@
             },
             searchClick(){
                 this.initLastNodeData();
+            },
+            exportClick(){
+                this.$refs.table.exportCsv({
+                    filename: this.selectedTreeNode.name+"实时数据"
+                });
             },
         },
         mounted () {

@@ -25,13 +25,14 @@
                     <Col span="6"></Col>
                     <Col span="6">
                         <Button @click="searchClick">搜索</Button>
+                        <Button @click="exportClick">导出</Button>
                     </Col>
                 </Row>
             </div>
         </Row>
         <br/>
         <Row>
-            <Table border stripe  :columns="tableColumns" :data="historyData" ></Table>
+            <Table border stripe  :columns="tableColumns" :data="historyData" ref="table"></Table>
         </Row>
         <Row style="margin: 10px">
             <Col span="8">
@@ -174,6 +175,11 @@
             dateChange(date1,date2){
                 this.$set(this.dateValue,0,date1[0]);
                 this.$set(this.dateValue,1,date1[1]);
+            },
+            exportClick(){
+                this.$refs.table.exportCsv({
+                    filename: this.selectedTreeNode.name+"大表读数"
+                });
             },
         },
         mounted () {

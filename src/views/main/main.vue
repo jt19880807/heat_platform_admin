@@ -9,29 +9,29 @@
                     <img src="../../images/logo-min.png">
                 </div>
                 <div class="header-text">热量表数据平台</div>
-                <div class="layout-nav">
-                    <Menu mode="horizontal" theme="dark" active-name="1" @on-select="mainMenuChanged">
-                        <MenuItem name="1">
-                            数据管理
-                        </MenuItem>
-                        <MenuItem name="2">
-                            基础配置
-                        </MenuItem>
-                        <MenuItem name="3">
-                            用户管理
-                        </MenuItem>
-                        <MenuItem name="4">
-                            系统管理
-                        </MenuItem>
-                    </Menu>
-                </div>
+                <!--<div class="layout-nav">-->
+                    <!--<Menu mode="horizontal" theme="dark" active-name="1" @on-select="mainMenuChanged">-->
+                        <!--<MenuItem name="1">-->
+                            <!--数据管理-->
+                        <!--</MenuItem>-->
+                        <!--<MenuItem name="2">-->
+                            <!--基础配置-->
+                        <!--</MenuItem>-->
+                        <!--<MenuItem name="3">-->
+                            <!--用户管理-->
+                        <!--</MenuItem>-->
+                        <!--<MenuItem name="4">-->
+                            <!--系统管理-->
+                        <!--</MenuItem>-->
+                    <!--</Menu>-->
+                <!--</div>-->
                 <div class="header-avator-con">
                     <div class="main-header">
-                        <div style="width: 300px;float:left">
-                            <Input v-model="searchData" icon="ios-search-strong"
-                                   style="width: 300px;margin-top:5%;" placeholder="请输入关键字"
-                                   @on-change="searchChange" @on-blur	="filterData=[]"/>
-                        </div>
+                        <!--<div style="width: 300px;float:left">-->
+                            <!--<Input v-model="searchData" icon="ios-search-strong"-->
+                                   <!--style="width: 300px;margin-top:5%;" placeholder="请输入关键字"-->
+                                   <!--@on-change="searchChange" @on-blur	="filterData=[]"/>-->
+                        <!--</div>-->
 
                         <div class="user-dropdown-menu-con">
                             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
@@ -269,7 +269,7 @@
                                 break;
                             case "4":
                                 this.$router.push({
-                                    name: 'building_index'
+                                    name: 'zone_index'
                                 });
                                 break;
                         }
